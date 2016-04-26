@@ -1,2 +1,2 @@
 # awolmsg
-aways online msg processing server
+aways online actor msg processing server
