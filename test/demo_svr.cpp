@@ -1,8 +1,7 @@
 #include "dcpots/base/stdinc.h"
 #include "dcpots/base/logger.h"
-#include "../awolmsg/Messenger.h"
-#include "../proto/awolmsg.pb.h"
-#include "../awolmsg/MsgPortal.h"
+#include "../awolmsg/awol_msgportal.h"
+#include "../awolmsg/awol_msgsvr.h"
 #include "test.pb.h"
 
 using namespace awolmsg;
@@ -12,8 +11,12 @@ enum  AwolMsgType {
 };
 
 //protobuf adaptor
-struct MailBox : public MsgPortal<MailMsg> {
-    int update(uint64_t id, int op){
+struct MailBox : public MsgPortal<MSGT_MAILBOX, MailMsg> {
+	typedef MsgPortal<MSGT_MAILBOX, MailMsg> SuperT;
+	MailBox(const MsgActor & actor) :SuperT(actor){
+	}
+
+	int update(uint64_t id, int op){
         if (op == 0){ //fetch
             //actor.award(msg);
         }
@@ -34,26 +37,27 @@ struct MailBox : public MsgPortal<MailMsg> {
 
 int main(){
 
-    Messenger<MailBox>.init(MSGT_MAILBOX, MsgOptions());
-        
+	MsgSvr	msgsvr;
 
-    MsgActor ma;
-    ma.type = 1;
-    ma.id = 2;
+	msgsvr.regis<MailBox>(MsgOptions());
+
+
+
+	///////////////////////////////////////////////////////////
+    MsgActor ma(1, 2);
     MailBox mb(ma);
 
     MailMsg m;
     //1. send mail to 3 from 2
-    mb.send(MsgActor(1, 3), m);
+    mb.sendto(MsgActor(1, 3), m);
         //generate id
         //send a msg to msgsvr
         //recv send result
         //mb recv a msg (notify)
 
 
-    //2.send mail to 3 from system
-    MailBox::send(MsgActor(1, 3), m);
-
+    //2.send mail to 2 from system
+    mb.put(m);
     //3.client set mail read
     mb.update(1, MailBox::UPDATE_READ);
     mb.update(1, MailBox::UPDATE_FETCH);
@@ -70,6 +74,7 @@ int main(){
         //send a request to msgsvr
         //recv from msgsvr response , refresh msg
 
-
+#if 0
+#endif
     return 0;
 }
