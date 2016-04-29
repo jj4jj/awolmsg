@@ -1,0 +1,12 @@
+package awolmsg;
+
+message MsgExt {
+    optional uint32 time=1;
+    optional uint32 ttl=2;
+}
+message Msg {
+    required uint64  id=1;
+    optional int32   type=2;
+    optional bytes   data=3;
+    optional MsgExt  ext=4;
+};
