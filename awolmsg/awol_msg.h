@@ -1,10 +1,11 @@
 #pragma once
 
 namespace awolmsg {
+	typedef std::string MsgT;
 	struct MsgActor {
 		int type{ 0 };
 		uint64_t id{ 0 };
-		MsgActor(int t_, uint64_t id_) :type(t_), id(id_){}
+		MsgActor(int t_ = 0, uint64_t id_ = 0) :type(t_), id(id_){}
 	};
 	struct MsgOptions {
 		enum {
@@ -29,6 +30,15 @@ namespace awolmsg {
 		int store{ 0 }; //list ? hash ? set ?
 		int cperm{ 0 }; //other ext
 		MsgOptions(int own = 0, int store = 0, int perm = 0) : owner(own), store(store), cperm(perm){
+		}
+		bool check(bool fromc, int flag = 0) const {
+			if (fromc && owner == MSG_OPT_OWN_SO){
+				return false;
+			}
+			if (fromc && flag > 0 && (cperm & flag) == 0){
+				return false;
+			}
+			return true;
 		}
 	};
 }

@@ -11,9 +11,15 @@ enum  AwolMsgType {
 };
 
 //protobuf adaptor
-struct MailBox : public MsgPortal<MSGT_MAILBOX, MailMsg> {
-	typedef MsgPortal<MSGT_MAILBOX, MailMsg> SuperT;
-	MailBox(const MsgActor & actor) :SuperT(actor){
+struct MailBox : public MsgPortal {
+	MailBox(const MsgActor & actor) :MsgPortal(actor){
+	}
+	int type() const {
+		return MSGT_MAILBOX;
+	}
+	const MsgOptions & options() const {
+		static MsgOptions mo;
+		return mo;
 	}
 
 	int update(uint64_t id, int op){
@@ -34,12 +40,12 @@ struct MailBox : public MsgPortal<MSGT_MAILBOX, MailMsg> {
 };
 
 
-
 int main(){
 
 	MsgSvr	msgsvr;
+	msgsvr.init();
 
-	msgsvr.regis<MailBox>(MsgOptions());
+	msgsvr.regis<MailBox>();
 
 
 
@@ -74,6 +80,7 @@ int main(){
         //send a request to msgsvr
         //recv from msgsvr response , refresh msg
 
+	msgsvr.destory();
 #if 0
 #endif
     return 0;

@@ -1,12 +1,33 @@
 package awolmsg;
 
+message MsgAgent {
+	required int32		type=1;
+	optional uint64		id=2;
+}
+
 message MsgExt {
     optional uint32 time=1;
     optional uint32 ttl=2;
+	optional MsgAgent from=3;
 }
+
+message MsgBase {
+	required uint64	id=1;
+	optional int32	subtype=2;
+	optional bytes	data=3;
+}
+
+message MsgFlag {
+}
+
 message Msg {
-    required uint64  id=1;
-    optional int32   type=2;
-    optional bytes   data=3;
-    optional MsgExt  ext=4;
+    required uint64		id=1;
+    optional int32		type=2;
+	optional MsgAgent	actor=3;
+    repeated MsgData	data=4;
+    optional MsgFlag	flag=5;
+	message MsgData {
+		required MsgBase  base = 1;
+		optional MsgExt	  ext = 2;
+	}
 };
