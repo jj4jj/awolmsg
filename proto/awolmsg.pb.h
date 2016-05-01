@@ -23,6 +23,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>
 #include <google/protobuf/extension_set.h>
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
@@ -35,11 +36,31 @@ void protobuf_ShutdownFile_awolmsg_2eproto();
 
 class MsgAgent;
 class MsgExt;
-class MsgBase;
 class MsgFlag;
 class Msg;
 class Msg_MsgData;
 
+enum MsgOP {
+  MSG_OP_LIST = 1,
+  MSG_OP_SET = 2,
+  MSG_OP_GET = 3,
+  MSG_OP_RM = 4
+};
+bool MsgOP_IsValid(int value);
+const MsgOP MsgOP_MIN = MSG_OP_LIST;
+const MsgOP MsgOP_MAX = MSG_OP_RM;
+const int MsgOP_ARRAYSIZE = MsgOP_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MsgOP_descriptor();
+inline const ::std::string& MsgOP_Name(MsgOP value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MsgOP_descriptor(), value);
+}
+inline bool MsgOP_Parse(
+    const ::std::string& name, MsgOP* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MsgOP>(
+    MsgOP_descriptor(), name, value);
+}
 // ===================================================================
 
 class MsgAgent : public ::google::protobuf::Message {
@@ -232,110 +253,6 @@ class MsgExt : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class MsgBase : public ::google::protobuf::Message {
- public:
-  MsgBase();
-  virtual ~MsgBase();
-
-  MsgBase(const MsgBase& from);
-
-  inline MsgBase& operator=(const MsgBase& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const MsgBase& default_instance();
-
-  void Swap(MsgBase* other);
-
-  // implements Message ----------------------------------------------
-
-  MsgBase* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const MsgBase& from);
-  void MergeFrom(const MsgBase& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint64 id = 1;
-  inline bool has_id() const;
-  inline void clear_id();
-  static const int kIdFieldNumber = 1;
-  inline ::google::protobuf::uint64 id() const;
-  inline void set_id(::google::protobuf::uint64 value);
-
-  // optional int32 subtype = 2;
-  inline bool has_subtype() const;
-  inline void clear_subtype();
-  static const int kSubtypeFieldNumber = 2;
-  inline ::google::protobuf::int32 subtype() const;
-  inline void set_subtype(::google::protobuf::int32 value);
-
-  // optional bytes data = 3;
-  inline bool has_data() const;
-  inline void clear_data();
-  static const int kDataFieldNumber = 3;
-  inline const ::std::string& data() const;
-  inline void set_data(const ::std::string& value);
-  inline void set_data(const char* value);
-  inline void set_data(const void* value, size_t size);
-  inline ::std::string* mutable_data();
-  inline ::std::string* release_data();
-  inline void set_allocated_data(::std::string* data);
-
-  // @@protoc_insertion_point(class_scope:awolmsg.MsgBase)
- private:
-  inline void set_has_id();
-  inline void clear_has_id();
-  inline void set_has_subtype();
-  inline void clear_has_subtype();
-  inline void set_has_data();
-  inline void clear_has_data();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
-  ::google::protobuf::uint64 id_;
-  ::std::string* data_;
-  ::google::protobuf::int32 subtype_;
-  friend void  protobuf_AddDesc_awolmsg_2eproto();
-  friend void protobuf_AssignDesc_awolmsg_2eproto();
-  friend void protobuf_ShutdownFile_awolmsg_2eproto();
-
-  void InitAsDefaultInstance();
-  static MsgBase* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class MsgFlag : public ::google::protobuf::Message {
  public:
   MsgFlag();
@@ -458,19 +375,36 @@ class Msg_MsgData : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .awolmsg.MsgBase base = 1;
-  inline bool has_base() const;
-  inline void clear_base();
-  static const int kBaseFieldNumber = 1;
-  inline const ::awolmsg::MsgBase& base() const;
-  inline ::awolmsg::MsgBase* mutable_base();
-  inline ::awolmsg::MsgBase* release_base();
-  inline void set_allocated_base(::awolmsg::MsgBase* base);
+  // required uint64 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 id() const;
+  inline void set_id(::google::protobuf::uint64 value);
 
-  // optional .awolmsg.MsgExt ext = 2;
+  // optional int32 subtype = 2;
+  inline bool has_subtype() const;
+  inline void clear_subtype();
+  static const int kSubtypeFieldNumber = 2;
+  inline ::google::protobuf::int32 subtype() const;
+  inline void set_subtype(::google::protobuf::int32 value);
+
+  // optional bytes data = 3;
+  inline bool has_data() const;
+  inline void clear_data();
+  static const int kDataFieldNumber = 3;
+  inline const ::std::string& data() const;
+  inline void set_data(const ::std::string& value);
+  inline void set_data(const char* value);
+  inline void set_data(const void* value, size_t size);
+  inline ::std::string* mutable_data();
+  inline ::std::string* release_data();
+  inline void set_allocated_data(::std::string* data);
+
+  // optional .awolmsg.MsgExt ext = 4;
   inline bool has_ext() const;
   inline void clear_ext();
-  static const int kExtFieldNumber = 2;
+  static const int kExtFieldNumber = 4;
   inline const ::awolmsg::MsgExt& ext() const;
   inline ::awolmsg::MsgExt* mutable_ext();
   inline ::awolmsg::MsgExt* release_ext();
@@ -478,8 +412,12 @@ class Msg_MsgData : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:awolmsg.Msg.MsgData)
  private:
-  inline void set_has_base();
-  inline void clear_has_base();
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_subtype();
+  inline void clear_has_subtype();
+  inline void set_has_data();
+  inline void clear_has_data();
   inline void set_has_ext();
   inline void clear_has_ext();
 
@@ -487,8 +425,10 @@ class Msg_MsgData : public ::google::protobuf::Message {
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::awolmsg::MsgBase* base_;
+  ::google::protobuf::uint64 id_;
+  ::std::string* data_;
   ::awolmsg::MsgExt* ext_;
+  ::google::protobuf::int32 subtype_;
   friend void  protobuf_AddDesc_awolmsg_2eproto();
   friend void protobuf_AssignDesc_awolmsg_2eproto();
   friend void protobuf_ShutdownFile_awolmsg_2eproto();
@@ -553,33 +493,26 @@ class Msg : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required uint64 id = 1;
-  inline bool has_id() const;
-  inline void clear_id();
-  static const int kIdFieldNumber = 1;
-  inline ::google::protobuf::uint64 id() const;
-  inline void set_id(::google::protobuf::uint64 value);
-
-  // optional int32 type = 2;
+  // required int32 type = 1;
   inline bool has_type() const;
   inline void clear_type();
-  static const int kTypeFieldNumber = 2;
+  static const int kTypeFieldNumber = 1;
   inline ::google::protobuf::int32 type() const;
   inline void set_type(::google::protobuf::int32 value);
 
-  // optional .awolmsg.MsgAgent actor = 3;
+  // optional .awolmsg.MsgAgent actor = 2;
   inline bool has_actor() const;
   inline void clear_actor();
-  static const int kActorFieldNumber = 3;
+  static const int kActorFieldNumber = 2;
   inline const ::awolmsg::MsgAgent& actor() const;
   inline ::awolmsg::MsgAgent* mutable_actor();
   inline ::awolmsg::MsgAgent* release_actor();
   inline void set_allocated_actor(::awolmsg::MsgAgent* actor);
 
-  // repeated .awolmsg.Msg.MsgData data = 4;
+  // repeated .awolmsg.Msg.MsgData data = 3;
   inline int data_size() const;
   inline void clear_data();
-  static const int kDataFieldNumber = 4;
+  static const int kDataFieldNumber = 3;
   inline const ::awolmsg::Msg_MsgData& data(int index) const;
   inline ::awolmsg::Msg_MsgData* mutable_data(int index);
   inline ::awolmsg::Msg_MsgData* add_data();
@@ -588,35 +521,42 @@ class Msg : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::awolmsg::Msg_MsgData >*
       mutable_data();
 
-  // optional .awolmsg.MsgFlag flag = 5;
+  // optional .awolmsg.MsgFlag flag = 4;
   inline bool has_flag() const;
   inline void clear_flag();
-  static const int kFlagFieldNumber = 5;
+  static const int kFlagFieldNumber = 4;
   inline const ::awolmsg::MsgFlag& flag() const;
   inline ::awolmsg::MsgFlag* mutable_flag();
   inline ::awolmsg::MsgFlag* release_flag();
   inline void set_allocated_flag(::awolmsg::MsgFlag* flag);
 
+  // optional .awolmsg.MsgOP op = 5;
+  inline bool has_op() const;
+  inline void clear_op();
+  static const int kOpFieldNumber = 5;
+  inline ::awolmsg::MsgOP op() const;
+  inline void set_op(::awolmsg::MsgOP value);
+
   // @@protoc_insertion_point(class_scope:awolmsg.Msg)
  private:
-  inline void set_has_id();
-  inline void clear_has_id();
   inline void set_has_type();
   inline void clear_has_type();
   inline void set_has_actor();
   inline void clear_has_actor();
   inline void set_has_flag();
   inline void clear_has_flag();
+  inline void set_has_op();
+  inline void clear_has_op();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::uint64 id_;
   ::awolmsg::MsgAgent* actor_;
   ::google::protobuf::RepeatedPtrField< ::awolmsg::Msg_MsgData > data_;
-  ::awolmsg::MsgFlag* flag_;
   ::google::protobuf::int32 type_;
+  int op_;
+  ::awolmsg::MsgFlag* flag_;
   friend void  protobuf_AddDesc_awolmsg_2eproto();
   friend void protobuf_AssignDesc_awolmsg_2eproto();
   friend void protobuf_ShutdownFile_awolmsg_2eproto();
@@ -774,109 +714,113 @@ inline void MsgExt::set_allocated_from(::awolmsg::MsgAgent* from) {
 
 // -------------------------------------------------------------------
 
-// MsgBase
+// MsgFlag
+
+// -------------------------------------------------------------------
+
+// Msg_MsgData
 
 // required uint64 id = 1;
-inline bool MsgBase::has_id() const {
+inline bool Msg_MsgData::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void MsgBase::set_has_id() {
+inline void Msg_MsgData::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void MsgBase::clear_has_id() {
+inline void Msg_MsgData::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void MsgBase::clear_id() {
+inline void Msg_MsgData::clear_id() {
   id_ = GOOGLE_ULONGLONG(0);
   clear_has_id();
 }
-inline ::google::protobuf::uint64 MsgBase::id() const {
-  // @@protoc_insertion_point(field_get:awolmsg.MsgBase.id)
+inline ::google::protobuf::uint64 Msg_MsgData::id() const {
+  // @@protoc_insertion_point(field_get:awolmsg.Msg.MsgData.id)
   return id_;
 }
-inline void MsgBase::set_id(::google::protobuf::uint64 value) {
+inline void Msg_MsgData::set_id(::google::protobuf::uint64 value) {
   set_has_id();
   id_ = value;
-  // @@protoc_insertion_point(field_set:awolmsg.MsgBase.id)
+  // @@protoc_insertion_point(field_set:awolmsg.Msg.MsgData.id)
 }
 
 // optional int32 subtype = 2;
-inline bool MsgBase::has_subtype() const {
+inline bool Msg_MsgData::has_subtype() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void MsgBase::set_has_subtype() {
+inline void Msg_MsgData::set_has_subtype() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void MsgBase::clear_has_subtype() {
+inline void Msg_MsgData::clear_has_subtype() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void MsgBase::clear_subtype() {
+inline void Msg_MsgData::clear_subtype() {
   subtype_ = 0;
   clear_has_subtype();
 }
-inline ::google::protobuf::int32 MsgBase::subtype() const {
-  // @@protoc_insertion_point(field_get:awolmsg.MsgBase.subtype)
+inline ::google::protobuf::int32 Msg_MsgData::subtype() const {
+  // @@protoc_insertion_point(field_get:awolmsg.Msg.MsgData.subtype)
   return subtype_;
 }
-inline void MsgBase::set_subtype(::google::protobuf::int32 value) {
+inline void Msg_MsgData::set_subtype(::google::protobuf::int32 value) {
   set_has_subtype();
   subtype_ = value;
-  // @@protoc_insertion_point(field_set:awolmsg.MsgBase.subtype)
+  // @@protoc_insertion_point(field_set:awolmsg.Msg.MsgData.subtype)
 }
 
 // optional bytes data = 3;
-inline bool MsgBase::has_data() const {
+inline bool Msg_MsgData::has_data() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void MsgBase::set_has_data() {
+inline void Msg_MsgData::set_has_data() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void MsgBase::clear_has_data() {
+inline void Msg_MsgData::clear_has_data() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void MsgBase::clear_data() {
+inline void Msg_MsgData::clear_data() {
   if (data_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     data_->clear();
   }
   clear_has_data();
 }
-inline const ::std::string& MsgBase::data() const {
-  // @@protoc_insertion_point(field_get:awolmsg.MsgBase.data)
+inline const ::std::string& Msg_MsgData::data() const {
+  // @@protoc_insertion_point(field_get:awolmsg.Msg.MsgData.data)
   return *data_;
 }
-inline void MsgBase::set_data(const ::std::string& value) {
+inline void Msg_MsgData::set_data(const ::std::string& value) {
   set_has_data();
   if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     data_ = new ::std::string;
   }
   data_->assign(value);
-  // @@protoc_insertion_point(field_set:awolmsg.MsgBase.data)
+  // @@protoc_insertion_point(field_set:awolmsg.Msg.MsgData.data)
 }
-inline void MsgBase::set_data(const char* value) {
+inline void Msg_MsgData::set_data(const char* value) {
   set_has_data();
   if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     data_ = new ::std::string;
   }
   data_->assign(value);
-  // @@protoc_insertion_point(field_set_char:awolmsg.MsgBase.data)
+  // @@protoc_insertion_point(field_set_char:awolmsg.Msg.MsgData.data)
 }
-inline void MsgBase::set_data(const void* value, size_t size) {
+inline void Msg_MsgData::set_data(const void* value, size_t size) {
   set_has_data();
   if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     data_ = new ::std::string;
   }
   data_->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:awolmsg.MsgBase.data)
+  // @@protoc_insertion_point(field_set_pointer:awolmsg.Msg.MsgData.data)
 }
-inline ::std::string* MsgBase::mutable_data() {
+inline ::std::string* Msg_MsgData::mutable_data() {
   set_has_data();
   if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     data_ = new ::std::string;
   }
-  // @@protoc_insertion_point(field_mutable:awolmsg.MsgBase.data)
+  // @@protoc_insertion_point(field_mutable:awolmsg.Msg.MsgData.data)
   return data_;
 }
-inline ::std::string* MsgBase::release_data() {
+inline ::std::string* Msg_MsgData::release_data() {
   clear_has_data();
   if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     return NULL;
@@ -886,7 +830,7 @@ inline ::std::string* MsgBase::release_data() {
     return temp;
   }
 }
-inline void MsgBase::set_allocated_data(::std::string* data) {
+inline void Msg_MsgData::set_allocated_data(::std::string* data) {
   if (data_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete data_;
   }
@@ -897,67 +841,18 @@ inline void MsgBase::set_allocated_data(::std::string* data) {
     clear_has_data();
     data_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
-  // @@protoc_insertion_point(field_set_allocated:awolmsg.MsgBase.data)
+  // @@protoc_insertion_point(field_set_allocated:awolmsg.Msg.MsgData.data)
 }
 
-// -------------------------------------------------------------------
-
-// MsgFlag
-
-// -------------------------------------------------------------------
-
-// Msg_MsgData
-
-// required .awolmsg.MsgBase base = 1;
-inline bool Msg_MsgData::has_base() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void Msg_MsgData::set_has_base() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void Msg_MsgData::clear_has_base() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void Msg_MsgData::clear_base() {
-  if (base_ != NULL) base_->::awolmsg::MsgBase::Clear();
-  clear_has_base();
-}
-inline const ::awolmsg::MsgBase& Msg_MsgData::base() const {
-  // @@protoc_insertion_point(field_get:awolmsg.Msg.MsgData.base)
-  return base_ != NULL ? *base_ : *default_instance_->base_;
-}
-inline ::awolmsg::MsgBase* Msg_MsgData::mutable_base() {
-  set_has_base();
-  if (base_ == NULL) base_ = new ::awolmsg::MsgBase;
-  // @@protoc_insertion_point(field_mutable:awolmsg.Msg.MsgData.base)
-  return base_;
-}
-inline ::awolmsg::MsgBase* Msg_MsgData::release_base() {
-  clear_has_base();
-  ::awolmsg::MsgBase* temp = base_;
-  base_ = NULL;
-  return temp;
-}
-inline void Msg_MsgData::set_allocated_base(::awolmsg::MsgBase* base) {
-  delete base_;
-  base_ = base;
-  if (base) {
-    set_has_base();
-  } else {
-    clear_has_base();
-  }
-  // @@protoc_insertion_point(field_set_allocated:awolmsg.Msg.MsgData.base)
-}
-
-// optional .awolmsg.MsgExt ext = 2;
+// optional .awolmsg.MsgExt ext = 4;
 inline bool Msg_MsgData::has_ext() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void Msg_MsgData::set_has_ext() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void Msg_MsgData::clear_has_ext() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void Msg_MsgData::clear_ext() {
   if (ext_ != NULL) ext_->::awolmsg::MsgExt::Clear();
@@ -994,39 +889,15 @@ inline void Msg_MsgData::set_allocated_ext(::awolmsg::MsgExt* ext) {
 
 // Msg
 
-// required uint64 id = 1;
-inline bool Msg::has_id() const {
+// required int32 type = 1;
+inline bool Msg::has_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void Msg::set_has_id() {
+inline void Msg::set_has_type() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void Msg::clear_has_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void Msg::clear_id() {
-  id_ = GOOGLE_ULONGLONG(0);
-  clear_has_id();
-}
-inline ::google::protobuf::uint64 Msg::id() const {
-  // @@protoc_insertion_point(field_get:awolmsg.Msg.id)
-  return id_;
-}
-inline void Msg::set_id(::google::protobuf::uint64 value) {
-  set_has_id();
-  id_ = value;
-  // @@protoc_insertion_point(field_set:awolmsg.Msg.id)
-}
-
-// optional int32 type = 2;
-inline bool Msg::has_type() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void Msg::set_has_type() {
-  _has_bits_[0] |= 0x00000002u;
-}
 inline void Msg::clear_has_type() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void Msg::clear_type() {
   type_ = 0;
@@ -1042,15 +913,15 @@ inline void Msg::set_type(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:awolmsg.Msg.type)
 }
 
-// optional .awolmsg.MsgAgent actor = 3;
+// optional .awolmsg.MsgAgent actor = 2;
 inline bool Msg::has_actor() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000002u) != 0;
 }
 inline void Msg::set_has_actor() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000002u;
 }
 inline void Msg::clear_has_actor() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void Msg::clear_actor() {
   if (actor_ != NULL) actor_->::awolmsg::MsgAgent::Clear();
@@ -1083,7 +954,7 @@ inline void Msg::set_allocated_actor(::awolmsg::MsgAgent* actor) {
   // @@protoc_insertion_point(field_set_allocated:awolmsg.Msg.actor)
 }
 
-// repeated .awolmsg.Msg.MsgData data = 4;
+// repeated .awolmsg.Msg.MsgData data = 3;
 inline int Msg::data_size() const {
   return data_.size();
 }
@@ -1113,15 +984,15 @@ Msg::mutable_data() {
   return &data_;
 }
 
-// optional .awolmsg.MsgFlag flag = 5;
+// optional .awolmsg.MsgFlag flag = 4;
 inline bool Msg::has_flag() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void Msg::set_has_flag() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void Msg::clear_has_flag() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void Msg::clear_flag() {
   if (flag_ != NULL) flag_->::awolmsg::MsgFlag::Clear();
@@ -1154,6 +1025,31 @@ inline void Msg::set_allocated_flag(::awolmsg::MsgFlag* flag) {
   // @@protoc_insertion_point(field_set_allocated:awolmsg.Msg.flag)
 }
 
+// optional .awolmsg.MsgOP op = 5;
+inline bool Msg::has_op() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Msg::set_has_op() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Msg::clear_has_op() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Msg::clear_op() {
+  op_ = 1;
+  clear_has_op();
+}
+inline ::awolmsg::MsgOP Msg::op() const {
+  // @@protoc_insertion_point(field_get:awolmsg.Msg.op)
+  return static_cast< ::awolmsg::MsgOP >(op_);
+}
+inline void Msg::set_op(::awolmsg::MsgOP value) {
+  assert(::awolmsg::MsgOP_IsValid(value));
+  set_has_op();
+  op_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.Msg.op)
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1163,6 +1059,11 @@ inline void Msg::set_allocated_flag(::awolmsg::MsgFlag* flag) {
 namespace google {
 namespace protobuf {
 
+template <> struct is_proto_enum< ::awolmsg::MsgOP> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgOP>() {
+  return ::awolmsg::MsgOP_descriptor();
+}
 
 }  // namespace google
 }  // namespace protobuf

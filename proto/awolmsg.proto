@@ -6,28 +6,31 @@ message MsgAgent {
 }
 
 message MsgExt {
-    optional uint32 time=1;
-    optional uint32 ttl=2;
-	optional MsgAgent from=3;
-}
-
-message MsgBase {
-	required uint64	id=1;
-	optional int32	subtype=2;
-	optional bytes	data=3;
+    optional uint32		time=1;
+    optional uint32		ttl=2;
+	optional MsgAgent	from=3;
 }
 
 message MsgFlag {
 }
 
+enum MsgOP {
+	MSG_OP_LIST=1;
+	MSG_OP_SET=2;
+	MSG_OP_GET=3;
+	MSG_OP_RM=4;
+}
+
 message Msg {
-    required uint64		id=1;
-    optional int32		type=2;
-	optional MsgAgent	actor=3;
-    repeated MsgData	data=4;
-    optional MsgFlag	flag=5;
+    required int32		type=1;
+	optional MsgAgent	actor=2;
+    repeated MsgData	data=3;
+    optional MsgFlag	flag=4;
+	optional MsgOP		op=5;
 	message MsgData {
-		required MsgBase  base = 1;
-		optional MsgExt	  ext = 2;
+		required uint64	id=1;
+		optional int32	subtype=2;
+		optional bytes	data=3;
+		optional MsgExt	ext=4;
 	}
 };
