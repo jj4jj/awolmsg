@@ -17,6 +17,7 @@ namespace awolmsg {
 	public:
 		~MsgSvr();
 	private:
+		MsgSvr(){}
 		MsgSvrImpl * impl{ nullptr };
 	};
 }

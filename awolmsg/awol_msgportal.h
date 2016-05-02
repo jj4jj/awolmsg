@@ -22,7 +22,7 @@ public:
 	int type() const { return msgbox_.type(); };
 	const MsgActor & actor() const { return msgbox_.actor(); };
 	virtual ~MsgPortal();
-	MsgBox &  msgbox();
+	MsgBox &  msgbox(){ return msgbox_; }
 private:
 	MsgBox    msgbox_;
 };

@@ -14,6 +14,10 @@ struct MsgSvrImpl {
 MsgSvr::~MsgSvr(){
 	destory();
 }
+MsgSvr & MsgSvr::instance(){
+	static MsgSvr msgsvr;
+	return msgsvr;
+}
 
 int MsgSvr::init(const string & svraddr){
 	if (impl){

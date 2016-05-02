@@ -33,7 +33,6 @@ struct MsgService : public RpcService {
 		}
 		auto hsetkey = mergekey(msg.actor().type(),
 			msg.actor().id(), msg.type());
-
 		GLOG_TRA("redis command key :%s", hsetkey.c_str());
 		if (msg.op() == MSG_OP_LIST){
 			redis->command([this, cookie](int ret, redisReply * reply){
@@ -52,8 +51,11 @@ struct MsgService : public RpcService {
 			}, "HVALS %s", hsetkey.data());
 		}
 		else if (msg.op() == MSG_OP_SET){
+			char msgbuff[384 * 1024];
 			auto mid = msg.data(0).id();
-			auto mdata = msg.data(0).SerializeAsString();
+			if (!msg.data(0).SerializeToArray(msgbuff, sizeof(msgbuff))){
+				GLOG_ERR("set value msg pack error ! size:%d", msg.data(0).ByteSize());
+			}
 			redis->command([this, cookie](int ret, redisReply * reply){
 				RpcValues result;
 				if (ret != 0){
@@ -70,7 +72,7 @@ struct MsgService : public RpcService {
 				result.addi(reply->integer);
 				return this->resume(cookie, result);
 			}, "HSET %s %s %b", hsetkey.data(),
-					std::to_string(mid).c_str(), mdata.data(), mdata.length());
+				std::to_string(mid).c_str(), msgbuff, msg.data(0).ByteSize());
 		}
 		else if (msg.op() == MSG_OP_RM){
 			auto mid = msg.data(0).id();

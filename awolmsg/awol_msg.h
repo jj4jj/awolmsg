@@ -12,6 +12,8 @@ struct MsgActor {
 	MsgActor(int t_ = 0, uint64_t id_ = 0) :type(t_), id(id_){}
 	static const MsgActor empty;
 };
+const MsgActor MsgActor::empty = { 0, 0 };
+
 struct MsgKey {
 	MsgActor actor;
 	int		 type;

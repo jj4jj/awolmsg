@@ -62,6 +62,15 @@ void MsgPortal::onnotify(uint64_t id, const std::string & msg){
 	//new msg response to client
 	GLOG_DBG("...");
 }
+void MsgPortal::onsend(int ret, bool fromc){
+	//new msg response to client
+	GLOG_DBG("...");
+
+}
+void MsgPortal::onput(int ret){
+	//new msg response to client
+	GLOG_DBG("...");
+}
 
 MsgPortal::MsgPortal(const MsgActor & actor, int type): msgbox_(actor, type){
 	MsgSvr::instance().regis(this);

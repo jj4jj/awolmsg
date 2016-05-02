@@ -38,8 +38,8 @@ struct MailBox : public awolmsg::MsgPortal {
 
 int main(){
 
-	MsgSvr	msgsvr;
-	msgsvr.init("127.0.0.1:8888");
+	MsgSvr & msgsvr = MsgSvr::instance();
+    msgsvr.init("127.0.0.1:8888");
 	///////////////////////////////////////////////////////////
     MsgActor ma(1, 2);
     MailBox mb(ma);
