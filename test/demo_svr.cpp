@@ -12,16 +12,12 @@ enum  AwolMsgType {
 
 //protobuf adaptor
 struct MailBox : public MsgPortal {
-	MailBox(const MsgActor & actor) :MsgPortal(actor){
-	}
-	int type() const {
-		return MSGT_MAILBOX;
+	MailBox(const MsgActor & actor,int type) :MsgPortal(actor, type){
 	}
 	const MsgOptions & options() const {
 		static MsgOptions mo;
 		return mo;
 	}
-
 	int update(uint64_t id, int op){
         if (op == 0){ //fetch
             //actor.award(msg);
@@ -44,11 +40,6 @@ int main(){
 
 	MsgSvr	msgsvr;
 	msgsvr.init();
-
-	msgsvr.regis<MailBox>();
-
-
-
 	///////////////////////////////////////////////////////////
     MsgActor ma(1, 2);
     MailBox mb(ma);
@@ -81,7 +72,6 @@ int main(){
         //recv from msgsvr response , refresh msg
 
 	msgsvr.destory();
-#if 0
-#endif
-    return 0;
+
+	return 0;
 }

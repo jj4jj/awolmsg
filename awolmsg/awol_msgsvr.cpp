@@ -1,8 +1,9 @@
 #include "dcpots/base/stdinc.h"
 #include "dcpots/base/logger.h"
 #include "awol_msgsvr.h"
+
 struct MsgSvrImpl {
-	std::unordered_map<int, MsgOptions>	register_msg_options;
+	std::unordered_map<MsgKey, MsgPortal*>	recievers;
 };
 MsgSvr::~MsgSvr(){
 	destory();
@@ -24,14 +25,12 @@ int MsgSvr::destory(){
 	}
 	return 0;
 }
-int MsgSvr::regis(int type, const MsgOptions & mo){
-	auto it = impl->register_msg_options.find(type);
-	if (it == impl->register_msg_options.end()){
-		impl->register_msg_options[type] = mo;
-	}
-	else{
-		return -1;
-	}
+int MsgSvr::regis(MsgPortal * portal){
+	MsgKey k;
+	k.actor.type = portal->msgbox().actor().type;
+	k.actor.id = portal->msgbox().actor().id;
+	k.type = portal->type();
+	recievers[k] = portal;
 	return 0;
 }
 int MsgSvr::update(){

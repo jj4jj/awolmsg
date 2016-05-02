@@ -22,7 +22,7 @@ int main(){
 		cli.update();
 	}
 
-	
+
 	typedef msgproto_t<awolmsg::Msg> MsgOPT;
 	MsgOPT msg;
 	msg_buffer_t buff;
