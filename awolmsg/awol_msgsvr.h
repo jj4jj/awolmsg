@@ -1,20 +1,19 @@
 #pragma once
-#include "awol_msg.h"
-#include "awol_msgportal.h"
-#include "awol_messenger.h"
+namespace dcrpc {
+	struct RpcClient;
+};
 namespace awolmsg {
 	struct MsgSvrImpl;
 	struct MsgPortal;
-	struct RpcClient;
 	class MsgSvr {
 	public:
 		static MsgSvr & instance();
 	public:
-		int init();
+		int init(const std::string & svraddr);
 		int destory();
 		int update();
 		int regis(MsgPortal * portal);
-		RpcClient * rpc();
+		dcrpc::RpcClient * rpc();
 	public:
 		~MsgSvr();
 	private:

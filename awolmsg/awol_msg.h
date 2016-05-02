@@ -1,6 +1,11 @@
 #pragma once
+#include <algorithm>
+#include <unordered_map>
+#include <string>
+#include <vector>
+#include "../proto/awolmsg.pb.h"
 namespace awolmsg {
-typedef std::vector<std::string>	MsgList;
+typedef std::vector<Msg::MsgData>	MsgList;
 struct MsgActor {
 	int type{ 0 };
 	uint64_t id{ 0 };
@@ -11,23 +16,6 @@ struct MsgKey {
 	MsgActor actor;
 	int		 type;
 };
-namespace std {
-	template<>
-	struct Hash<MsgKey> {
-		size_t operator ()(const MsgKey & k) const {
-			return k.actor.id;
-		}
-	};
-	template<>
-	struct equal_to<MsgKey> {
-		bool operator ()(const MsgKey & k1, const MsgKey & k2) {
-			return k1.actor.type == k2.actor.type &&
-				k1.actor.id == k2.actor.id &&
-				k1.type == k2.type;
-		}
-	}
-}
-
 struct MsgOptions {
 	enum {
 		MSG_OPT_OWN_BO = 0,//both
@@ -62,6 +50,21 @@ struct MsgOptions {
 		return true;
 	}
 };
+};
 
-
-}
+namespace std {
+	template<>
+	struct hash<awolmsg::MsgKey> {
+		size_t operator ()(const awolmsg::MsgKey & k) const {
+			return k.actor.id;
+		}
+	};
+	template<>
+	struct equal_to<awolmsg::MsgKey> {
+		bool operator ()(const awolmsg::MsgKey & k1, const awolmsg::MsgKey & k2) const {
+			return k1.actor.type == k2.actor.type &&
+				k1.actor.id == k2.actor.id &&
+				k1.type == k2.type;
+		}
+	};
+};

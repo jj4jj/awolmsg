@@ -1,26 +1,25 @@
 #pragma  once
-#include <vector>
+#include <functional>
 #include "awol_msg.h"
 namespace awolmsg {
-	struct MsgListener;
-    struct MsgBox { //an actor msgbox
-		MsgBox(const MsgActor & act, int t_);
-		int type()const { return type_; }
-		const MsgActor & actor() const { return actor_;}
-    public:
-		typedef std::function<void(int ret, const MsgList &)> MsgListCallBack;yCallBack;
-		typedef std::function<void(int ret)> MsgOPCallBack;
-		int list(MsgListCallBack lcb);
-		int	send(const MsgActor & sendto, const std::string & m_, MsgOPCallBack cb=nullptr);
-		int	put(const std::string & m, MsgOPCallBack cb = nullptr);
-		int	remove(uint64_t uid, MsgOPCallBack cb = nullptr);//remove one msg
-		int	update(uint64_t uid, const std::string & m_, MsgOPCallBack cb = nullptr);
-		int	clean(MsgOPCallBack cb = nullptr);
+struct MsgBox { //an actor msgbox
+	MsgBox(const MsgActor & act, int t_);
+	int type()const { return type_; }
+	const MsgActor & actor() const { return actor_;}
+public:
+	typedef std::function<void(int ret, const MsgList &)> MsgListCallBack;
+	typedef std::function<void(int ret)> MsgOPCallBack;
+	int list(MsgListCallBack lcb);
+	int	send(const MsgActor & sendto, const std::string & m_, MsgOPCallBack cb=nullptr);
+	int	put(const std::string & m, MsgOPCallBack cb = nullptr);
+	int	remove(uint64_t uid, MsgOPCallBack cb = nullptr);//remove one msg
+	int	update(uint64_t uid, const std::string & m_, MsgOPCallBack cb = nullptr);
+	int	clean(MsgOPCallBack cb = nullptr);
 
-	private:
-		MsgActor		actor_;
-		int				type_{ 0 };
-    };
+private:
+	MsgActor		actor_;
+	int				type_{ 0 };
+};
 
 }
 

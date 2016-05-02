@@ -1,26 +1,26 @@
-#pragma  once
-#include <vector>
-#include "awol_msg.h"
+#include "dcpots/base/stdinc.h"
+#include "dcpots/base/logger.h"
+#include "dcpots/base/dcseqnum.hpp"
+#include "dcpots/base/msg_proto.hpp"
+////////////////////////////////////////
+#include "dcpots/dcrpc/client/dccrpc.h"
+////////////////////////////////////////
 #include "awol_error.h"
 #include "awol_msgsvr.h"
-#include "dcpots/base/dcseqnum.hpp"
-///////////////////////////////////
-#include "../dcrpc/client/dccrpc.h"
-///////////////////////////////////
+
 #include "awol_msgbox.h"
 
 using namespace std;
 using namespace google::protobuf;
-using namespace dcsutil::dcrpc;
+using dcrpc::RpcClient;
+using dcrpc::RpcValues;
 
 typedef msgproto_t<awolmsg::Msg> MsgOPT;
-#define RPC		MsgSvr::instance().rpc()
+#define RPC		(MsgSvr::instance().rpc())
 
 NS_BEGIN(awolmsg)
-MsgBox::MsgBox(const MsgActor & actor, int t_):actor_(actor),
-		type_(t_){}{
-}
-typedef dcsutil::sequence_number_t msgsn;
+MsgBox::MsgBox(const MsgActor & actor, int t_):actor_(actor),type_(t_){}
+typedef dcsutil::sequence_number_t<8,24> msgsn;
 static inline int constructMsgOpT(char * msgbuff, int msgbufflen, MsgOP op,
 	const MsgActor & actor, int type, int subtype=0, const string & m_="",
 	uint64_t  msgid=0,const MsgActor & actor_from=MsgActor::empty){
@@ -46,12 +46,13 @@ static inline int constructMsgOpT(char * msgbuff, int msgbufflen, MsgOP op,
 		}
 	}
 	msg.set_op(op);
-	if (!msg.Pack(msgbuff, sizeof(msgbufflen))){
+	int nbuff = sizeof(msgbufflen);
+	if (!msg.Pack(msgbuff, nbuff)){
 		GLOG_ERR("pack message error ! msg size:%d buff size:%d",
 			msg.ByteSize(), msgbufflen);
 		return -1;
 	}
-	return msg.ByteSize();
+	return nbuff;
 }
 int MsgBox::list(MsgListCallBack lcb){
 	int ret = 0;
@@ -68,14 +69,13 @@ int MsgBox::list(MsgListCallBack lcb){
 		if (!lcb){
 			return;
 		}
-		std::vector<awolmsg::Msg::MsgData>	msg_datas;
+		MsgList msglist;
 		awolmsg::Msg::MsgData mdata;
-		for (int i = 0; i < result.length; ++i){
-			mdata.Clear();
+		for (int i = 0; i < result.length(); ++i){
 			mdata.ParseFromArray(result.getb(i).data(), result.getb(i).length());
-			msg_datas.push_back(mdata);
+			msglist.push_back(mdata);
 		}
-		lcb(ret, msg_datas);
+		lcb(ret, msglist);
 	});
 }
 int	MsgBox::send(const MsgActor & sendto, const string & m_, MsgOPCallBack cb){
@@ -103,13 +103,13 @@ int	MsgBox::put(const string & m, MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256 * 1024];
 	int ibuff = constructMsgOpT(buff, sizeof(ibuff), MSG_OP_SET, actor_,
-		type_, 0, m_, 0, actor_);
+		type_, 0, m, 0, actor_);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;
 	}
 	args.addb(buff, ibuff);
-	RPC->call("msg", args, [this](int ret, const RpcValues & result){
+	RPC->call("msg", args, [cb](int ret, const RpcValues & result){
 		GLOG_IFO("ret:%d result length:%d", ret, result.length());
 		if (!cb){
 			return;
@@ -130,7 +130,7 @@ int	MsgBox::remove(uint64_t uid, MsgOPCallBack cb){ //remove one msg
 		return -1;
 	}
 	args.addb(buff, ibuff);
-	RPC->call("msg", args, [this, cb](int ret, const RpcValues & result){
+	RPC->call("msg", args, [cb](int ret, const RpcValues & result){
 		GLOG_IFO("ret:%d result length:%d", ret, result.length());
 		if (!cb){
 			return;
@@ -149,7 +149,7 @@ int	MsgBox::update(uint64_t uid, const string & m_, MsgOPCallBack cb){
 		return -1;
 	}
 	args.addb(buff, ibuff);
-	RPC->call("msg", args, [this, cb](int ret, const RpcValues & result){
+	RPC->call("msg", args, [cb](int ret, const RpcValues & result){
 		GLOG_IFO("ret:%d result length:%d", ret, result.length());
 		if (result.geti() <= 0){
 			GLOG_ERR("set msg error");
@@ -170,7 +170,7 @@ int	MsgBox::clean(MsgOPCallBack cb){
 		return -1;
 	}
 	args.addb(buff, ibuff);
-	RPC->call("msg", args, [this, cb](int ret, const RpcValues & result){
+	RPC->call("msg", args, [cb](int ret, const RpcValues & result){
 		GLOG_IFO("ret:%d result length:%d", ret, result.length());
 		if (result.geti() <= 0){
 			GLOG_ERR("set msg error");

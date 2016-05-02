@@ -4,7 +4,7 @@ test: demo_cli demo_svr
 demo_cli: ./demo_cli.cpp
 	g++ -o $@ $^ -lprotobuf --std=c++11
 
-demo_svr: ./demo_svr.cpp ../proto/awolmsg.pb.cc test.pb.cc
+demo_svr: ./demo_svr.cpp ../proto/awolmsg.pb.cc test.pb.cc ../awolmsg/awol_msgbox.cpp ../awolmsg/awol_msgsvr.cpp ../awolmsg/awol_msgportal.cpp
 	g++ -o $@ $^ -lprotobuf --std=c++11 -I ../../
 test.pb.cc: test.proto
 	protoc test.proto --cpp_out=.
