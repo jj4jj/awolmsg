@@ -6,5 +6,6 @@ libawolmsg.a: *.cpp
 clean:
 	rm -f *.o
 install:
+	mkdir -p ../lib ../include
 	mv *.a ../lib/
 	cp *.h ../include/
