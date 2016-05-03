@@ -1,4 +1,4 @@
-libawolmsg.a: *.cpp
+libawolmsg.a: *.cpp ../proto/awolmsg.pb.cc
 	g++ --std=c++11 -c $^ -I../../
 	ar -rcs $@ *.o
 ../proto/awolmsg.pb.cc: ../proto/awolmsg.proto

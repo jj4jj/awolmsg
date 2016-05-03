@@ -39,6 +39,7 @@ class MsgExt;
 class MsgFlag;
 class Msg;
 class Msg_MsgData;
+class NotifyMsg;
 
 enum MsgOP {
   MSG_OP_LIST = 1,
@@ -382,17 +383,10 @@ class Msg_MsgData : public ::google::protobuf::Message {
   inline ::google::protobuf::uint64 id() const;
   inline void set_id(::google::protobuf::uint64 value);
 
-  // optional int32 subtype = 2;
-  inline bool has_subtype() const;
-  inline void clear_subtype();
-  static const int kSubtypeFieldNumber = 2;
-  inline ::google::protobuf::int32 subtype() const;
-  inline void set_subtype(::google::protobuf::int32 value);
-
-  // optional bytes data = 3;
+  // optional bytes data = 2;
   inline bool has_data() const;
   inline void clear_data();
-  static const int kDataFieldNumber = 3;
+  static const int kDataFieldNumber = 2;
   inline const ::std::string& data() const;
   inline void set_data(const ::std::string& value);
   inline void set_data(const char* value);
@@ -401,10 +395,10 @@ class Msg_MsgData : public ::google::protobuf::Message {
   inline ::std::string* release_data();
   inline void set_allocated_data(::std::string* data);
 
-  // optional .awolmsg.MsgExt ext = 4;
+  // optional .awolmsg.MsgExt ext = 3;
   inline bool has_ext() const;
   inline void clear_ext();
-  static const int kExtFieldNumber = 4;
+  static const int kExtFieldNumber = 3;
   inline const ::awolmsg::MsgExt& ext() const;
   inline ::awolmsg::MsgExt* mutable_ext();
   inline ::awolmsg::MsgExt* release_ext();
@@ -414,8 +408,6 @@ class Msg_MsgData : public ::google::protobuf::Message {
  private:
   inline void set_has_id();
   inline void clear_has_id();
-  inline void set_has_subtype();
-  inline void clear_has_subtype();
   inline void set_has_data();
   inline void clear_has_data();
   inline void set_has_ext();
@@ -428,7 +420,6 @@ class Msg_MsgData : public ::google::protobuf::Message {
   ::google::protobuf::uint64 id_;
   ::std::string* data_;
   ::awolmsg::MsgExt* ext_;
-  ::google::protobuf::int32 subtype_;
   friend void  protobuf_AddDesc_awolmsg_2eproto();
   friend void protobuf_AssignDesc_awolmsg_2eproto();
   friend void protobuf_ShutdownFile_awolmsg_2eproto();
@@ -563,6 +554,112 @@ class Msg : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static Msg* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class NotifyMsg : public ::google::protobuf::Message {
+ public:
+  NotifyMsg();
+  virtual ~NotifyMsg();
+
+  NotifyMsg(const NotifyMsg& from);
+
+  inline NotifyMsg& operator=(const NotifyMsg& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NotifyMsg& default_instance();
+
+  void Swap(NotifyMsg* other);
+
+  // implements Message ----------------------------------------------
+
+  NotifyMsg* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NotifyMsg& from);
+  void MergeFrom(const NotifyMsg& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .awolmsg.MsgAgent actor = 1;
+  inline bool has_actor() const;
+  inline void clear_actor();
+  static const int kActorFieldNumber = 1;
+  inline const ::awolmsg::MsgAgent& actor() const;
+  inline ::awolmsg::MsgAgent* mutable_actor();
+  inline ::awolmsg::MsgAgent* release_actor();
+  inline void set_allocated_actor(::awolmsg::MsgAgent* actor);
+
+  // optional int32 clientsrc = 2;
+  inline bool has_clientsrc() const;
+  inline void clear_clientsrc();
+  static const int kClientsrcFieldNumber = 2;
+  inline ::google::protobuf::int32 clientsrc() const;
+  inline void set_clientsrc(::google::protobuf::int32 value);
+
+  // optional bytes data = 3;
+  inline bool has_data() const;
+  inline void clear_data();
+  static const int kDataFieldNumber = 3;
+  inline const ::std::string& data() const;
+  inline void set_data(const ::std::string& value);
+  inline void set_data(const char* value);
+  inline void set_data(const void* value, size_t size);
+  inline ::std::string* mutable_data();
+  inline ::std::string* release_data();
+  inline void set_allocated_data(::std::string* data);
+
+  // @@protoc_insertion_point(class_scope:awolmsg.NotifyMsg)
+ private:
+  inline void set_has_actor();
+  inline void clear_has_actor();
+  inline void set_has_clientsrc();
+  inline void clear_has_clientsrc();
+  inline void set_has_data();
+  inline void clear_has_data();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::awolmsg::MsgAgent* actor_;
+  ::std::string* data_;
+  ::google::protobuf::int32 clientsrc_;
+  friend void  protobuf_AddDesc_awolmsg_2eproto();
+  friend void protobuf_AssignDesc_awolmsg_2eproto();
+  friend void protobuf_ShutdownFile_awolmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static NotifyMsg* default_instance_;
 };
 // ===================================================================
 
@@ -744,39 +841,15 @@ inline void Msg_MsgData::set_id(::google::protobuf::uint64 value) {
   // @@protoc_insertion_point(field_set:awolmsg.Msg.MsgData.id)
 }
 
-// optional int32 subtype = 2;
-inline bool Msg_MsgData::has_subtype() const {
+// optional bytes data = 2;
+inline bool Msg_MsgData::has_data() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void Msg_MsgData::set_has_subtype() {
+inline void Msg_MsgData::set_has_data() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void Msg_MsgData::clear_has_subtype() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void Msg_MsgData::clear_subtype() {
-  subtype_ = 0;
-  clear_has_subtype();
-}
-inline ::google::protobuf::int32 Msg_MsgData::subtype() const {
-  // @@protoc_insertion_point(field_get:awolmsg.Msg.MsgData.subtype)
-  return subtype_;
-}
-inline void Msg_MsgData::set_subtype(::google::protobuf::int32 value) {
-  set_has_subtype();
-  subtype_ = value;
-  // @@protoc_insertion_point(field_set:awolmsg.Msg.MsgData.subtype)
-}
-
-// optional bytes data = 3;
-inline bool Msg_MsgData::has_data() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void Msg_MsgData::set_has_data() {
-  _has_bits_[0] |= 0x00000004u;
-}
 inline void Msg_MsgData::clear_has_data() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void Msg_MsgData::clear_data() {
   if (data_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
@@ -844,15 +917,15 @@ inline void Msg_MsgData::set_allocated_data(::std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:awolmsg.Msg.MsgData.data)
 }
 
-// optional .awolmsg.MsgExt ext = 4;
+// optional .awolmsg.MsgExt ext = 3;
 inline bool Msg_MsgData::has_ext() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void Msg_MsgData::set_has_ext() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void Msg_MsgData::clear_has_ext() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void Msg_MsgData::clear_ext() {
   if (ext_ != NULL) ext_->::awolmsg::MsgExt::Clear();
@@ -1048,6 +1121,151 @@ inline void Msg::set_op(::awolmsg::MsgOP value) {
   set_has_op();
   op_ = value;
   // @@protoc_insertion_point(field_set:awolmsg.Msg.op)
+}
+
+// -------------------------------------------------------------------
+
+// NotifyMsg
+
+// optional .awolmsg.MsgAgent actor = 1;
+inline bool NotifyMsg::has_actor() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void NotifyMsg::set_has_actor() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void NotifyMsg::clear_has_actor() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void NotifyMsg::clear_actor() {
+  if (actor_ != NULL) actor_->::awolmsg::MsgAgent::Clear();
+  clear_has_actor();
+}
+inline const ::awolmsg::MsgAgent& NotifyMsg::actor() const {
+  // @@protoc_insertion_point(field_get:awolmsg.NotifyMsg.actor)
+  return actor_ != NULL ? *actor_ : *default_instance_->actor_;
+}
+inline ::awolmsg::MsgAgent* NotifyMsg::mutable_actor() {
+  set_has_actor();
+  if (actor_ == NULL) actor_ = new ::awolmsg::MsgAgent;
+  // @@protoc_insertion_point(field_mutable:awolmsg.NotifyMsg.actor)
+  return actor_;
+}
+inline ::awolmsg::MsgAgent* NotifyMsg::release_actor() {
+  clear_has_actor();
+  ::awolmsg::MsgAgent* temp = actor_;
+  actor_ = NULL;
+  return temp;
+}
+inline void NotifyMsg::set_allocated_actor(::awolmsg::MsgAgent* actor) {
+  delete actor_;
+  actor_ = actor;
+  if (actor) {
+    set_has_actor();
+  } else {
+    clear_has_actor();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolmsg.NotifyMsg.actor)
+}
+
+// optional int32 clientsrc = 2;
+inline bool NotifyMsg::has_clientsrc() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void NotifyMsg::set_has_clientsrc() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void NotifyMsg::clear_has_clientsrc() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void NotifyMsg::clear_clientsrc() {
+  clientsrc_ = 0;
+  clear_has_clientsrc();
+}
+inline ::google::protobuf::int32 NotifyMsg::clientsrc() const {
+  // @@protoc_insertion_point(field_get:awolmsg.NotifyMsg.clientsrc)
+  return clientsrc_;
+}
+inline void NotifyMsg::set_clientsrc(::google::protobuf::int32 value) {
+  set_has_clientsrc();
+  clientsrc_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.NotifyMsg.clientsrc)
+}
+
+// optional bytes data = 3;
+inline bool NotifyMsg::has_data() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void NotifyMsg::set_has_data() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void NotifyMsg::clear_has_data() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void NotifyMsg::clear_data() {
+  if (data_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    data_->clear();
+  }
+  clear_has_data();
+}
+inline const ::std::string& NotifyMsg::data() const {
+  // @@protoc_insertion_point(field_get:awolmsg.NotifyMsg.data)
+  return *data_;
+}
+inline void NotifyMsg::set_data(const ::std::string& value) {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    data_ = new ::std::string;
+  }
+  data_->assign(value);
+  // @@protoc_insertion_point(field_set:awolmsg.NotifyMsg.data)
+}
+inline void NotifyMsg::set_data(const char* value) {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    data_ = new ::std::string;
+  }
+  data_->assign(value);
+  // @@protoc_insertion_point(field_set_char:awolmsg.NotifyMsg.data)
+}
+inline void NotifyMsg::set_data(const void* value, size_t size) {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    data_ = new ::std::string;
+  }
+  data_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:awolmsg.NotifyMsg.data)
+}
+inline ::std::string* NotifyMsg::mutable_data() {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    data_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:awolmsg.NotifyMsg.data)
+  return data_;
+}
+inline ::std::string* NotifyMsg::release_data() {
+  clear_has_data();
+  if (data_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = data_;
+    data_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void NotifyMsg::set_allocated_data(::std::string* data) {
+  if (data_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete data_;
+  }
+  if (data) {
+    set_has_data();
+    data_ = data;
+  } else {
+    clear_has_data();
+    data_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolmsg.NotifyMsg.data)
 }
 
 

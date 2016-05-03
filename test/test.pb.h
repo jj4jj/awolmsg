@@ -263,13 +263,6 @@ class MailMsg : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required uint64 to = 1;
-  inline bool has_to() const;
-  inline void clear_to();
-  static const int kToFieldNumber = 1;
-  inline ::google::protobuf::uint64 to() const;
-  inline void set_to(::google::protobuf::uint64 value);
-
   // optional uint64 from = 2;
   inline bool has_from() const;
   inline void clear_from();
@@ -336,8 +329,6 @@ class MailMsg : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:MailMsg)
  private:
-  inline void set_has_to();
-  inline void clear_has_to();
   inline void set_has_from();
   inline void clear_has_from();
   inline void set_has_sender();
@@ -353,7 +344,6 @@ class MailMsg : public ::google::protobuf::Message {
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::uint64 to_;
   ::google::protobuf::uint64 from_;
   ::std::string* sender_;
   ::std::string* subject_;
@@ -506,39 +496,15 @@ inline void MailOption::set_expire_timestamp(::google::protobuf::uint32 value) {
 
 // MailMsg
 
-// required uint64 to = 1;
-inline bool MailMsg::has_to() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void MailMsg::set_has_to() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void MailMsg::clear_has_to() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void MailMsg::clear_to() {
-  to_ = GOOGLE_ULONGLONG(0);
-  clear_has_to();
-}
-inline ::google::protobuf::uint64 MailMsg::to() const {
-  // @@protoc_insertion_point(field_get:MailMsg.to)
-  return to_;
-}
-inline void MailMsg::set_to(::google::protobuf::uint64 value) {
-  set_has_to();
-  to_ = value;
-  // @@protoc_insertion_point(field_set:MailMsg.to)
-}
-
 // optional uint64 from = 2;
 inline bool MailMsg::has_from() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000001u) != 0;
 }
 inline void MailMsg::set_has_from() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000001u;
 }
 inline void MailMsg::clear_has_from() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void MailMsg::clear_from() {
   from_ = GOOGLE_ULONGLONG(0);
@@ -556,13 +522,13 @@ inline void MailMsg::set_from(::google::protobuf::uint64 value) {
 
 // optional string sender = 3;
 inline bool MailMsg::has_sender() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000002u) != 0;
 }
 inline void MailMsg::set_has_sender() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000002u;
 }
 inline void MailMsg::clear_has_sender() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void MailMsg::clear_sender() {
   if (sender_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
@@ -632,13 +598,13 @@ inline void MailMsg::set_allocated_sender(::std::string* sender) {
 
 // optional string subject = 4;
 inline bool MailMsg::has_subject() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void MailMsg::set_has_subject() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void MailMsg::clear_has_subject() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void MailMsg::clear_subject() {
   if (subject_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
@@ -708,13 +674,13 @@ inline void MailMsg::set_allocated_subject(::std::string* subject) {
 
 // optional string content = 5;
 inline bool MailMsg::has_content() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void MailMsg::set_has_content() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void MailMsg::clear_has_content() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void MailMsg::clear_content() {
   if (content_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
@@ -814,13 +780,13 @@ MailMsg::mutable_attachements() {
 
 // optional .MailOption option = 7;
 inline bool MailMsg::has_option() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void MailMsg::set_has_option() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void MailMsg::clear_has_option() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void MailMsg::clear_option() {
   if (option_ != NULL) option_->::MailOption::Clear();

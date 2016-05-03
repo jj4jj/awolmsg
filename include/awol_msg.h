@@ -12,6 +12,7 @@ struct MsgActor {
 	MsgActor(int t_ = 0, uint64_t id_ = 0) :type(t_), id(id_){}
 	static const MsgActor empty;
 };
+
 struct MsgKey {
 	MsgActor actor;
 	int		 type;
@@ -44,7 +45,7 @@ struct MsgOptions {
 		if (fromc && owner == MSG_OPT_OWN_SO){
 			return false;
 		}
-		if (fromc && flag > 0 && (cperm & flag) == 0){
+		if (fromc && flag > 0 && cperm > 0 && (cperm & flag) == 0){
 			return false;
 		}
 		return true;
@@ -53,6 +54,7 @@ struct MsgOptions {
 };
 
 namespace std {
+    //key
 	template<>
 	struct hash<awolmsg::MsgKey> {
 		size_t operator ()(const awolmsg::MsgKey & k) const {
@@ -67,4 +69,19 @@ namespace std {
 				k1.type == k2.type;
 		}
 	};
+    //actor
+    template<>
+    struct hash<awolmsg::MsgActor> {
+        size_t operator ()(const awolmsg::MsgActor & a) const {
+            return a.id;
+        }
+    };
+    template<>
+    struct equal_to<awolmsg::MsgActor> {
+        bool operator ()(const awolmsg::MsgActor & a1, const awolmsg::MsgActor & a2) const {
+            return a1.type == a2.type &&
+                a1.id == a2.id;
+        }
+    };
+
 };

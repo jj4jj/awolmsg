@@ -12,6 +12,7 @@ namespace awolmsg {
 		int init(const std::string & svraddr);
 		int destory();
 		int update();
+        bool ready();
 		int regis(MsgPortal * portal);
 		dcrpc::RpcClient * rpc();
 	public:

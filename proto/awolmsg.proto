@@ -29,8 +29,13 @@ message Msg {
 	optional MsgOP		op=5;
 	message MsgData {
 		required uint64	id=1;
-		optional int32	subtype=2;
-		optional bytes	data=3;
-		optional MsgExt	ext=4;
+		optional bytes	data=2;
+		optional MsgExt	ext=3;
 	}
+};
+
+message NotifyMsg {
+	optional MsgAgent	actor=1;
+	optional int32		clientsrc=2;
+	optional bytes		data=3;
 };

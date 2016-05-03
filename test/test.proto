@@ -1,7 +1,7 @@
 
 
 message MailAttachment {
-    optional    int32     type=1;
+    optional    int32   type=1;
     optional    bytes   data=2;
 }
 message MailOption {
@@ -9,7 +9,6 @@ message MailOption {
 }
 
 message MailMsg {
-    required    uint64  to=1;
     optional    uint64  from=2;
     optional    string  sender=3;
     optional    string  subject=4;
