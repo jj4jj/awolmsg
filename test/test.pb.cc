@@ -69,8 +69,7 @@ void protobuf_AssignDesc_test_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MailOption));
   MailMsg_descriptor_ = file->message_type(2);
-  static const int MailMsg_offsets_[7] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailMsg, to_),
+  static const int MailMsg_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailMsg, from_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailMsg, sender_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailMsg, subject_),
@@ -129,11 +128,11 @@ void protobuf_AddDesc_test_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\ntest.proto\",\n\016MailAttachment\022\014\n\004type\030\001"
     " \001(\005\022\014\n\004data\030\002 \001(\014\"&\n\nMailOption\022\030\n\020expi"
-    "re_timestamp\030\001 \001(\r\"\231\001\n\007MailMsg\022\n\n\002to\030\001 \002"
-    "(\004\022\014\n\004from\030\002 \001(\004\022\016\n\006sender\030\003 \001(\t\022\017\n\007subj"
-    "ect\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022%\n\014attachemen"
-    "ts\030\006 \003(\0132\017.MailAttachment\022\033\n\006option\030\007 \001("
-    "\0132\013.MailOption", 254);
+    "re_timestamp\030\001 \001(\r\"\215\001\n\007MailMsg\022\014\n\004from\030\002"
+    " \001(\004\022\016\n\006sender\030\003 \001(\t\022\017\n\007subject\030\004 \001(\t\022\017\n"
+    "\007content\030\005 \001(\t\022%\n\014attachements\030\006 \003(\0132\017.M"
+    "ailAttachment\022\033\n\006option\030\007 \001(\0132\013.MailOpti"
+    "on", 242);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "test.proto", &protobuf_RegisterTypes);
   MailAttachment::default_instance_ = new MailAttachment();
@@ -649,7 +648,6 @@ void MailOption::Swap(MailOption* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int MailMsg::kToFieldNumber;
 const int MailMsg::kFromFieldNumber;
 const int MailMsg::kSenderFieldNumber;
 const int MailMsg::kSubjectFieldNumber;
@@ -678,7 +676,6 @@ MailMsg::MailMsg(const MailMsg& from)
 void MailMsg::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  to_ = GOOGLE_ULONGLONG(0);
   from_ = GOOGLE_ULONGLONG(0);
   sender_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   subject_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -729,18 +726,8 @@ MailMsg* MailMsg::New() const {
 }
 
 void MailMsg::Clear() {
-#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
-  &reinterpret_cast<MailMsg*>(16)->f) - \
-   reinterpret_cast<char*>(16))
-
-#define ZR_(first, last) do {                              \
-    size_t f = OFFSET_OF_FIELD_(first);                    \
-    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
-    ::memset(&first, 0, n);                                \
-  } while (0)
-
-  if (_has_bits_[0 / 32] & 95) {
-    ZR_(to_, from_);
+  if (_has_bits_[0 / 32] & 47) {
+    from_ = GOOGLE_ULONGLONG(0);
     if (has_sender()) {
       if (sender_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         sender_->clear();
@@ -760,10 +747,6 @@ void MailMsg::Clear() {
       if (option_ != NULL) option_->::MailOption::Clear();
     }
   }
-
-#undef OFFSET_OF_FIELD_
-#undef ZR_
-
   attachements_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -779,24 +762,9 @@ bool MailMsg::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required uint64 to = 1;
-      case 1: {
-        if (tag == 8) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &to_)));
-          set_has_to();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(16)) goto parse_from;
-        break;
-      }
-
       // optional uint64 from = 2;
       case 2: {
         if (tag == 16) {
-         parse_from:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &from_)));
@@ -911,11 +879,6 @@ failure:
 void MailMsg::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:MailMsg)
-  // required uint64 to = 1;
-  if (has_to()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->to(), output);
-  }
-
   // optional uint64 from = 2;
   if (has_from()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->from(), output);
@@ -973,11 +936,6 @@ void MailMsg::SerializeWithCachedSizes(
 ::google::protobuf::uint8* MailMsg::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:MailMsg)
-  // required uint64 to = 1;
-  if (has_to()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->to(), target);
-  }
-
   // optional uint64 from = 2;
   if (has_from()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(2, this->from(), target);
@@ -1042,13 +1000,6 @@ int MailMsg::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required uint64 to = 1;
-    if (has_to()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt64Size(
-          this->to());
-    }
-
     // optional uint64 from = 2;
     if (has_from()) {
       total_size += 1 +
@@ -1120,9 +1071,6 @@ void MailMsg::MergeFrom(const MailMsg& from) {
   GOOGLE_CHECK_NE(&from, this);
   attachements_.MergeFrom(from.attachements_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_to()) {
-      set_to(from.to());
-    }
     if (from.has_from()) {
       set_from(from.from());
     }
@@ -1155,14 +1103,12 @@ void MailMsg::CopyFrom(const MailMsg& from) {
 }
 
 bool MailMsg::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
   return true;
 }
 
 void MailMsg::Swap(MailMsg* other) {
   if (other != this) {
-    std::swap(to_, other->to_);
     std::swap(from_, other->from_);
     std::swap(sender_, other->sender_);
     std::swap(subject_, other->subject_);

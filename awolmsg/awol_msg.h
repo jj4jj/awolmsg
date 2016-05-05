@@ -5,7 +5,12 @@
 #include <vector>
 #include "../proto/awolmsg.pb.h"
 namespace awolmsg {
-typedef std::vector<Msg::MsgData>	MsgList;
+struct MsgKeyData {
+    uint64_t id;
+    std::string   data;
+    MsgKeyData(uint64_t i, const std::string & sd) :id(i), data(sd){}
+};
+typedef std::vector<MsgKeyData>	MsgList;
 struct MsgActor {
 	int type{ 0 };
 	uint64_t id{ 0 };

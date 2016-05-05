@@ -2,8 +2,8 @@
 #include "dcpots/base/logger.h"
 #include "dcpots/base/msg_proto.hpp"
 #include "dcpots/base/msg_buffer.hpp"
+#include "dcpots/base/msg_buffer.hpp"
 #include "dcpots/dcrpc/client/dccrpc.h"
-
 #include "awol_msgportal.h"
 #include "awol_msgsvr.h"
 
@@ -15,6 +15,7 @@ NS_BEGIN(awolmsg)
 struct MsgSvrImpl {
 	std::unordered_map<MsgKey, MsgPortal*>	recievers;
 	dcrpc::RpcClient						rpc;
+    msg_buffer_t                            msgbuff;
 };
 MsgSvr::~MsgSvr(){
 	destory();
@@ -34,7 +35,7 @@ int MsgSvr::init(const string & svraddr){
     if (ret){
         return -2;
     }
-
+    impl->msgbuff.create(1024 * 1024);
     //////////////////////////////////////////////////////////////////////
     impl->rpc.notify("msg", [this](int ret, const dcrpc::RpcValues & vals){
         //SET MSG
@@ -64,6 +65,7 @@ int MsgSvr::init(const string & svraddr){
 int MsgSvr::destory(){
 	if (impl){
 		impl->rpc.destroy();
+        impl->msgbuff.destroy();
 		delete impl;
 		impl = nullptr;
 	}
@@ -86,6 +88,9 @@ int MsgSvr::update(){
 }
 RpcClient * MsgSvr::rpc(){
 	return &impl->rpc;
+}
+msg_buffer_t * MsgSvr::msg_buffer(){
+    return &impl->msgbuff;
 }
 
 NS_END()

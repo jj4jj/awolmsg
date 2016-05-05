@@ -220,6 +220,7 @@ public:
 				}
                 send_notify_actor_msg(actor, msgdata, clientid);
 				result.addi(reply->integer);
+                result.setb(msgdata.data(), msgdata.length());
 				return this->resume(cookie, result);
 			}, "HSET %s %s %b", hsetkey.data(),
 				std::to_string(mid).c_str(), msgbuff, msg.data(0).ByteSize());
