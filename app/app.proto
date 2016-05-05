@@ -1,0 +1,68 @@
+
+package awolapp;
+
+enum ActorType {
+	ACTOR_TYPE_NONE=0;
+	ACTOR_TYPE_SERVER=1;
+	ACTOR_TYPE_PLAYER=2;
+};
+enum MsgType {
+	MSG_TYPE_NONE=0;
+	MSG_TYPE_MAIL=1;
+	MSG_TYPE_CHAT=2;
+	MSG_TYPE_NOTICE=3;
+};
+
+
+message MailAttachment {
+    optional    int32   type=1;
+    optional    bytes   data=2;
+};
+
+message MailContent {
+	optional	int32	type=1;
+	optional	bytes	data=2;
+};
+
+message MailOption {
+    optional    uint32  expire_timestamp=1;
+};
+
+enum MailState {
+	MAIL_STATE_INIT=0;
+	MAIL_STATE_READ=1;
+	MAIL_STATE_FETCH=2;
+};
+
+message Mail {
+    optional    uint64			from=2;
+    optional    string			sender=3;
+    optional    string			subject=4;
+    optional    MailContent		content=5;
+    repeated    MailAttachment  attachements=6;
+    optional    MailOption      option=7;
+	optional	MailState		state=8;
+};
+
+
+message ChatSender {
+	optional	uint64      id=1;
+	optional	string		name=2;
+};
+
+message ChatContent {
+	optional	int32		type=1;
+	optional	bytes		data=2;
+};
+
+message ChatMsg {
+	required	ChatSender	sender=1;
+	optional	ChatContent	content=2;
+	optional	uint32		timestamp=3;
+};
+
+message	Notice {
+	required	int32		type=1;
+	optional	bytes		data=2;
+};
+
