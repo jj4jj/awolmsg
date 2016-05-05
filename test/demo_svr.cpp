@@ -1,9 +1,7 @@
 #include "dcpots/base/stdinc.h"
 #include "dcpots/base/logger.h"
-#include "../awolmsg/awol_msgportal.h"
+#include "../awolmsg/awol_msg.h"
 #include "../awolmsg/awol_msgsvr.h"
-#include "../proto/awolmsg.pb.h"
-
 using namespace awolmsg;
 using namespace std;
 #if 0
@@ -147,16 +145,19 @@ int main(){
 #endif
 
 #include "../app/mailbox.h"
+#include "../app/awolapp.pb.h"
 using namespace awolapp;
 
 struct TestMailBox : public awolapp::MailBox {
     TestMailBox(const MsgActor & ma) : MailBox(ma){}
+    /*
     virtual void onread(uint64_t id, const Mail & mail){
-
+    GLOG_DBG("on read .... id:%lu", id);
     }
     virtual void onfetch(uint64_t id, const Mail & mail){
-
+    GLOG_DBG("on fetch .... id:%lu", id);
     }
+    */
 };
 
 int main(int argc, char * argv[]){
@@ -169,7 +170,6 @@ int main(int argc, char * argv[]){
 
     MsgActor ma1(ActorType::ACTOR_TYPE_PLAYER, 1); //P1
     MsgActor ma2(ActorType::ACTOR_TYPE_PLAYER, 2); //P2
-
     MsgActor ma(ActorType::ACTOR_TYPE_SERVER, 1); //S1
 
 
@@ -185,14 +185,16 @@ int main(int argc, char * argv[]){
     //mb.put(mail);
     //send to ma2
     mail.set_subject("send to ma2");
-    mb.sendto(ma2, mail, false);
+    //mb.sendto(ma2, mail, false);
 
-    mb.list();
+    mb.list(true);
 
     TestMailBox mb2(ma2);
-    mb2.list();
-
-
+    mb2.list(true);
+    mb2.read(6281186836274479105);
+    mb2.read(6281186784734871553);
+    mb2.fetch(6281186784734871553);
+    mb2.remove(6281186183439450115);
     while (true){
         msgsvr.update();
     }

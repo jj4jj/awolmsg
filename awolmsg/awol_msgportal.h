@@ -9,7 +9,7 @@ namespace awolmsg {
 struct MsgPortal : dcsutil::noncopyable {
 	virtual const MsgOptions & options() const = 0;
 public:
-	virtual int sendto(const MsgActor & actor, const std::string & m, bool fromc = true);
+	virtual int send(const MsgActor & actor, const std::string & m, bool fromc = true);
 	virtual int put(const std::string & m);//server
 	virtual int sync(uint64_t id, const std::string & m, int op = 0);
 	virtual int list(bool fromc = true);
@@ -41,13 +41,13 @@ struct MsgPortalT : public MsgPortal {
     typedef std::pair<uint64_t, MsgT>   VMsgT;
     typedef std::vector<VMsgT>          VMsgTList;
 public:
-    virtual int sendto(const MsgActor & actor, const MsgT & m, bool fromc = true){
+    virtual int send(const MsgActor & actor, const MsgT & m, bool fromc = true){
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
         if (!m.SerializeToArray(msgbuff.buffer, msgbuff.max_size)){
             GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
             return ErrorCode::AWOL_EC_ERROR_PACK;
         }
-        return MsgPortal::sendto(actor, std::string(msgbuff.buffer, m.ByteSize()), fromc);
+        return MsgPortal::send(actor, std::string(msgbuff.buffer, m.ByteSize()), fromc);
     }
     virtual int put(const MsgT & m){//server
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();

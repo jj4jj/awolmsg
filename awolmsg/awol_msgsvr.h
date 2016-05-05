@@ -5,6 +5,7 @@ namespace dcrpc {
 };
 struct msg_buffer_t;
 namespace awolmsg {
+    struct MsgActor;
 	struct MsgSvrImpl;
 	struct MsgPortal;
 	class MsgSvr : dcsutil::noncopyable {
@@ -17,6 +18,7 @@ namespace awolmsg {
         bool ready();
 		int regis(MsgPortal * portal);
         void unregis(MsgPortal * portal);
+        MsgPortal * find(MsgActor & actor, int type);
 		dcrpc::RpcClient * rpc();
         msg_buffer_t *     msg_buffer();
 	public:

@@ -145,7 +145,7 @@ int	MsgBox::remove(uint64_t uid, MsgOPCallBack cb){ //remove one msg
 	});
 	return 0;
 }
-int	MsgBox::syncfrom(uint64_t uid, MsgOPCallBack cb){
+int	MsgBox::get(uint64_t uid, MsgOPCallBack cb){
     dcrpc::RpcValues args;
     char buff[256];
     int ibuff = constructMsgOpT(buff, sizeof(buff), MSG_OP_GET, actor_,
@@ -171,7 +171,7 @@ int	MsgBox::syncfrom(uint64_t uid, MsgOPCallBack cb){
         }
     });
 }
-int	MsgBox::syncto(uint64_t uid, const string & m_, MsgOPCallBack cb){
+int	MsgBox::sync(uint64_t uid, const string & m_, MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256 * 1024];
     int ibuff = constructMsgOpT(buff, sizeof(buff), MSG_OP_SET, actor_,

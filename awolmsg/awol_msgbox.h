@@ -13,9 +13,9 @@ public:
 	int	send(const MsgActor & sendto, const std::string & m_, MsgOPCallBack cb=nullptr);
 	int	put(const std::string & m, MsgOPCallBack cb = nullptr);
 	int	remove(uint64_t uid, MsgOPCallBack cb = nullptr);//remove one msg
-	int	syncto(uint64_t uid, const std::string & m_, MsgOPCallBack cb = nullptr);
+	int	sync(uint64_t uid, const std::string & m_, MsgOPCallBack cb = nullptr);
 	int	clean(MsgOPCallBack cb = nullptr);
-    int	syncfrom(uint64_t uid, MsgOPCallBack cb = nullptr);
+    int	get(uint64_t uid, MsgOPCallBack cb = nullptr);
 
 private:
 	MsgActor		actor_;
