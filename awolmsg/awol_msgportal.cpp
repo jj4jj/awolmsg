@@ -84,6 +84,7 @@ MsgPortal::MsgPortal(const MsgActor & actor, int type): msgbox_(actor, type){
 	MsgSvr::instance().regis(this);
 }
 MsgPortal::~MsgPortal(){
+    MsgSvr::instance().unregis(this);
 }
 
 NS_END()

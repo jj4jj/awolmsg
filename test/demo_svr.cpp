@@ -1,7 +1,7 @@
 #include "dcpots/base/stdinc.h"
 #include "dcpots/base/logger.h"
-#include "../include/awol_msgportal.h"
-#include "../include/awol_msgsvr.h"
+#include "../awolmsg/awol_msgportal.h"
+#include "../awolmsg/awol_msgsvr.h"
 #include "../proto/awolmsg.pb.h"
 
 using namespace awolmsg;
@@ -174,17 +174,23 @@ int main(int argc, char * argv[]){
 
 
     Mail mail;
-    mail.set_sender("test");
-    mail.set_subject("test");
+    mail.set_sender("from ma1");
+    mail.set_subject("put self");
     mail.mutable_content()->set_type(1);
     mail.mutable_content()->set_data("test content");
 
     //send to ma2
     TestMailBox mb(ma1);
-    mb.put(mail);
-    mb.put(mail);
+    //mb.put(mail);
+    //mb.put(mail);
+    //send to ma2
+    mail.set_subject("send to ma2");
+    mb.sendto(ma2, mail, false);
 
+    mb.list();
 
+    TestMailBox mb2(ma2);
+    mb2.list();
 
 
     while (true){

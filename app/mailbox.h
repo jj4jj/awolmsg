@@ -1,6 +1,6 @@
 #pragma  once
 #include "dcpots/base/msg_buffer.hpp"
-#include "../include/awol_msgportal.h"
+#include "../awolmsg/awol_msgportal.h"
 #include "app.pb.h"
 namespace awolapp {
     typedef awolmsg::MsgPortalT<Mail, MSG_TYPE_MAIL>  MailPortal;

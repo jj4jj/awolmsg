@@ -74,8 +74,22 @@ int MsgSvr::destory(){
 bool MsgSvr::ready(){
     return rpc()->ready();
 }
+void MsgSvr::unregis(MsgPortal * portal){
+    GLOG_DBG("unregister msg portal actor(%d:%lu) type:%d pointer:%p",
+        portal->msgbox().actor().type,
+        portal->msgbox().actor().id, portal->type(), portal);
+    MsgKey k;
+    k.actor.type = portal->msgbox().actor().type;
+    k.actor.id = portal->msgbox().actor().id;
+    k.type = portal->type();
+    impl->recievers.erase(k);
+}
+
 int MsgSvr::regis(MsgPortal * portal){
-	MsgKey k;
+    GLOG_DBG("register msg portal actor(%d:%lu) type:%d pointer:%p",
+        portal->msgbox().actor().type,
+        portal->msgbox().actor().id, portal->type(), portal);
+    MsgKey k;
 	k.actor.type = portal->msgbox().actor().type;
 	k.actor.id = portal->msgbox().actor().id;
 	k.type = portal->type();

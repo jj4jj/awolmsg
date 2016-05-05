@@ -1,4 +1,5 @@
 #pragma once
+#include "dcpots/base/dcutils.hpp"
 namespace dcrpc {
 	struct RpcClient;
 };
@@ -6,7 +7,7 @@ struct msg_buffer_t;
 namespace awolmsg {
 	struct MsgSvrImpl;
 	struct MsgPortal;
-	class MsgSvr {
+	class MsgSvr : dcsutil::noncopyable {
 	public:
 		static MsgSvr & instance();
 	public:
@@ -15,6 +16,7 @@ namespace awolmsg {
 		int update();
         bool ready();
 		int regis(MsgPortal * portal);
+        void unregis(MsgPortal * portal);
 		dcrpc::RpcClient * rpc();
         msg_buffer_t *     msg_buffer();
 	public:

@@ -2,10 +2,11 @@
 #include <string>
 #include "awol_msgbox.h"
 #include "dcpots/base/msg_buffer.hpp"
+#include "dcpots/base/dcutils.hpp"
 #include "awol_msgsvr.h"
 #include "awol_error.h"
 namespace awolmsg {
-struct MsgPortal {
+struct MsgPortal : dcsutil::noncopyable {
 	virtual const MsgOptions & options() const = 0;
 public:
 	virtual int sendto(const MsgActor & actor, const std::string & m, bool fromc = true);
@@ -28,6 +29,8 @@ public:
 	const MsgActor & actor() const { return msgbox_.actor(); };
 	virtual ~MsgPortal();
 	MsgBox &  msgbox(){ return msgbox_; }
+protected:
+
 private:
 	MsgBox    msgbox_;
 };
