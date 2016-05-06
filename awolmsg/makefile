@@ -1,10 +1,10 @@
-libawolmsg.a: *.cpp ../proto/awolmsg.pb.cc
+libawolmsg.a: *.cpp awolmsg.pb.cc
 	g++ --std=c++11 -c $^ -I../../ -g
 	ar -rcs $@ *.o
-../proto/awolmsg.pb.cc: ../proto/awolmsg.proto
-	cd ../proto/ && protoc awolmsg.proto --cpp_out=.
+awolmsg.pb.cc: awolmsg.proto
+	protoc awolmsg.proto --cpp_out=.
 clean:
-	rm -f *.o
+	rm -f *.o awolmsg.pb.cc
 install:
 	mkdir -p ../lib ../include
 	mv *.a ../lib/

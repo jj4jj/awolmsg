@@ -20,7 +20,7 @@ struct MsgActorState {
     uint32_t    expired;
 };
 
-#define NOTIFY_EVENT_CHANNEL "msg$event$set"
+#define NOTIFY_EVENT_CHANNEL "msg/event/set"
 struct MsgService : public RpcService {
     RedisAsyncAgent * redis{ nullptr };
     RpcServer *       svr{ nullptr };
@@ -166,7 +166,7 @@ public:
     }
 	const string mergekey(int actor_type, uint64_t actor_id, int type){
 		string keyname;
-		strnprintf(keyname, 64, "msg$%d:%lu$%d", actor_type, actor_id, type);
+		strnprintf(keyname, 64, "msg/%d/%d:%lu", actor_type, actor_id, type);
 		return keyname;
 	}
 	virtual int yield(uint64_t cookie, const RpcValues & args, std::string & error, int clientid){
@@ -270,8 +270,8 @@ public:
 					GLOG_ERR("reply type not string error type:%d", reply->type);
 					return this->resume(cookie, result, -3, "db value type error");
 				}
-				result.addb(reply->str, reply->len);
-				result.seti(mid);
+                result.addi(mid);
+                result.setb(reply->str, reply->len);
 				return this->resume(cookie, result);
 			}, "HGET %s %s", hsetkey.data(), std::to_string(mid).c_str());
 		}

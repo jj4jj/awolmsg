@@ -4,6 +4,9 @@
 #include "awol_error.h"
 #include "awol_msgportal.h"
 
+NS_BEGIN(awolmsg)
+
+
 enum PortalOpType {
     PORTAL_OP_SEND = 0,
     PORTAL_OP_PUT = 1,
@@ -17,7 +20,7 @@ static void _safe_portal_dispatch_onlist(const MsgActor & actor, int type, bool 
         GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
         return;
     }
-    return portal->onsend(ret, vms, fromc);
+    return portal->onlist(ret, vms, fromc);
 }
 static void _safe_portal_dispatch_onsend(const MsgActor & actor, int type, const MsgActor & actorto, bool fromc, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
@@ -33,15 +36,15 @@ static void _safe_portal_dispatch_onput(const MsgActor & actor, int type, int re
         GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
         return;
     }
-    return portal->onput(ret, actorto, id, msg);
+    return portal->onput(ret, id, msg);
 }
-static void _safe_portal_dispatch_onsync(const MsgActor & actor, int type, const MsgActor & actorsendto, int ret, uint64_t id, const string & msg){
+static void _safe_portal_dispatch_onsync(const MsgActor & actor, int type, int op, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
         GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
         return;
     }
-    return portal->onsend(ret, actorto, id, msg, fromc);
+    return portal->onsync(ret, id, msg, op);
 }
 static void _safe_portal_dispatch_onrm(const MsgActor & actor, int type, bool fromc, int ret, uint64_t id){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
@@ -61,11 +64,9 @@ static void _safe_portal_dispatch_onget(const MsgActor & actor, int type, int re
 }
 
 
-NS_BEGIN(awolmsg)
-
 int MsgPortal::send(const MsgActor & actorto, const std::string & m, bool fromc){
 	if (options().check(fromc)){
-        auto cb = std::bind(_safe_portal_dispatch_onsend, 
+        auto cb = std::bind(_safe_portal_dispatch_onsend,
                     this->actor(), this->type(), actorto, fromc,
                     std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         return msgbox_.send(actorto, m, cb);

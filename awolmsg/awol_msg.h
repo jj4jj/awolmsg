@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
-#include "../proto/awolmsg.pb.h"
+#include "awolmsg.pb.h"
 namespace awolmsg {
 struct MsgKeyData {
     uint64_t id;

@@ -1,12 +1,14 @@
 #pragma once
 #include <string>
-#include "awol_msgbox.h"
+#include "dcpots/base/noncopyable.h"
 #include "dcpots/base/msg_buffer.hpp"
-#include "dcpots/base/dcutils.hpp"
+#include "awol_msgbox.h"
 #include "awol_msgsvr.h"
 #include "awol_error.h"
+
 namespace awolmsg {
-struct MsgPortal : dcsutil::noncopyable {
+
+struct MsgPortal : noncopyable {
 	virtual const MsgOptions & options() const = 0;
 public:
 	virtual int send(const MsgActor & actor, const std::string & m, bool fromc = true);
@@ -35,6 +37,7 @@ private:
 	MsgBox    msgbox_;
 };
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<class MsgT, int MsgTypeV>
 struct MsgPortalT : public MsgPortal {
@@ -66,6 +69,9 @@ public:
         return MsgPortal::sync(id, std::string(msgbuff.buffer, m.ByteSize()), op);
     }
 public:
+    virtual void onget(uint64_t id, const MsgT & msg){
+        GLOG_DBG("on get msg id:%lu [%s]", id, msg.ShortDebugString().c_str());
+    }
     virtual void osend(const MsgActor & actorto, uint64_t id, const MsgT & msg){
         GLOG_DBG("on send to actor(%d:%d) msg id:%lu [%s]",
             actorto.type, actorto.id, id, msg.ShortDebugString().c_str());
@@ -76,7 +82,7 @@ public:
     virtual void onnotify(uint64_t id, const MsgT & msg){
         GLOG_DBG("on notify msg id:%lu [%s]!", id, msg.ShortDebugString().c_str());
     }
-    virtual void onlist(){
+    virtual void onlist(bool fromc){
         GLOG_DBG("on list msg size:%zd !", msg_cache.size());
     }
     virtual void onremove(uint64_t id, const MsgT & msg, bool fromc){
@@ -86,6 +92,18 @@ public:
         GLOG_DBG("on update msg id:%d op:%d [%s]", id, op, msg.ShortDebugString().c_str());
     }
 public:
+    void onget(int ret, uint64_t id, const string & msg){
+        if (ret){
+            GLOG_ERR("onget msg error :%d", ret);
+            return;
+        }
+        MsgT mm;
+        if (!mm.ParseFromArray(msg.data(), msg.length())){
+            GLOG_ERR("parse from array error ! length:%d", msg.length());
+        }
+        msg_cache[id] = mm;
+        onget(id, mm);
+    }
     void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg){
         if (ret){
             GLOG_ERR("onput msg error :%d", ret);
@@ -95,7 +113,6 @@ public:
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
         }
-        msg_cache[id] = mm;
         osend(actorto, id, msg);
     }
     void onsync(int ret, uint64_t id, const std::string & msg, int op){
@@ -133,7 +150,7 @@ public:
             msg_cache[msg.id] = mm;
             GLOG_IFO("insert msg id:%lu ", msg.id);
         }
-        onlist();
+        onlist(fromc);
     }
     void onremove(int ret, uint64_t id, bool fromc = true){
         GLOG_DBG("on remove msg ret:%d id:%lu fromc:%d", ret, id, fromc);
@@ -167,7 +184,7 @@ public:
 public:
     MsgPortalT(const MsgActor & actor) :MsgPortal(actor, MsgTypeV){}
     virtual ~MsgPortalT(){ msg_cache.clear(); }
-protected:
+public:
     std::unordered_map<uint64_t, MsgT>   msg_cache;
 };
 

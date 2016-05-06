@@ -25,6 +25,7 @@
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
+#include "awolmsg/awolmsg.pb.h"
 // @@protoc_insertion_point(includes)
 
 namespace awolapp {
@@ -42,7 +43,37 @@ class ChatSender;
 class ChatContent;
 class ChatMsg;
 class Notice;
+class AwolMsg;
+class AwolMsgItem;
+class CSAwalMsg;
+class CSAwalMsg_Cookie;
+class CSAwalMsg_Request;
+class CSAwalMsg_Response;
+class CSAwalMsg_Notify;
 
+enum CSAwalMsg_MsgCMD {
+  CSAwalMsg_MsgCMD_MSG_CMD_LIST = 1,
+  CSAwalMsg_MsgCMD_MSG_CMD_UPDATE = 2,
+  CSAwalMsg_MsgCMD_MSG_CMD_SENDTO = 3,
+  CSAwalMsg_MsgCMD_MSG_CMD_GET = 4,
+  CSAwalMsg_MsgCMD_MSG_CMD_REMOVE = 5,
+  CSAwalMsg_MsgCMD_MSG_CMD_NOTIFY = 6
+};
+bool CSAwalMsg_MsgCMD_IsValid(int value);
+const CSAwalMsg_MsgCMD CSAwalMsg_MsgCMD_MsgCMD_MIN = CSAwalMsg_MsgCMD_MSG_CMD_LIST;
+const CSAwalMsg_MsgCMD CSAwalMsg_MsgCMD_MsgCMD_MAX = CSAwalMsg_MsgCMD_MSG_CMD_NOTIFY;
+const int CSAwalMsg_MsgCMD_MsgCMD_ARRAYSIZE = CSAwalMsg_MsgCMD_MsgCMD_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* CSAwalMsg_MsgCMD_descriptor();
+inline const ::std::string& CSAwalMsg_MsgCMD_Name(CSAwalMsg_MsgCMD value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    CSAwalMsg_MsgCMD_descriptor(), value);
+}
+inline bool CSAwalMsg_MsgCMD_Parse(
+    const ::std::string& name, CSAwalMsg_MsgCMD* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<CSAwalMsg_MsgCMD>(
+    CSAwalMsg_MsgCMD_descriptor(), name, value);
+}
 enum ActorType {
   ACTOR_TYPE_NONE = 0,
   ACTOR_TYPE_SERVER = 1,
@@ -103,6 +134,25 @@ inline bool MailState_Parse(
     const ::std::string& name, MailState* value) {
   return ::google::protobuf::internal::ParseNamedEnum<MailState>(
     MailState_descriptor(), name, value);
+}
+enum MailOpCode {
+  MAIL_OP_READ = 1,
+  MAIL_OP_FETCH = 2
+};
+bool MailOpCode_IsValid(int value);
+const MailOpCode MailOpCode_MIN = MAIL_OP_READ;
+const MailOpCode MailOpCode_MAX = MAIL_OP_FETCH;
+const int MailOpCode_ARRAYSIZE = MailOpCode_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MailOpCode_descriptor();
+inline const ::std::string& MailOpCode_Name(MailOpCode value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MailOpCode_descriptor(), value);
+}
+inline bool MailOpCode_Parse(
+    const ::std::string& name, MailOpCode* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MailOpCode>(
+    MailOpCode_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -911,6 +961,718 @@ class Notice : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static Notice* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AwolMsg : public ::google::protobuf::Message {
+ public:
+  AwolMsg();
+  virtual ~AwolMsg();
+
+  AwolMsg(const AwolMsg& from);
+
+  inline AwolMsg& operator=(const AwolMsg& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AwolMsg& default_instance();
+
+  void Swap(AwolMsg* other);
+
+  // implements Message ----------------------------------------------
+
+  AwolMsg* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AwolMsg& from);
+  void MergeFrom(const AwolMsg& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .awolapp.Mail mail = 1;
+  inline bool has_mail() const;
+  inline void clear_mail();
+  static const int kMailFieldNumber = 1;
+  inline const ::awolapp::Mail& mail() const;
+  inline ::awolapp::Mail* mutable_mail();
+  inline ::awolapp::Mail* release_mail();
+  inline void set_allocated_mail(::awolapp::Mail* mail);
+
+  // optional .awolapp.ChatMsg chat = 2;
+  inline bool has_chat() const;
+  inline void clear_chat();
+  static const int kChatFieldNumber = 2;
+  inline const ::awolapp::ChatMsg& chat() const;
+  inline ::awolapp::ChatMsg* mutable_chat();
+  inline ::awolapp::ChatMsg* release_chat();
+  inline void set_allocated_chat(::awolapp::ChatMsg* chat);
+
+  // optional .awolapp.Notice notice = 3;
+  inline bool has_notice() const;
+  inline void clear_notice();
+  static const int kNoticeFieldNumber = 3;
+  inline const ::awolapp::Notice& notice() const;
+  inline ::awolapp::Notice* mutable_notice();
+  inline ::awolapp::Notice* release_notice();
+  inline void set_allocated_notice(::awolapp::Notice* notice);
+
+  // @@protoc_insertion_point(class_scope:awolapp.AwolMsg)
+ private:
+  inline void set_has_mail();
+  inline void clear_has_mail();
+  inline void set_has_chat();
+  inline void clear_has_chat();
+  inline void set_has_notice();
+  inline void clear_has_notice();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::awolapp::Mail* mail_;
+  ::awolapp::ChatMsg* chat_;
+  ::awolapp::Notice* notice_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static AwolMsg* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AwolMsgItem : public ::google::protobuf::Message {
+ public:
+  AwolMsgItem();
+  virtual ~AwolMsgItem();
+
+  AwolMsgItem(const AwolMsgItem& from);
+
+  inline AwolMsgItem& operator=(const AwolMsgItem& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AwolMsgItem& default_instance();
+
+  void Swap(AwolMsgItem* other);
+
+  // implements Message ----------------------------------------------
+
+  AwolMsgItem* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AwolMsgItem& from);
+  void MergeFrom(const AwolMsgItem& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint64 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 id() const;
+  inline void set_id(::google::protobuf::uint64 value);
+
+  // required .awolapp.AwolMsg msg = 2;
+  inline bool has_msg() const;
+  inline void clear_msg();
+  static const int kMsgFieldNumber = 2;
+  inline const ::awolapp::AwolMsg& msg() const;
+  inline ::awolapp::AwolMsg* mutable_msg();
+  inline ::awolapp::AwolMsg* release_msg();
+  inline void set_allocated_msg(::awolapp::AwolMsg* msg);
+
+  // @@protoc_insertion_point(class_scope:awolapp.AwolMsgItem)
+ private:
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_msg();
+  inline void clear_has_msg();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 id_;
+  ::awolapp::AwolMsg* msg_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static AwolMsgItem* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CSAwalMsg_Cookie : public ::google::protobuf::Message {
+ public:
+  CSAwalMsg_Cookie();
+  virtual ~CSAwalMsg_Cookie();
+
+  CSAwalMsg_Cookie(const CSAwalMsg_Cookie& from);
+
+  inline CSAwalMsg_Cookie& operator=(const CSAwalMsg_Cookie& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSAwalMsg_Cookie& default_instance();
+
+  void Swap(CSAwalMsg_Cookie* other);
+
+  // implements Message ----------------------------------------------
+
+  CSAwalMsg_Cookie* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CSAwalMsg_Cookie& from);
+  void MergeFrom(const CSAwalMsg_Cookie& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:awolapp.CSAwalMsg.Cookie)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static CSAwalMsg_Cookie* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CSAwalMsg_Request : public ::google::protobuf::Message {
+ public:
+  CSAwalMsg_Request();
+  virtual ~CSAwalMsg_Request();
+
+  CSAwalMsg_Request(const CSAwalMsg_Request& from);
+
+  inline CSAwalMsg_Request& operator=(const CSAwalMsg_Request& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSAwalMsg_Request& default_instance();
+
+  void Swap(CSAwalMsg_Request* other);
+
+  // implements Message ----------------------------------------------
+
+  CSAwalMsg_Request* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CSAwalMsg_Request& from);
+  void MergeFrom(const CSAwalMsg_Request& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint64 id = 2;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 2;
+  inline ::google::protobuf::uint64 id() const;
+  inline void set_id(::google::protobuf::uint64 value);
+
+  // optional .awolmsg.MsgAgent sendto = 3;
+  inline bool has_sendto() const;
+  inline void clear_sendto();
+  static const int kSendtoFieldNumber = 3;
+  inline const ::awolmsg::MsgAgent& sendto() const;
+  inline ::awolmsg::MsgAgent* mutable_sendto();
+  inline ::awolmsg::MsgAgent* release_sendto();
+  inline void set_allocated_sendto(::awolmsg::MsgAgent* sendto);
+
+  // optional int32 opcode = 4;
+  inline bool has_opcode() const;
+  inline void clear_opcode();
+  static const int kOpcodeFieldNumber = 4;
+  inline ::google::protobuf::int32 opcode() const;
+  inline void set_opcode(::google::protobuf::int32 value);
+
+  // optional .awolapp.AwolMsg msg = 5;
+  inline bool has_msg() const;
+  inline void clear_msg();
+  static const int kMsgFieldNumber = 5;
+  inline const ::awolapp::AwolMsg& msg() const;
+  inline ::awolapp::AwolMsg* mutable_msg();
+  inline ::awolapp::AwolMsg* release_msg();
+  inline void set_allocated_msg(::awolapp::AwolMsg* msg);
+
+  // @@protoc_insertion_point(class_scope:awolapp.CSAwalMsg.Request)
+ private:
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_sendto();
+  inline void clear_has_sendto();
+  inline void set_has_opcode();
+  inline void clear_has_opcode();
+  inline void set_has_msg();
+  inline void clear_has_msg();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 id_;
+  ::awolmsg::MsgAgent* sendto_;
+  ::awolapp::AwolMsg* msg_;
+  ::google::protobuf::int32 opcode_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static CSAwalMsg_Request* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CSAwalMsg_Response : public ::google::protobuf::Message {
+ public:
+  CSAwalMsg_Response();
+  virtual ~CSAwalMsg_Response();
+
+  CSAwalMsg_Response(const CSAwalMsg_Response& from);
+
+  inline CSAwalMsg_Response& operator=(const CSAwalMsg_Response& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSAwalMsg_Response& default_instance();
+
+  void Swap(CSAwalMsg_Response* other);
+
+  // implements Message ----------------------------------------------
+
+  CSAwalMsg_Response* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CSAwalMsg_Response& from);
+  void MergeFrom(const CSAwalMsg_Response& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int32 ret = 1;
+  inline bool has_ret() const;
+  inline void clear_ret();
+  static const int kRetFieldNumber = 1;
+  inline ::google::protobuf::int32 ret() const;
+  inline void set_ret(::google::protobuf::int32 value);
+
+  // repeated .awolapp.AwolMsgItem msglist = 2;
+  inline int msglist_size() const;
+  inline void clear_msglist();
+  static const int kMsglistFieldNumber = 2;
+  inline const ::awolapp::AwolMsgItem& msglist(int index) const;
+  inline ::awolapp::AwolMsgItem* mutable_msglist(int index);
+  inline ::awolapp::AwolMsgItem* add_msglist();
+  inline const ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >&
+      msglist() const;
+  inline ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >*
+      mutable_msglist();
+
+  // @@protoc_insertion_point(class_scope:awolapp.CSAwalMsg.Response)
+ private:
+  inline void set_has_ret();
+  inline void clear_has_ret();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem > msglist_;
+  ::google::protobuf::int32 ret_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static CSAwalMsg_Response* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CSAwalMsg_Notify : public ::google::protobuf::Message {
+ public:
+  CSAwalMsg_Notify();
+  virtual ~CSAwalMsg_Notify();
+
+  CSAwalMsg_Notify(const CSAwalMsg_Notify& from);
+
+  inline CSAwalMsg_Notify& operator=(const CSAwalMsg_Notify& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSAwalMsg_Notify& default_instance();
+
+  void Swap(CSAwalMsg_Notify* other);
+
+  // implements Message ----------------------------------------------
+
+  CSAwalMsg_Notify* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CSAwalMsg_Notify& from);
+  void MergeFrom(const CSAwalMsg_Notify& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .awolapp.AwolMsgItem msglist = 1;
+  inline int msglist_size() const;
+  inline void clear_msglist();
+  static const int kMsglistFieldNumber = 1;
+  inline const ::awolapp::AwolMsgItem& msglist(int index) const;
+  inline ::awolapp::AwolMsgItem* mutable_msglist(int index);
+  inline ::awolapp::AwolMsgItem* add_msglist();
+  inline const ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >&
+      msglist() const;
+  inline ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >*
+      mutable_msglist();
+
+  // @@protoc_insertion_point(class_scope:awolapp.CSAwalMsg.Notify)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem > msglist_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static CSAwalMsg_Notify* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CSAwalMsg : public ::google::protobuf::Message {
+ public:
+  CSAwalMsg();
+  virtual ~CSAwalMsg();
+
+  CSAwalMsg(const CSAwalMsg& from);
+
+  inline CSAwalMsg& operator=(const CSAwalMsg& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSAwalMsg& default_instance();
+
+  void Swap(CSAwalMsg* other);
+
+  // implements Message ----------------------------------------------
+
+  CSAwalMsg* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CSAwalMsg& from);
+  void MergeFrom(const CSAwalMsg& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef CSAwalMsg_Cookie Cookie;
+  typedef CSAwalMsg_Request Request;
+  typedef CSAwalMsg_Response Response;
+  typedef CSAwalMsg_Notify Notify;
+
+  typedef CSAwalMsg_MsgCMD MsgCMD;
+  static const MsgCMD MSG_CMD_LIST = CSAwalMsg_MsgCMD_MSG_CMD_LIST;
+  static const MsgCMD MSG_CMD_UPDATE = CSAwalMsg_MsgCMD_MSG_CMD_UPDATE;
+  static const MsgCMD MSG_CMD_SENDTO = CSAwalMsg_MsgCMD_MSG_CMD_SENDTO;
+  static const MsgCMD MSG_CMD_GET = CSAwalMsg_MsgCMD_MSG_CMD_GET;
+  static const MsgCMD MSG_CMD_REMOVE = CSAwalMsg_MsgCMD_MSG_CMD_REMOVE;
+  static const MsgCMD MSG_CMD_NOTIFY = CSAwalMsg_MsgCMD_MSG_CMD_NOTIFY;
+  static inline bool MsgCMD_IsValid(int value) {
+    return CSAwalMsg_MsgCMD_IsValid(value);
+  }
+  static const MsgCMD MsgCMD_MIN =
+    CSAwalMsg_MsgCMD_MsgCMD_MIN;
+  static const MsgCMD MsgCMD_MAX =
+    CSAwalMsg_MsgCMD_MsgCMD_MAX;
+  static const int MsgCMD_ARRAYSIZE =
+    CSAwalMsg_MsgCMD_MsgCMD_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  MsgCMD_descriptor() {
+    return CSAwalMsg_MsgCMD_descriptor();
+  }
+  static inline const ::std::string& MsgCMD_Name(MsgCMD value) {
+    return CSAwalMsg_MsgCMD_Name(value);
+  }
+  static inline bool MsgCMD_Parse(const ::std::string& name,
+      MsgCMD* value) {
+    return CSAwalMsg_MsgCMD_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // required .awolapp.CSAwalMsg.MsgCMD cmd = 1;
+  inline bool has_cmd() const;
+  inline void clear_cmd();
+  static const int kCmdFieldNumber = 1;
+  inline ::awolapp::CSAwalMsg_MsgCMD cmd() const;
+  inline void set_cmd(::awolapp::CSAwalMsg_MsgCMD value);
+
+  // optional .awolapp.CSAwalMsg.Cookie cookie = 2;
+  inline bool has_cookie() const;
+  inline void clear_cookie();
+  static const int kCookieFieldNumber = 2;
+  inline const ::awolapp::CSAwalMsg_Cookie& cookie() const;
+  inline ::awolapp::CSAwalMsg_Cookie* mutable_cookie();
+  inline ::awolapp::CSAwalMsg_Cookie* release_cookie();
+  inline void set_allocated_cookie(::awolapp::CSAwalMsg_Cookie* cookie);
+
+  // optional .awolapp.CSAwalMsg.Request request = 3;
+  inline bool has_request() const;
+  inline void clear_request();
+  static const int kRequestFieldNumber = 3;
+  inline const ::awolapp::CSAwalMsg_Request& request() const;
+  inline ::awolapp::CSAwalMsg_Request* mutable_request();
+  inline ::awolapp::CSAwalMsg_Request* release_request();
+  inline void set_allocated_request(::awolapp::CSAwalMsg_Request* request);
+
+  // optional .awolapp.CSAwalMsg.Response response = 4;
+  inline bool has_response() const;
+  inline void clear_response();
+  static const int kResponseFieldNumber = 4;
+  inline const ::awolapp::CSAwalMsg_Response& response() const;
+  inline ::awolapp::CSAwalMsg_Response* mutable_response();
+  inline ::awolapp::CSAwalMsg_Response* release_response();
+  inline void set_allocated_response(::awolapp::CSAwalMsg_Response* response);
+
+  // optional .awolapp.CSAwalMsg.Notify notify = 5;
+  inline bool has_notify() const;
+  inline void clear_notify();
+  static const int kNotifyFieldNumber = 5;
+  inline const ::awolapp::CSAwalMsg_Notify& notify() const;
+  inline ::awolapp::CSAwalMsg_Notify* mutable_notify();
+  inline ::awolapp::CSAwalMsg_Notify* release_notify();
+  inline void set_allocated_notify(::awolapp::CSAwalMsg_Notify* notify);
+
+  // @@protoc_insertion_point(class_scope:awolapp.CSAwalMsg)
+ private:
+  inline void set_has_cmd();
+  inline void clear_has_cmd();
+  inline void set_has_cookie();
+  inline void clear_has_cookie();
+  inline void set_has_request();
+  inline void clear_has_request();
+  inline void set_has_response();
+  inline void clear_has_response();
+  inline void set_has_notify();
+  inline void clear_has_notify();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::awolapp::CSAwalMsg_Cookie* cookie_;
+  ::awolapp::CSAwalMsg_Request* request_;
+  ::awolapp::CSAwalMsg_Response* response_;
+  ::awolapp::CSAwalMsg_Notify* notify_;
+  int cmd_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static CSAwalMsg* default_instance_;
 };
 // ===================================================================
 
@@ -1890,6 +2652,625 @@ inline void Notice::set_allocated_data(::std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:awolapp.Notice.data)
 }
 
+// -------------------------------------------------------------------
+
+// AwolMsg
+
+// optional .awolapp.Mail mail = 1;
+inline bool AwolMsg::has_mail() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AwolMsg::set_has_mail() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AwolMsg::clear_has_mail() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AwolMsg::clear_mail() {
+  if (mail_ != NULL) mail_->::awolapp::Mail::Clear();
+  clear_has_mail();
+}
+inline const ::awolapp::Mail& AwolMsg::mail() const {
+  // @@protoc_insertion_point(field_get:awolapp.AwolMsg.mail)
+  return mail_ != NULL ? *mail_ : *default_instance_->mail_;
+}
+inline ::awolapp::Mail* AwolMsg::mutable_mail() {
+  set_has_mail();
+  if (mail_ == NULL) mail_ = new ::awolapp::Mail;
+  // @@protoc_insertion_point(field_mutable:awolapp.AwolMsg.mail)
+  return mail_;
+}
+inline ::awolapp::Mail* AwolMsg::release_mail() {
+  clear_has_mail();
+  ::awolapp::Mail* temp = mail_;
+  mail_ = NULL;
+  return temp;
+}
+inline void AwolMsg::set_allocated_mail(::awolapp::Mail* mail) {
+  delete mail_;
+  mail_ = mail;
+  if (mail) {
+    set_has_mail();
+  } else {
+    clear_has_mail();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.AwolMsg.mail)
+}
+
+// optional .awolapp.ChatMsg chat = 2;
+inline bool AwolMsg::has_chat() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AwolMsg::set_has_chat() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AwolMsg::clear_has_chat() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AwolMsg::clear_chat() {
+  if (chat_ != NULL) chat_->::awolapp::ChatMsg::Clear();
+  clear_has_chat();
+}
+inline const ::awolapp::ChatMsg& AwolMsg::chat() const {
+  // @@protoc_insertion_point(field_get:awolapp.AwolMsg.chat)
+  return chat_ != NULL ? *chat_ : *default_instance_->chat_;
+}
+inline ::awolapp::ChatMsg* AwolMsg::mutable_chat() {
+  set_has_chat();
+  if (chat_ == NULL) chat_ = new ::awolapp::ChatMsg;
+  // @@protoc_insertion_point(field_mutable:awolapp.AwolMsg.chat)
+  return chat_;
+}
+inline ::awolapp::ChatMsg* AwolMsg::release_chat() {
+  clear_has_chat();
+  ::awolapp::ChatMsg* temp = chat_;
+  chat_ = NULL;
+  return temp;
+}
+inline void AwolMsg::set_allocated_chat(::awolapp::ChatMsg* chat) {
+  delete chat_;
+  chat_ = chat;
+  if (chat) {
+    set_has_chat();
+  } else {
+    clear_has_chat();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.AwolMsg.chat)
+}
+
+// optional .awolapp.Notice notice = 3;
+inline bool AwolMsg::has_notice() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AwolMsg::set_has_notice() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AwolMsg::clear_has_notice() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AwolMsg::clear_notice() {
+  if (notice_ != NULL) notice_->::awolapp::Notice::Clear();
+  clear_has_notice();
+}
+inline const ::awolapp::Notice& AwolMsg::notice() const {
+  // @@protoc_insertion_point(field_get:awolapp.AwolMsg.notice)
+  return notice_ != NULL ? *notice_ : *default_instance_->notice_;
+}
+inline ::awolapp::Notice* AwolMsg::mutable_notice() {
+  set_has_notice();
+  if (notice_ == NULL) notice_ = new ::awolapp::Notice;
+  // @@protoc_insertion_point(field_mutable:awolapp.AwolMsg.notice)
+  return notice_;
+}
+inline ::awolapp::Notice* AwolMsg::release_notice() {
+  clear_has_notice();
+  ::awolapp::Notice* temp = notice_;
+  notice_ = NULL;
+  return temp;
+}
+inline void AwolMsg::set_allocated_notice(::awolapp::Notice* notice) {
+  delete notice_;
+  notice_ = notice;
+  if (notice) {
+    set_has_notice();
+  } else {
+    clear_has_notice();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.AwolMsg.notice)
+}
+
+// -------------------------------------------------------------------
+
+// AwolMsgItem
+
+// required uint64 id = 1;
+inline bool AwolMsgItem::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AwolMsgItem::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AwolMsgItem::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AwolMsgItem::clear_id() {
+  id_ = GOOGLE_ULONGLONG(0);
+  clear_has_id();
+}
+inline ::google::protobuf::uint64 AwolMsgItem::id() const {
+  // @@protoc_insertion_point(field_get:awolapp.AwolMsgItem.id)
+  return id_;
+}
+inline void AwolMsgItem::set_id(::google::protobuf::uint64 value) {
+  set_has_id();
+  id_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.AwolMsgItem.id)
+}
+
+// required .awolapp.AwolMsg msg = 2;
+inline bool AwolMsgItem::has_msg() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AwolMsgItem::set_has_msg() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AwolMsgItem::clear_has_msg() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AwolMsgItem::clear_msg() {
+  if (msg_ != NULL) msg_->::awolapp::AwolMsg::Clear();
+  clear_has_msg();
+}
+inline const ::awolapp::AwolMsg& AwolMsgItem::msg() const {
+  // @@protoc_insertion_point(field_get:awolapp.AwolMsgItem.msg)
+  return msg_ != NULL ? *msg_ : *default_instance_->msg_;
+}
+inline ::awolapp::AwolMsg* AwolMsgItem::mutable_msg() {
+  set_has_msg();
+  if (msg_ == NULL) msg_ = new ::awolapp::AwolMsg;
+  // @@protoc_insertion_point(field_mutable:awolapp.AwolMsgItem.msg)
+  return msg_;
+}
+inline ::awolapp::AwolMsg* AwolMsgItem::release_msg() {
+  clear_has_msg();
+  ::awolapp::AwolMsg* temp = msg_;
+  msg_ = NULL;
+  return temp;
+}
+inline void AwolMsgItem::set_allocated_msg(::awolapp::AwolMsg* msg) {
+  delete msg_;
+  msg_ = msg;
+  if (msg) {
+    set_has_msg();
+  } else {
+    clear_has_msg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.AwolMsgItem.msg)
+}
+
+// -------------------------------------------------------------------
+
+// CSAwalMsg_Cookie
+
+// -------------------------------------------------------------------
+
+// CSAwalMsg_Request
+
+// optional uint64 id = 2;
+inline bool CSAwalMsg_Request::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CSAwalMsg_Request::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CSAwalMsg_Request::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CSAwalMsg_Request::clear_id() {
+  id_ = GOOGLE_ULONGLONG(0);
+  clear_has_id();
+}
+inline ::google::protobuf::uint64 CSAwalMsg_Request::id() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Request.id)
+  return id_;
+}
+inline void CSAwalMsg_Request::set_id(::google::protobuf::uint64 value) {
+  set_has_id();
+  id_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.CSAwalMsg.Request.id)
+}
+
+// optional .awolmsg.MsgAgent sendto = 3;
+inline bool CSAwalMsg_Request::has_sendto() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CSAwalMsg_Request::set_has_sendto() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CSAwalMsg_Request::clear_has_sendto() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CSAwalMsg_Request::clear_sendto() {
+  if (sendto_ != NULL) sendto_->::awolmsg::MsgAgent::Clear();
+  clear_has_sendto();
+}
+inline const ::awolmsg::MsgAgent& CSAwalMsg_Request::sendto() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Request.sendto)
+  return sendto_ != NULL ? *sendto_ : *default_instance_->sendto_;
+}
+inline ::awolmsg::MsgAgent* CSAwalMsg_Request::mutable_sendto() {
+  set_has_sendto();
+  if (sendto_ == NULL) sendto_ = new ::awolmsg::MsgAgent;
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.Request.sendto)
+  return sendto_;
+}
+inline ::awolmsg::MsgAgent* CSAwalMsg_Request::release_sendto() {
+  clear_has_sendto();
+  ::awolmsg::MsgAgent* temp = sendto_;
+  sendto_ = NULL;
+  return temp;
+}
+inline void CSAwalMsg_Request::set_allocated_sendto(::awolmsg::MsgAgent* sendto) {
+  delete sendto_;
+  sendto_ = sendto;
+  if (sendto) {
+    set_has_sendto();
+  } else {
+    clear_has_sendto();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.CSAwalMsg.Request.sendto)
+}
+
+// optional int32 opcode = 4;
+inline bool CSAwalMsg_Request::has_opcode() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void CSAwalMsg_Request::set_has_opcode() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void CSAwalMsg_Request::clear_has_opcode() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void CSAwalMsg_Request::clear_opcode() {
+  opcode_ = 0;
+  clear_has_opcode();
+}
+inline ::google::protobuf::int32 CSAwalMsg_Request::opcode() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Request.opcode)
+  return opcode_;
+}
+inline void CSAwalMsg_Request::set_opcode(::google::protobuf::int32 value) {
+  set_has_opcode();
+  opcode_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.CSAwalMsg.Request.opcode)
+}
+
+// optional .awolapp.AwolMsg msg = 5;
+inline bool CSAwalMsg_Request::has_msg() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void CSAwalMsg_Request::set_has_msg() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void CSAwalMsg_Request::clear_has_msg() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void CSAwalMsg_Request::clear_msg() {
+  if (msg_ != NULL) msg_->::awolapp::AwolMsg::Clear();
+  clear_has_msg();
+}
+inline const ::awolapp::AwolMsg& CSAwalMsg_Request::msg() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Request.msg)
+  return msg_ != NULL ? *msg_ : *default_instance_->msg_;
+}
+inline ::awolapp::AwolMsg* CSAwalMsg_Request::mutable_msg() {
+  set_has_msg();
+  if (msg_ == NULL) msg_ = new ::awolapp::AwolMsg;
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.Request.msg)
+  return msg_;
+}
+inline ::awolapp::AwolMsg* CSAwalMsg_Request::release_msg() {
+  clear_has_msg();
+  ::awolapp::AwolMsg* temp = msg_;
+  msg_ = NULL;
+  return temp;
+}
+inline void CSAwalMsg_Request::set_allocated_msg(::awolapp::AwolMsg* msg) {
+  delete msg_;
+  msg_ = msg;
+  if (msg) {
+    set_has_msg();
+  } else {
+    clear_has_msg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.CSAwalMsg.Request.msg)
+}
+
+// -------------------------------------------------------------------
+
+// CSAwalMsg_Response
+
+// required int32 ret = 1;
+inline bool CSAwalMsg_Response::has_ret() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CSAwalMsg_Response::set_has_ret() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CSAwalMsg_Response::clear_has_ret() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CSAwalMsg_Response::clear_ret() {
+  ret_ = 0;
+  clear_has_ret();
+}
+inline ::google::protobuf::int32 CSAwalMsg_Response::ret() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Response.ret)
+  return ret_;
+}
+inline void CSAwalMsg_Response::set_ret(::google::protobuf::int32 value) {
+  set_has_ret();
+  ret_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.CSAwalMsg.Response.ret)
+}
+
+// repeated .awolapp.AwolMsgItem msglist = 2;
+inline int CSAwalMsg_Response::msglist_size() const {
+  return msglist_.size();
+}
+inline void CSAwalMsg_Response::clear_msglist() {
+  msglist_.Clear();
+}
+inline const ::awolapp::AwolMsgItem& CSAwalMsg_Response::msglist(int index) const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Response.msglist)
+  return msglist_.Get(index);
+}
+inline ::awolapp::AwolMsgItem* CSAwalMsg_Response::mutable_msglist(int index) {
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.Response.msglist)
+  return msglist_.Mutable(index);
+}
+inline ::awolapp::AwolMsgItem* CSAwalMsg_Response::add_msglist() {
+  // @@protoc_insertion_point(field_add:awolapp.CSAwalMsg.Response.msglist)
+  return msglist_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >&
+CSAwalMsg_Response::msglist() const {
+  // @@protoc_insertion_point(field_list:awolapp.CSAwalMsg.Response.msglist)
+  return msglist_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >*
+CSAwalMsg_Response::mutable_msglist() {
+  // @@protoc_insertion_point(field_mutable_list:awolapp.CSAwalMsg.Response.msglist)
+  return &msglist_;
+}
+
+// -------------------------------------------------------------------
+
+// CSAwalMsg_Notify
+
+// repeated .awolapp.AwolMsgItem msglist = 1;
+inline int CSAwalMsg_Notify::msglist_size() const {
+  return msglist_.size();
+}
+inline void CSAwalMsg_Notify::clear_msglist() {
+  msglist_.Clear();
+}
+inline const ::awolapp::AwolMsgItem& CSAwalMsg_Notify::msglist(int index) const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Notify.msglist)
+  return msglist_.Get(index);
+}
+inline ::awolapp::AwolMsgItem* CSAwalMsg_Notify::mutable_msglist(int index) {
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.Notify.msglist)
+  return msglist_.Mutable(index);
+}
+inline ::awolapp::AwolMsgItem* CSAwalMsg_Notify::add_msglist() {
+  // @@protoc_insertion_point(field_add:awolapp.CSAwalMsg.Notify.msglist)
+  return msglist_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >&
+CSAwalMsg_Notify::msglist() const {
+  // @@protoc_insertion_point(field_list:awolapp.CSAwalMsg.Notify.msglist)
+  return msglist_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem >*
+CSAwalMsg_Notify::mutable_msglist() {
+  // @@protoc_insertion_point(field_mutable_list:awolapp.CSAwalMsg.Notify.msglist)
+  return &msglist_;
+}
+
+// -------------------------------------------------------------------
+
+// CSAwalMsg
+
+// required .awolapp.CSAwalMsg.MsgCMD cmd = 1;
+inline bool CSAwalMsg::has_cmd() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CSAwalMsg::set_has_cmd() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CSAwalMsg::clear_has_cmd() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CSAwalMsg::clear_cmd() {
+  cmd_ = 1;
+  clear_has_cmd();
+}
+inline ::awolapp::CSAwalMsg_MsgCMD CSAwalMsg::cmd() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.cmd)
+  return static_cast< ::awolapp::CSAwalMsg_MsgCMD >(cmd_);
+}
+inline void CSAwalMsg::set_cmd(::awolapp::CSAwalMsg_MsgCMD value) {
+  assert(::awolapp::CSAwalMsg_MsgCMD_IsValid(value));
+  set_has_cmd();
+  cmd_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.CSAwalMsg.cmd)
+}
+
+// optional .awolapp.CSAwalMsg.Cookie cookie = 2;
+inline bool CSAwalMsg::has_cookie() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CSAwalMsg::set_has_cookie() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CSAwalMsg::clear_has_cookie() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CSAwalMsg::clear_cookie() {
+  if (cookie_ != NULL) cookie_->::awolapp::CSAwalMsg_Cookie::Clear();
+  clear_has_cookie();
+}
+inline const ::awolapp::CSAwalMsg_Cookie& CSAwalMsg::cookie() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.cookie)
+  return cookie_ != NULL ? *cookie_ : *default_instance_->cookie_;
+}
+inline ::awolapp::CSAwalMsg_Cookie* CSAwalMsg::mutable_cookie() {
+  set_has_cookie();
+  if (cookie_ == NULL) cookie_ = new ::awolapp::CSAwalMsg_Cookie;
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.cookie)
+  return cookie_;
+}
+inline ::awolapp::CSAwalMsg_Cookie* CSAwalMsg::release_cookie() {
+  clear_has_cookie();
+  ::awolapp::CSAwalMsg_Cookie* temp = cookie_;
+  cookie_ = NULL;
+  return temp;
+}
+inline void CSAwalMsg::set_allocated_cookie(::awolapp::CSAwalMsg_Cookie* cookie) {
+  delete cookie_;
+  cookie_ = cookie;
+  if (cookie) {
+    set_has_cookie();
+  } else {
+    clear_has_cookie();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.CSAwalMsg.cookie)
+}
+
+// optional .awolapp.CSAwalMsg.Request request = 3;
+inline bool CSAwalMsg::has_request() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void CSAwalMsg::set_has_request() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void CSAwalMsg::clear_has_request() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void CSAwalMsg::clear_request() {
+  if (request_ != NULL) request_->::awolapp::CSAwalMsg_Request::Clear();
+  clear_has_request();
+}
+inline const ::awolapp::CSAwalMsg_Request& CSAwalMsg::request() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.request)
+  return request_ != NULL ? *request_ : *default_instance_->request_;
+}
+inline ::awolapp::CSAwalMsg_Request* CSAwalMsg::mutable_request() {
+  set_has_request();
+  if (request_ == NULL) request_ = new ::awolapp::CSAwalMsg_Request;
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.request)
+  return request_;
+}
+inline ::awolapp::CSAwalMsg_Request* CSAwalMsg::release_request() {
+  clear_has_request();
+  ::awolapp::CSAwalMsg_Request* temp = request_;
+  request_ = NULL;
+  return temp;
+}
+inline void CSAwalMsg::set_allocated_request(::awolapp::CSAwalMsg_Request* request) {
+  delete request_;
+  request_ = request;
+  if (request) {
+    set_has_request();
+  } else {
+    clear_has_request();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.CSAwalMsg.request)
+}
+
+// optional .awolapp.CSAwalMsg.Response response = 4;
+inline bool CSAwalMsg::has_response() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void CSAwalMsg::set_has_response() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void CSAwalMsg::clear_has_response() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void CSAwalMsg::clear_response() {
+  if (response_ != NULL) response_->::awolapp::CSAwalMsg_Response::Clear();
+  clear_has_response();
+}
+inline const ::awolapp::CSAwalMsg_Response& CSAwalMsg::response() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.response)
+  return response_ != NULL ? *response_ : *default_instance_->response_;
+}
+inline ::awolapp::CSAwalMsg_Response* CSAwalMsg::mutable_response() {
+  set_has_response();
+  if (response_ == NULL) response_ = new ::awolapp::CSAwalMsg_Response;
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.response)
+  return response_;
+}
+inline ::awolapp::CSAwalMsg_Response* CSAwalMsg::release_response() {
+  clear_has_response();
+  ::awolapp::CSAwalMsg_Response* temp = response_;
+  response_ = NULL;
+  return temp;
+}
+inline void CSAwalMsg::set_allocated_response(::awolapp::CSAwalMsg_Response* response) {
+  delete response_;
+  response_ = response;
+  if (response) {
+    set_has_response();
+  } else {
+    clear_has_response();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.CSAwalMsg.response)
+}
+
+// optional .awolapp.CSAwalMsg.Notify notify = 5;
+inline bool CSAwalMsg::has_notify() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void CSAwalMsg::set_has_notify() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void CSAwalMsg::clear_has_notify() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void CSAwalMsg::clear_notify() {
+  if (notify_ != NULL) notify_->::awolapp::CSAwalMsg_Notify::Clear();
+  clear_has_notify();
+}
+inline const ::awolapp::CSAwalMsg_Notify& CSAwalMsg::notify() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.notify)
+  return notify_ != NULL ? *notify_ : *default_instance_->notify_;
+}
+inline ::awolapp::CSAwalMsg_Notify* CSAwalMsg::mutable_notify() {
+  set_has_notify();
+  if (notify_ == NULL) notify_ = new ::awolapp::CSAwalMsg_Notify;
+  // @@protoc_insertion_point(field_mutable:awolapp.CSAwalMsg.notify)
+  return notify_;
+}
+inline ::awolapp::CSAwalMsg_Notify* CSAwalMsg::release_notify() {
+  clear_has_notify();
+  ::awolapp::CSAwalMsg_Notify* temp = notify_;
+  notify_ = NULL;
+  return temp;
+}
+inline void CSAwalMsg::set_allocated_notify(::awolapp::CSAwalMsg_Notify* notify) {
+  delete notify_;
+  notify_ = notify;
+  if (notify) {
+    set_has_notify();
+  } else {
+    clear_has_notify();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.CSAwalMsg.notify)
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1899,6 +3280,11 @@ inline void Notice::set_allocated_data(::std::string* data) {
 namespace google {
 namespace protobuf {
 
+template <> struct is_proto_enum< ::awolapp::CSAwalMsg_MsgCMD> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::CSAwalMsg_MsgCMD>() {
+  return ::awolapp::CSAwalMsg_MsgCMD_descriptor();
+}
 template <> struct is_proto_enum< ::awolapp::ActorType> : ::google::protobuf::internal::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::ActorType>() {
@@ -1913,6 +3299,11 @@ template <> struct is_proto_enum< ::awolapp::MailState> : ::google::protobuf::in
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::MailState>() {
   return ::awolapp::MailState_descriptor();
+}
+template <> struct is_proto_enum< ::awolapp::MailOpCode> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::MailOpCode>() {
+  return ::awolapp::MailOpCode_descriptor();
 }
 
 }  // namespace google

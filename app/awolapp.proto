@@ -1,4 +1,4 @@
-
+import "awolmsg/awolmsg.proto";
 package awolapp;
 
 enum ActorType {
@@ -34,6 +34,11 @@ enum MailState {
 	MAIL_STATE_FETCH=2;
 };
 
+enum MailOpCode {
+	MAIL_OP_READ=1;
+	MAIL_OP_FETCH=2;
+};
+
 message Mail {
     optional    uint64			from=2;
     optional    string			sender=3;
@@ -43,8 +48,7 @@ message Mail {
     optional    MailOption      option=7;
 	optional	MailState		state=8;
 };
-
-
+//////////////////////////////////////////////////////////
 message ChatSender {
 	optional	uint64      id=1;
 	optional	string		name=2;
@@ -60,9 +64,52 @@ message ChatMsg {
 	optional	ChatContent	content=2;
 	optional	uint32		timestamp=3;
 };
+//////////////////////////////////////////////////////////
 
 message	Notice {
 	required	int32		type=1;
 	optional	bytes		data=2;
 };
-
+//////////////////////////////////////////////////////////
+message	 AwolMsg {
+	optional	Mail		mail=1;
+	optional	ChatMsg		chat=2;
+	optional	Notice		notice=3;
+};
+message AwolMsgItem {
+	required	uint64		id=1;
+	required	AwolMsg		msg=2;
+};
+//////////////////////////////////////////////////////////
+//client server msg
+//////////////////////////////////////////////////////////
+message CSAwalMsg {
+	enum MsgCMD {
+		MSG_CMD_LIST=1;
+		MSG_CMD_UPDATE=2;
+		MSG_CMD_SENDTO=3;
+		MSG_CMD_GET=4;
+		MSG_CMD_REMOVE=5;
+		MSG_CMD_NOTIFY=6;
+	}
+	required	MsgCMD		cmd=1;
+	optional	Cookie		cookie=2;
+	optional	Request		request=3;
+	optional	Response	response=4;
+	optional	Notify		notify=5;
+	message Cookie {		
+	}
+	message Request {
+		optional	uint64		id=2;
+		optional	awolmsg.MsgAgent	sendto=3;
+		optional	int32		opcode=4;
+		optional	AwolMsg		msg=5;
+	}
+	message Response {
+		required	int32			ret=1;
+		repeated	AwolMsgItem		msglist=2;
+	}
+	message Notify {
+		repeated	AwolMsgItem		msglist=1;		
+	}
+};

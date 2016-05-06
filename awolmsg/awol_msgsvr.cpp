@@ -74,13 +74,13 @@ int MsgSvr::destory(){
 bool MsgSvr::ready(){
     return rpc()->ready();
 }
-MsgPortal * find(MsgActor & actor, int type){
+MsgPortal * MsgSvr::find(const MsgActor & actor, int type){
     MsgKey k;
     k.actor = actor;
-    k.type = portal->type();
+    k.type = type;
     auto it = impl->recievers.find(k);
     if (it != impl->recievers.end()){
-        return impl->second;
+        return it->second;
     }
     return nullptr;
 }

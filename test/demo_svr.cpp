@@ -158,6 +158,10 @@ struct TestMailBox : public awolapp::MailBox {
     GLOG_DBG("on fetch .... id:%lu", id);
     }
     */
+    virtual void onlist(bool fromc){
+        //send to client
+        remove(6281186183439450115);
+    }
 };
 
 int main(int argc, char * argv[]){
@@ -187,14 +191,11 @@ int main(int argc, char * argv[]){
     mail.set_subject("send to ma2");
     //mb.sendto(ma2, mail, false);
 
-    mb.list(true);
+    mb.list();
 
     TestMailBox mb2(ma2);
-    mb2.list(true);
-    mb2.read(6281186836274479105);
-    mb2.read(6281186784734871553);
-    mb2.fetch(6281186784734871553);
-    mb2.remove(6281186183439450115);
+    mb2.list();
+
     while (true){
         msgsvr.update();
     }
