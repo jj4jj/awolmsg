@@ -150,18 +150,13 @@ using namespace awolapp;
 
 struct TestMailBox : public awolapp::MailBox {
     TestMailBox(const MsgActor & ma) : MailBox(ma){}
-    /*
     virtual void onread(uint64_t id, const Mail & mail){
-    GLOG_DBG("on read .... id:%lu", id);
+
     }
     virtual void onfetch(uint64_t id, const Mail & mail){
-    GLOG_DBG("on fetch .... id:%lu", id);
+
     }
-    */
-    virtual void onlist(bool fromc){
-        //send to client
-        remove(6281186183439450115);
-    }
+
 };
 
 int main(int argc, char * argv[]){
@@ -188,13 +183,23 @@ int main(int argc, char * argv[]){
     //mb.put(mail);
     //mb.put(mail);
     //send to ma2
-    mail.set_subject("send to ma2");
     //mb.sendto(ma2, mail, false);
 
-    mb.list();
+    mb.insert(mail);;
 
     TestMailBox mb2(ma2);
-    mb2.list();
+    mail.set_subject("send to ma2");
+    mb2.insert(mail);;
+
+    CSAwalMsg request;
+    request.set_cmd(CSAwalMsg_MsgCMD_MSG_CMD_LIST);
+    mb.request(request.SerializeAsString());
+    mb2.request(request.SerializeAsString());
+
+
+
+
+    
 
     while (true){
         msgsvr.update();

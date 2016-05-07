@@ -54,13 +54,13 @@ static void _safe_portal_dispatch_onrm(const MsgActor & actor, int type, bool fr
     }
     return portal->onremove(ret, id, fromc);
 }
-static void _safe_portal_dispatch_onget(const MsgActor & actor, int type, int ret, uint64_t id, const string & msg){
+static void _safe_portal_dispatch_onget(const MsgActor & actor, int type, bool fromc, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
         GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
         return;
     }
-    return portal->onget(ret, id, msg);
+    return portal->onget(ret, id, msg, fromc);
 }
 
 
@@ -109,9 +109,9 @@ int MsgPortal::remove(uint64_t id, bool fromc){//client or server
 		return ErrorCode::AWOL_EC_NO_PERM;
 	}
 }
-int MsgPortal::get(uint64_t id){
+int MsgPortal::get(uint64_t id, bool fromc){
     auto cb = std::bind(_safe_portal_dispatch_onget,
-        this->actor(), this->type(),
+        this->actor(), this->type(), fromc,
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
     return msgbox_.get(id, cb);
 }
@@ -141,7 +141,7 @@ void MsgPortal::onput(int ret, uint64_t id, const std::string & msg){
 	//new msg response to client
 	GLOG_DBG("... ret:%d msg.length:%d", ret, msg.length());
 }
-void MsgPortal::onget(int ret, uint64_t id, const std::string & msg){
+void MsgPortal::onget(int ret, uint64_t id, const std::string & msg, bool fromc){
     GLOG_DBG("... ret:%d id:%lu msg.length:%d", ret, id, msg.length());
 }
 

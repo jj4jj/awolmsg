@@ -1,5 +1,5 @@
-import "awolmsg/awolmsg.proto";
 package awolapp;
+import "awolmsg.proto";
 
 enum ActorType {
 	ACTOR_TYPE_NONE=0;
@@ -92,13 +92,18 @@ message CSAwalMsg {
 		MSG_CMD_REMOVE=5;
 		MSG_CMD_NOTIFY=6;
 	}
+	enum AwolMsgSyncCode {
+		MSG_SYNC_REMOVE=1;
+		MSG_SYNC_RECV=2;
+		MSG_SYNC_GET=3;
+	}
 	required	MsgCMD		cmd=1;
 	optional	Cookie		cookie=2;
 	optional	Request		request=3;
 	optional	Response	response=4;
 	optional	Notify		notify=5;
-	message Cookie {		
-	}
+	message Cookie {
+    }
 	message Request {
 		optional	uint64		id=2;
 		optional	awolmsg.MsgAgent	sendto=3;
@@ -110,6 +115,7 @@ message CSAwalMsg {
 		repeated	AwolMsgItem		msglist=2;
 	}
 	message Notify {
-		repeated	AwolMsgItem		msglist=1;		
+		required	AwolMsgSyncCode	sync=1;
+		repeated	AwolMsgItem		msglist=2;
 	}
 };

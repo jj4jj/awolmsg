@@ -16,9 +16,9 @@ public:
 	virtual int sync(uint64_t id, const std::string & m, int op = 0);
 	virtual int list(bool fromc = true);
 	virtual int remove(uint64_t id, bool fromc = true);//client or server
-    virtual int get(uint64_t id);
+    virtual int get(uint64_t id, bool fromc = true);
 public:
-    virtual void onget(int ret, uint64_t id, const string & msg);
+    virtual void onget(int ret, uint64_t id, const string & msg, bool fromc);
     virtual void onremove(int ret, uint64_t id, bool fromc);
     virtual void onsync(int ret, uint64_t id, const string & msg, int op);
     virtual void onlist(int ret, const MsgList & vms, bool fromc);
@@ -60,7 +60,18 @@ public:
         }
         return MsgPortal::put(std::string(msgbuff.buffer, m.ByteSize()));
     }
-    virtual int sync(uint64_t id, const MsgT & m, int op = 0){
+    virtual int sync(uint64_t id, int op = 0){
+        auto it = msg_cache.find(id);
+        if (it == msg_cache.end()){
+            GLOG_ERR("op mail id:%lu not exist with op:%d", id, op);
+            return ErrorCode::AWOL_EC_MSG_NOT_FOUND;
+        }
+        MsgT & m = it->second;
+        int ret = onsyncop(id, m, op);
+        if (ret){
+            GLOG_ERR("check op error ret:%d", ret);
+            return ret;
+        }
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
         if (!m.SerializeToArray(msgbuff.buffer, msgbuff.max_size)){
             GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
@@ -69,7 +80,7 @@ public:
         return MsgPortal::sync(id, std::string(msgbuff.buffer, m.ByteSize()), op);
     }
 public:
-    virtual void onget(uint64_t id, const MsgT & msg){
+    virtual void onget(uint64_t id, const MsgT & msg, bool fromc){
         GLOG_DBG("on get msg id:%lu [%s]", id, msg.ShortDebugString().c_str());
     }
     virtual void osend(const MsgActor & actorto, uint64_t id, const MsgT & msg){
@@ -91,8 +102,15 @@ public:
     virtual void onsync(uint64_t id, const MsgT & msg, int op){
         GLOG_DBG("on update msg id:%d op:%d [%s]", id, op, msg.ShortDebugString().c_str());
     }
+    virtual int  onsyncop(uint64_t id, MsgT & msg, int op){
+        if (op != 0){
+            GLOG_ERR("op = %d id:%lu not permitted !", op, id);
+            return ErrorCode::AWOL_EC_MSG_UPDATE_OP_ERROR;
+        }
+        return 0;
+    }
 public:
-    void onget(int ret, uint64_t id, const string & msg){
+    void onget(int ret, uint64_t id, const string & msg, bool fromc){
         if (ret){
             GLOG_ERR("onget msg error :%d", ret);
             return;
@@ -102,7 +120,7 @@ public:
             GLOG_ERR("parse from array error ! length:%d", msg.length());
         }
         msg_cache[id] = mm;
-        onget(id, mm);
+        onget(id, mm, fromc);
     }
     void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg){
         if (ret){
