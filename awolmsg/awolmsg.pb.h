@@ -41,6 +41,25 @@ class Msg;
 class Msg_MsgData;
 class NotifyMsg;
 
+enum MsgFlag_StoreEngine {
+  MsgFlag_StoreEngine_STORE_REDIS = 0,
+  MsgFlag_StoreEngine_STORE_MYSQL = 1
+};
+bool MsgFlag_StoreEngine_IsValid(int value);
+const MsgFlag_StoreEngine MsgFlag_StoreEngine_StoreEngine_MIN = MsgFlag_StoreEngine_STORE_REDIS;
+const MsgFlag_StoreEngine MsgFlag_StoreEngine_StoreEngine_MAX = MsgFlag_StoreEngine_STORE_MYSQL;
+const int MsgFlag_StoreEngine_StoreEngine_ARRAYSIZE = MsgFlag_StoreEngine_StoreEngine_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MsgFlag_StoreEngine_descriptor();
+inline const ::std::string& MsgFlag_StoreEngine_Name(MsgFlag_StoreEngine value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MsgFlag_StoreEngine_descriptor(), value);
+}
+inline bool MsgFlag_StoreEngine_Parse(
+    const ::std::string& name, MsgFlag_StoreEngine* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MsgFlag_StoreEngine>(
+    MsgFlag_StoreEngine_descriptor(), name, value);
+}
 enum MsgOP {
   MSG_OP_LIST = 1,
   MSG_OP_SET = 2,
@@ -305,15 +324,49 @@ class MsgFlag : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef MsgFlag_StoreEngine StoreEngine;
+  static const StoreEngine STORE_REDIS = MsgFlag_StoreEngine_STORE_REDIS;
+  static const StoreEngine STORE_MYSQL = MsgFlag_StoreEngine_STORE_MYSQL;
+  static inline bool StoreEngine_IsValid(int value) {
+    return MsgFlag_StoreEngine_IsValid(value);
+  }
+  static const StoreEngine StoreEngine_MIN =
+    MsgFlag_StoreEngine_StoreEngine_MIN;
+  static const StoreEngine StoreEngine_MAX =
+    MsgFlag_StoreEngine_StoreEngine_MAX;
+  static const int StoreEngine_ARRAYSIZE =
+    MsgFlag_StoreEngine_StoreEngine_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  StoreEngine_descriptor() {
+    return MsgFlag_StoreEngine_descriptor();
+  }
+  static inline const ::std::string& StoreEngine_Name(StoreEngine value) {
+    return MsgFlag_StoreEngine_Name(value);
+  }
+  static inline bool StoreEngine_Parse(const ::std::string& name,
+      StoreEngine* value) {
+    return MsgFlag_StoreEngine_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
+
+  // optional .awolmsg.MsgFlag.StoreEngine engine = 1;
+  inline bool has_engine() const;
+  inline void clear_engine();
+  static const int kEngineFieldNumber = 1;
+  inline ::awolmsg::MsgFlag_StoreEngine engine() const;
+  inline void set_engine(::awolmsg::MsgFlag_StoreEngine value);
 
   // @@protoc_insertion_point(class_scope:awolmsg.MsgFlag)
  private:
+  inline void set_has_engine();
+  inline void clear_has_engine();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
+  int engine_;
   friend void  protobuf_AddDesc_awolmsg_2eproto();
   friend void protobuf_AssignDesc_awolmsg_2eproto();
   friend void protobuf_ShutdownFile_awolmsg_2eproto();
@@ -813,6 +866,31 @@ inline void MsgExt::set_allocated_from(::awolmsg::MsgAgent* from) {
 
 // MsgFlag
 
+// optional .awolmsg.MsgFlag.StoreEngine engine = 1;
+inline bool MsgFlag::has_engine() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void MsgFlag::set_has_engine() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void MsgFlag::clear_has_engine() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void MsgFlag::clear_engine() {
+  engine_ = 0;
+  clear_has_engine();
+}
+inline ::awolmsg::MsgFlag_StoreEngine MsgFlag::engine() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgFlag.engine)
+  return static_cast< ::awolmsg::MsgFlag_StoreEngine >(engine_);
+}
+inline void MsgFlag::set_engine(::awolmsg::MsgFlag_StoreEngine value) {
+  assert(::awolmsg::MsgFlag_StoreEngine_IsValid(value));
+  set_has_engine();
+  engine_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgFlag.engine)
+}
+
 // -------------------------------------------------------------------
 
 // Msg_MsgData
@@ -1277,6 +1355,11 @@ inline void NotifyMsg::set_allocated_data(::std::string* data) {
 namespace google {
 namespace protobuf {
 
+template <> struct is_proto_enum< ::awolmsg::MsgFlag_StoreEngine> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgFlag_StoreEngine>() {
+  return ::awolmsg::MsgFlag_StoreEngine_descriptor();
+}
 template <> struct is_proto_enum< ::awolmsg::MsgOP> : ::google::protobuf::internal::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgOP>() {

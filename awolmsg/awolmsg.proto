@@ -12,6 +12,11 @@ message MsgExt {
 }
 
 message MsgFlag {
+	enum StoreEngine {
+		STORE_REDIS = 0;
+		STORE_MYSQL = 1;
+	};
+	optional StoreEngine	engine=1;
 }
 
 enum MsgOP {

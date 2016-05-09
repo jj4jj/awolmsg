@@ -26,6 +26,7 @@ message MailContent {
 
 message MailOption {
     optional    uint32  expire_timestamp=1;
+	optional	uint32	start_timestamp=2;
 };
 
 enum MailState {

@@ -29,6 +29,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* MsgFlag_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   MsgFlag_reflection_ = NULL;
+const ::google::protobuf::EnumDescriptor* MsgFlag_StoreEngine_descriptor_ = NULL;
 const ::google::protobuf::Descriptor* Msg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Msg_reflection_ = NULL;
@@ -84,6 +85,7 @@ void protobuf_AssignDesc_awolmsg_2eproto() {
       sizeof(MsgExt));
   MsgFlag_descriptor_ = file->message_type(2);
   static const int MsgFlag_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgFlag, engine_),
   };
   MsgFlag_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -96,6 +98,7 @@ void protobuf_AssignDesc_awolmsg_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MsgFlag));
+  MsgFlag_StoreEngine_descriptor_ = MsgFlag_descriptor_->enum_type(0);
   Msg_descriptor_ = file->message_type(3);
   static const int Msg_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Msg, type_),
@@ -203,16 +206,19 @@ void protobuf_AddDesc_awolmsg_2eproto() {
     "\n\rawolmsg.proto\022\007awolmsg\"$\n\010MsgAgent\022\014\n\004"
     "type\030\001 \002(\005\022\n\n\002id\030\002 \001(\004\"D\n\006MsgExt\022\014\n\004time"
     "\030\001 \001(\r\022\013\n\003ttl\030\002 \001(\r\022\037\n\004from\030\003 \001(\0132\021.awol"
-    "msg.MsgAgent\"\t\n\007MsgFlag\"\330\001\n\003Msg\022\014\n\004type\030"
-    "\001 \002(\005\022 \n\005actor\030\002 \001(\0132\021.awolmsg.MsgAgent\022"
-    "\"\n\004data\030\003 \003(\0132\024.awolmsg.Msg.MsgData\022\036\n\004f"
-    "lag\030\004 \001(\0132\020.awolmsg.MsgFlag\022\032\n\002op\030\005 \001(\0162"
-    "\016.awolmsg.MsgOP\032A\n\007MsgData\022\n\n\002id\030\001 \002(\004\022\014"
-    "\n\004data\030\002 \001(\014\022\034\n\003ext\030\003 \001(\0132\017.awolmsg.MsgE"
-    "xt\"N\n\tNotifyMsg\022 \n\005actor\030\001 \001(\0132\021.awolmsg"
-    ".MsgAgent\022\021\n\tclientsrc\030\002 \001(\005\022\014\n\004data\030\003 \001"
-    "(\014*G\n\005MsgOP\022\017\n\013MSG_OP_LIST\020\001\022\016\n\nMSG_OP_S"
-    "ET\020\002\022\016\n\nMSG_OP_GET\020\003\022\r\n\tMSG_OP_RM\020\004", 515);
+    "msg.MsgAgent\"h\n\007MsgFlag\022,\n\006engine\030\001 \001(\0162"
+    "\034.awolmsg.MsgFlag.StoreEngine\"/\n\013StoreEn"
+    "gine\022\017\n\013STORE_REDIS\020\000\022\017\n\013STORE_MYSQL\020\001\"\330"
+    "\001\n\003Msg\022\014\n\004type\030\001 \002(\005\022 \n\005actor\030\002 \001(\0132\021.aw"
+    "olmsg.MsgAgent\022\"\n\004data\030\003 \003(\0132\024.awolmsg.M"
+    "sg.MsgData\022\036\n\004flag\030\004 \001(\0132\020.awolmsg.MsgFl"
+    "ag\022\032\n\002op\030\005 \001(\0162\016.awolmsg.MsgOP\032A\n\007MsgDat"
+    "a\022\n\n\002id\030\001 \002(\004\022\014\n\004data\030\002 \001(\014\022\034\n\003ext\030\003 \001(\013"
+    "2\017.awolmsg.MsgExt\"N\n\tNotifyMsg\022 \n\005actor\030"
+    "\001 \001(\0132\021.awolmsg.MsgAgent\022\021\n\tclientsrc\030\002 "
+    "\001(\005\022\014\n\004data\030\003 \001(\014*G\n\005MsgOP\022\017\n\013MSG_OP_LIS"
+    "T\020\001\022\016\n\nMSG_OP_SET\020\002\022\016\n\nMSG_OP_GET\020\003\022\r\n\tM"
+    "SG_OP_RM\020\004", 610);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "awolmsg.proto", &protobuf_RegisterTypes);
   MsgAgent::default_instance_ = new MsgAgent();
@@ -853,7 +859,29 @@ void MsgExt::Swap(MsgExt* other) {
 
 // ===================================================================
 
+const ::google::protobuf::EnumDescriptor* MsgFlag_StoreEngine_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MsgFlag_StoreEngine_descriptor_;
+}
+bool MsgFlag_StoreEngine_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+
 #ifndef _MSC_VER
+const MsgFlag_StoreEngine MsgFlag::STORE_REDIS;
+const MsgFlag_StoreEngine MsgFlag::STORE_MYSQL;
+const MsgFlag_StoreEngine MsgFlag::StoreEngine_MIN;
+const MsgFlag_StoreEngine MsgFlag::StoreEngine_MAX;
+const int MsgFlag::StoreEngine_ARRAYSIZE;
+#endif  // _MSC_VER
+#ifndef _MSC_VER
+const int MsgFlag::kEngineFieldNumber;
 #endif  // !_MSC_VER
 
 MsgFlag::MsgFlag()
@@ -874,6 +902,7 @@ MsgFlag::MsgFlag(const MsgFlag& from)
 
 void MsgFlag::SharedCtor() {
   _cached_size_ = 0;
+  engine_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -909,6 +938,7 @@ MsgFlag* MsgFlag::New() const {
 }
 
 void MsgFlag::Clear() {
+  engine_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -922,14 +952,38 @@ bool MsgFlag::MergePartialFromCodedStream(
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional .awolmsg.MsgFlag.StoreEngine engine = 1;
+      case 1: {
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::awolmsg::MsgFlag_StoreEngine_IsValid(value)) {
+            set_engine(static_cast< ::awolmsg::MsgFlag_StoreEngine >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
     }
-    DO_(::google::protobuf::internal::WireFormat::SkipField(
-          input, tag, mutable_unknown_fields()));
   }
 success:
   // @@protoc_insertion_point(parse_success:awolmsg.MsgFlag)
@@ -943,6 +997,12 @@ failure:
 void MsgFlag::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:awolmsg.MsgFlag)
+  // optional .awolmsg.MsgFlag.StoreEngine engine = 1;
+  if (has_engine()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->engine(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -953,6 +1013,12 @@ void MsgFlag::SerializeWithCachedSizes(
 ::google::protobuf::uint8* MsgFlag::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:awolmsg.MsgFlag)
+  // optional .awolmsg.MsgFlag.StoreEngine engine = 1;
+  if (has_engine()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->engine(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -964,6 +1030,14 @@ void MsgFlag::SerializeWithCachedSizes(
 int MsgFlag::ByteSize() const {
   int total_size = 0;
 
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional .awolmsg.MsgFlag.StoreEngine engine = 1;
+    if (has_engine()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->engine());
+    }
+
+  }
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -989,6 +1063,11 @@ void MsgFlag::MergeFrom(const ::google::protobuf::Message& from) {
 
 void MsgFlag::MergeFrom(const MsgFlag& from) {
   GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_engine()) {
+      set_engine(from.engine());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
@@ -1011,6 +1090,8 @@ bool MsgFlag::IsInitialized() const {
 
 void MsgFlag::Swap(MsgFlag* other) {
   if (other != this) {
+    std::swap(engine_, other->engine_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
   }

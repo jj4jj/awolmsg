@@ -7,7 +7,7 @@
 #include "dcpots/base/dcseqnum.hpp"
 #include "dcpots/base/msg_proto.hpp"
 #include "dcpots/base/dcutils.hpp"
-#include "../proto/awolmsg.pb.h"
+#include "../awolmsg/awolmsg.pb.h"
 #include "../awolmsg/awol_msg.h"
 using namespace std;
 //using namespace google::protobuf;
@@ -169,6 +169,8 @@ public:
 		strnprintf(keyname, 64, "msg/%d/%d:%lu", actor_type, actor_id, type);
 		return keyname;
 	}
+    int dispatch_redis_store_command(uint64_t cookie, const MsgOPT & msg, const string & msgdata, std::string & error, int clientid);
+    int dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg, const string & msgdata, std::string & error, int clientid);
 	virtual int yield(uint64_t cookie, const RpcValues & args, std::string & error, int clientid){
 		const string & msgdata = args.getb();
 		MsgOPT msg;
@@ -176,109 +178,14 @@ public:
 			GLOG_ERR("unpack msg error ! %d", msgdata.length());
 			return -1;
 		}
-		auto hsetkey = mergekey(msg.actor().type(),
-			msg.actor().id(), msg.type());
-        MsgActor actor(msg.actor().type(), msg.actor().id());
-        int msgtype = msg.type();
-        GLOG_TRA("redis command key :%s op:%d", hsetkey.c_str(), msg.op());
-        if (msg.op() == MSG_OP_LIST){
-            actor_state_update(actor, clientid);
-            //////////////////////////////////////////////////////////
-			redis->command([this, cookie](int ret, redisReply * reply){
-				RpcValues result;
-				if (ret != 0){
-					GLOG_ERR("redis command error result ret:%d", ret);
-					return this->resume(cookie, result, -1, "internal error");
-				}
-				if (reply->type == REDIS_REPLY_ERROR){
-					return this->resume(cookie, result, -2, reply->str);
-				}
-				for (int i = 0; i < reply->elements; ++i){					
-					result.addb(reply->element[i]->str, reply->element[i]->len);
-				}
-				return this->resume(cookie, result);
-			}, "HVALS %s", hsetkey.data());
-		}
-		else if (msg.op() == MSG_OP_SET){
-			char msgbuff[384 * 1024];
-			auto mid = msg.data(0).id();
-			if (!msg.data(0).SerializeToArray(msgbuff, sizeof(msgbuff))){
-				GLOG_ERR("set value msg pack error ! size:%d", msg.data(0).ByteSize());
-			}
-            redis->command([this, cookie, actor, msgdata, clientid](int ret, redisReply * reply){
-				RpcValues result;
-				if (ret != 0){
-					GLOG_ERR("redis command error result ret:%d", ret);
-					return this->resume(cookie, result, -1, "internal error");
-				}
-				if (reply->type == REDIS_REPLY_ERROR){
-					return this->resume(cookie, result, -2, reply->str);
-				}
-				if (reply->type != REDIS_REPLY_INTEGER){
-					GLOG_ERR("reply type not string error type:%d", reply->type);
-					return this->resume(cookie, result, -3, "db value type error");
-				}
-                send_notify_actor_msg(actor, msgdata, clientid);
-				result.addi(reply->integer);
-                result.setb(msgdata.data(), msgdata.length());
-				return this->resume(cookie, result);
-			}, "HSET %s %s %b", hsetkey.data(),
-				std::to_string(mid).c_str(), msgbuff, msg.data(0).ByteSize());
-		}
-		else if (msg.op() == MSG_OP_RM){
-            actor_state_update(actor, clientid);
-            auto mid = msg.data(0).id();
-            auto rmcb = [this, cookie](int ret, redisReply * reply){
-                RpcValues result;
-                if (ret != 0){
-                    GLOG_ERR("redis command error result ret:%d", ret);
-                    return this->resume(cookie, result, -1, "internal error");
-                }
-                if (reply->type == REDIS_REPLY_ERROR){
-                    return this->resume(cookie, result, -2, reply->str);
-                }
-                if (reply->type != REDIS_REPLY_INTEGER){
-                    GLOG_ERR("reply type not string error type:%d", reply->type);
-                    return this->resume(cookie, result, -3, "db value type error");
-                }
-                result.addi(reply->integer);
-                return this->resume(cookie, result);
-            };
-            if (mid > 0){
-                redis->command(rmcb, "HDEL %s %s", hsetkey.data(), std::to_string(mid).c_str());
-            }
-            else {
-                redis->command(rmcb, "DEL %s", hsetkey.data());
-            }
-		}
-		else if (msg.op() == MSG_OP_GET){
-            actor_state_update(actor, clientid);
-            auto mid = msg.data(0).id();
-			redis->command([this, mid, cookie](int ret, redisReply * reply){
-				RpcValues result;
-				if (ret != 0){
-					GLOG_ERR("redis command error result ret:%d", ret);
-					return this->resume(cookie, result, -1, "internal error");
-				}
-				if (reply->type == REDIS_REPLY_ERROR){
-					return this->resume(cookie, result, -2, reply->str);
-				}
-				if (reply->type == REDIS_REPLY_NIL){
-					return this->resume(cookie, result, 0, "nil value");
-				}
-				if (reply->type != REDIS_REPLY_STRING){
-					GLOG_ERR("reply type not string error type:%d", reply->type);
-					return this->resume(cookie, result, -3, "db value type error");
-				}
-                result.addi(mid);
-                result.setb(reply->str, reply->len);
-				return this->resume(cookie, result);
-			}, "HGET %s %s", hsetkey.data(), std::to_string(mid).c_str());
-		}
-		else {
-			return -3;
-		}
-		return 0;
+        int ret = 0;
+        if (msg.flag().engine() == MsgFlag::STORE_REDIS){
+            ret = dispatch_redis_store_command(cookie, msg, msgdata, error, clientid);
+        }
+        else if (msg.flag().engine() == MsgFlag::STORE_MYSQL){
+            ret = dispatch_mysql_store_command(cookie, msg, msgdata, error, clientid);
+        }
+		return ret;
 	}
 };
 
@@ -306,4 +213,221 @@ int main(int argc, char ** argv){
 	}
 
 	return 0;
+}
+
+
+
+
+int MsgService::dispatch_redis_store_command(uint64_t cookie, const MsgOPT & msg,
+    const string & msgdata, std::string & error, int clientid){
+    auto hsetkey = mergekey(msg.actor().type(),
+        msg.actor().id(), msg.type());
+    MsgActor actor(msg.actor().type(), msg.actor().id());
+    int msgtype = msg.type();
+    GLOG_TRA("redis command key :%s op:%d", hsetkey.c_str(), msg.op());
+    if (msg.op() == MSG_OP_LIST){
+        actor_state_update(actor, clientid);
+        //////////////////////////////////////////////////////////
+        redis->command([this, cookie](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            for (int i = 0; i < reply->elements; ++i){
+                result.addb(reply->element[i]->str, reply->element[i]->len);
+            }
+            return this->resume(cookie, result);
+        }, "HVALS %s", hsetkey.data());
+    }
+    else if (msg.op() == MSG_OP_SET){
+        char msgbuff[384 * 1024];
+        auto mid = msg.data(0).id();
+        if (!msg.data(0).SerializeToArray(msgbuff, sizeof(msgbuff))){
+            GLOG_ERR("set value msg pack error ! size:%d", msg.data(0).ByteSize());
+        }
+        redis->command([this, cookie, actor, msgdata, clientid](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            if (reply->type != REDIS_REPLY_INTEGER){
+                GLOG_ERR("reply type not string error type:%d", reply->type);
+                return this->resume(cookie, result, -3, "db value type error");
+            }
+            send_notify_actor_msg(actor, msgdata, clientid);
+            result.addi(reply->integer);
+            result.setb(msgdata.data(), msgdata.length());
+            return this->resume(cookie, result);
+        }, "HSET %s %s %b", hsetkey.data(),
+            std::to_string(mid).c_str(), msgbuff, msg.data(0).ByteSize());
+    }
+    else if (msg.op() == MSG_OP_RM){
+        actor_state_update(actor, clientid);
+        auto mid = msg.data(0).id();
+        auto rmcb = [this, cookie](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            if (reply->type != REDIS_REPLY_INTEGER){
+                GLOG_ERR("reply type not string error type:%d", reply->type);
+                return this->resume(cookie, result, -3, "db value type error");
+            }
+            result.addi(reply->integer);
+            return this->resume(cookie, result);
+        };
+        if (mid > 0){
+            redis->command(rmcb, "HDEL %s %s", hsetkey.data(), std::to_string(mid).c_str());
+        }
+        else {
+            redis->command(rmcb, "DEL %s", hsetkey.data());
+        }
+    }
+    else if (msg.op() == MSG_OP_GET){
+        actor_state_update(actor, clientid);
+        auto mid = msg.data(0).id();
+        redis->command([this, mid, cookie](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            if (reply->type == REDIS_REPLY_NIL){
+                return this->resume(cookie, result, 0, "nil value");
+            }
+            if (reply->type != REDIS_REPLY_STRING){
+                GLOG_ERR("reply type not string error type:%d", reply->type);
+                return this->resume(cookie, result, -3, "db value type error");
+            }
+            result.addi(mid);
+            result.setb(reply->str, reply->len);
+            return this->resume(cookie, result);
+        }, "HGET %s %s", hsetkey.data(), std::to_string(mid).c_str());
+    }
+    else {
+        return -3;
+    }
+
+}
+
+int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg, 
+    const std::string & msgdata, std::string & error, int clientid){
+#if 0
+    MsgActor actor(msg.actor().type(), msg.actor().id());
+    int msgtype = msg.type();
+    if (msg.op() == MSG_OP_LIST){
+        actor_state_update(actor, clientid);
+        ///////////////////////////////////////////////////////////
+        redis->command([this, cookie](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            for (int i = 0; i < reply->elements; ++i){
+                result.addb(reply->element[i]->str, reply->element[i]->len);
+            }
+            return this->resume(cookie, result);
+        }, "HVALS %s", hsetkey.data());
+    }
+    else if (msg.op() == MSG_OP_SET){
+        char msgbuff[384 * 1024];
+        auto mid = msg.data(0).id();
+        if (!msg.data(0).SerializeToArray(msgbuff, sizeof(msgbuff))){
+            GLOG_ERR("set value msg pack error ! size:%d", msg.data(0).ByteSize());
+        }
+        redis->command([this, cookie, actor, msgdata, clientid](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            if (reply->type != REDIS_REPLY_INTEGER){
+                GLOG_ERR("reply type not string error type:%d", reply->type);
+                return this->resume(cookie, result, -3, "db value type error");
+            }
+            send_notify_actor_msg(actor, msgdata, clientid);
+            result.addi(reply->integer);
+            result.setb(msgdata.data(), msgdata.length());
+            return this->resume(cookie, result);
+        }, "HSET %s %s %b", hsetkey.data(),
+            std::to_string(mid).c_str(), msgbuff, msg.data(0).ByteSize());
+    }
+    else if (msg.op() == MSG_OP_RM){
+        actor_state_update(actor, clientid);
+        auto mid = msg.data(0).id();
+        auto rmcb = [this, cookie](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            if (reply->type != REDIS_REPLY_INTEGER){
+                GLOG_ERR("reply type not string error type:%d", reply->type);
+                return this->resume(cookie, result, -3, "db value type error");
+            }
+            result.addi(reply->integer);
+            return this->resume(cookie, result);
+        };
+        if (mid > 0){
+            redis->command(rmcb, "HDEL %s %s", hsetkey.data(), std::to_string(mid).c_str());
+        }
+        else {
+            redis->command(rmcb, "DEL %s", hsetkey.data());
+        }
+    }
+    else if (msg.op() == MSG_OP_GET){
+        actor_state_update(actor, clientid);
+        auto mid = msg.data(0).id();
+        redis->command([this, mid, cookie](int ret, redisReply * reply){
+            RpcValues result;
+            if (ret != 0){
+                GLOG_ERR("redis command error result ret:%d", ret);
+                return this->resume(cookie, result, -1, "internal error");
+            }
+            if (reply->type == REDIS_REPLY_ERROR){
+                return this->resume(cookie, result, -2, reply->str);
+            }
+            if (reply->type == REDIS_REPLY_NIL){
+                return this->resume(cookie, result, 0, "nil value");
+            }
+            if (reply->type != REDIS_REPLY_STRING){
+                GLOG_ERR("reply type not string error type:%d", reply->type);
+                return this->resume(cookie, result, -3, "db value type error");
+            }
+            result.addi(mid);
+            result.setb(reply->str, reply->len);
+            return this->resume(cookie, result);
+        }, "HGET %s %s", hsetkey.data(), std::to_string(mid).c_str());
+    }
+    else {
+        return -3;
+    }
+#else
+return 0;
+#endif
 }
