@@ -1,5 +1,9 @@
 package awolmsg;
 
+enum MaxMsgTypeConstValue {
+	MAX_MSG_TYPE_NUM = 64;
+};
+
 message MsgAgent {
 	required int32		type=1;
 	optional uint64		id=2;
@@ -11,12 +15,29 @@ message MsgExt {
 	optional MsgAgent	from=3;
 }
 
+enum MsgFlagOwnType {
+	MSG_OPT_OWN_BO = 0;//both
+	MSG_OPT_OWN_SO = 1;//server only
+	MSG_OPT_OWN_CO = 2;//client only
+};
+enum MsgFalgStoreOptions {
+    MSG_OPT_STORE_NONE = 0;//
+    MSG_OPT_STORE_TTL = 1;//expiration ?
+    MSG_OPT_STORE_SHIFT = 2;//shift when full
+    MSG_OPT_STORE_MYSQL = 4;//using mysql
+};
+enum MsgFalgCpermOptions {
+	MSG_OPT_CPERM_NONE = 0;//flags
+	MSG_OPT_CPERM_SEND = 1;//flags
+	MSG_OPT_CPERM_REMOVE = 2;//flags
+	MSG_OPT_CPERM_LIST = 4;//flags
+	MSG_OPT_CPERM_UPDATE = 8;//flags
+	MSG_OPT_CPERM_ALL = 15; //PERM
+};
 message MsgFlag {
-	enum StoreEngine {
-		STORE_REDIS = 0;
-		STORE_MYSQL = 1;
-	};
-	optional StoreEngine	engine=1;
+	optional MsgFlagOwnType owner=1; //server only ? client only ? both ?
+	optional uint32 store=2; //list ? hash ? set ?
+	optional uint32 cperm=3; //other ext
 }
 
 enum MsgOP {
@@ -24,7 +45,14 @@ enum MsgOP {
 	MSG_OP_SET=2;
 	MSG_OP_GET=3;
 	MSG_OP_RM=4;
+	MSG_OP_INSERT=5;
 }
+
+message MsgStoreCallBack {
+	optional	uint64	cookie=1;
+	optional	int32	clientid=2;
+	optional	Msg		msg=3;
+};
 
 message Msg {
     required int32		type=1;

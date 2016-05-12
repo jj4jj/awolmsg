@@ -118,16 +118,16 @@ int main(){
 
 
     //2.send mail to 2 from system
-    mb.put(mm);
+    //mb.put(mm);
     //3.client set mail read
-    mb.update(1, MailBox::UPDATE_READ);
-    mb.update(1, MailBox::UPDATE_FETCH);
+    //mb.update(1, MailBox::UPDATE_READ);
+    //mb.update(1, MailBox::UPDATE_FETCH);
     //(award)
     //set update data
     //send response to client
 
     //4.delete
-    mb.remove(1);
+    //mb.remove(1);
     //delele from msgsvr
     //send to client
 
@@ -185,21 +185,17 @@ int main(int argc, char * argv[]){
     //send to ma2
     //mb.sendto(ma2, mail, false);
 
-    mb.insert(mail);;
+    //mb.insert(mail);;
 
     TestMailBox mb2(ma2);
     mail.set_subject("send to ma2");
-    mb2.insert(mail);;
+    //mb2.insert(mail);;
 
     CSAwalMsg request;
     request.set_cmd(CSAwalMsg_MsgCMD_MSG_CMD_LIST);
     mb.request(request.SerializeAsString());
     mb2.request(request.SerializeAsString());
 
-
-
-
-    
 
     while (true){
         msgsvr.update();

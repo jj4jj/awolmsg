@@ -17,7 +17,7 @@ enum PortalOpType {
 static void _safe_portal_dispatch_onlist(const MsgActor & actor, int type, bool fromc, int ret, const MsgList & vms){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
-        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
     return portal->onlist(ret, vms, fromc);
@@ -25,7 +25,7 @@ static void _safe_portal_dispatch_onlist(const MsgActor & actor, int type, bool 
 static void _safe_portal_dispatch_onsend(const MsgActor & actor, int type, const MsgActor & actorto, bool fromc, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
-        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
     return portal->onsend(ret, actorto, id, msg, fromc);
@@ -33,7 +33,7 @@ static void _safe_portal_dispatch_onsend(const MsgActor & actor, int type, const
 static void _safe_portal_dispatch_onput(const MsgActor & actor, int type, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
-        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
     return portal->onput(ret, id, msg);
@@ -41,7 +41,7 @@ static void _safe_portal_dispatch_onput(const MsgActor & actor, int type, int re
 static void _safe_portal_dispatch_onsync(const MsgActor & actor, int type, int op, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
-        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
     return portal->onsync(ret, id, msg, op);
@@ -49,7 +49,7 @@ static void _safe_portal_dispatch_onsync(const MsgActor & actor, int type, int o
 static void _safe_portal_dispatch_onrm(const MsgActor & actor, int type, bool fromc, int ret, uint64_t id){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
-        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
     return portal->onremove(ret, id, fromc);
@@ -57,7 +57,7 @@ static void _safe_portal_dispatch_onrm(const MsgActor & actor, int type, bool fr
 static void _safe_portal_dispatch_onget(const MsgActor & actor, int type, bool fromc, int ret, uint64_t id, const string & msg){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
-        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type, actor.id, type);
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
     return portal->onget(ret, id, msg, fromc);
@@ -88,7 +88,7 @@ int MsgPortal::sync(uint64_t id, const std::string & m, int op){
     return msgbox_.sync(id, m, cb);
 }
 int MsgPortal::list(bool fromc){
-	if (options().check(fromc, MsgOptions::MSG_OPT_CPERM_LIST)){
+	if (options().check(fromc, MSG_OPT_CPERM_LIST)){
         auto cb = std::bind(_safe_portal_dispatch_onlist,
             this->actor(), this->type(), fromc,
             std::placeholders::_1, std::placeholders::_2);
@@ -99,7 +99,7 @@ int MsgPortal::list(bool fromc){
 	}
 }
 int MsgPortal::remove(uint64_t id, bool fromc){//client or server
-	if (options().check(fromc, MsgOptions::MSG_OPT_CPERM_REMOVE)){
+	if (options().check(fromc, MSG_OPT_CPERM_REMOVE)){
         auto cb = std::bind(_safe_portal_dispatch_onrm,
             this->actor(), this->type(), fromc,
             std::placeholders::_1, std::placeholders::_2);

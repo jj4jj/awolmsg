@@ -16,9 +16,9 @@ typedef AwolAppImpl<Mail, MSG_TYPE_MAIL, MailBox>   AwolAppMailBoxImpl;
 struct MailBoxImpl : public AwolAppMailBoxImpl {
     MailBoxImpl(const MsgActor & actor, MailBox * mb) :AwolAppMailBoxImpl(actor, mb){}
     const MsgOptions & options() const {
-        static MsgOptions mo(MsgOptions::MSG_OPT_OWN_BO, MsgOptions::MSG_OPT_STORE_NONE,
-            MsgOptions::MSG_OPT_CPERM_REMOVE | MsgOptions::MSG_OPT_CPERM_LIST |
-            MsgOptions::MSG_OPT_CPERM_UPDATE);
+        static MsgOptions mo(MSG_OPT_OWN_BO, MSG_OPT_STORE_MYSQL,
+            MSG_OPT_CPERM_REMOVE | MSG_OPT_CPERM_LIST |
+            MSG_OPT_CPERM_UPDATE);
         return mo;
     }
 };

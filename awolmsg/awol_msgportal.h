@@ -85,7 +85,7 @@ public:
     }
     virtual void osend(const MsgActor & actorto, uint64_t id, const MsgT & msg){
         GLOG_DBG("on send to actor(%d:%d) msg id:%lu [%s]",
-            actorto.type, actorto.id, id, msg.ShortDebugString().c_str());
+            actorto.type(), actorto.id(), id, msg.ShortDebugString().c_str());
     }
     virtual void onput(uint64_t id, const MsgT & msg){
         GLOG_DBG("on put msg id:%lu [%s]", id, msg.ShortDebugString().c_str());
@@ -157,16 +157,20 @@ public:
         onput(id, mm);
     }
     void onlist(int ret, const MsgList & vms, bool fromc){
+        if (ret){
+            GLOG_ERR("onlist error ret:%d", ret);
+            return;
+        }
         msg_cache.clear();
-        GLOG_IFO("list refresh .... ");
         for (int i = 0; i < vms.size(); ++i){
             auto & msg = vms.at(i);
             MsgT mm;
             if (!mm.ParseFromArray(msg.data.data(), msg.data.length())){
                 GLOG_ERR("parse from array error ! length:%d", msg.data.length());
             }
+            assert(msg.id > 0);
             msg_cache[msg.id] = mm;
-            GLOG_IFO("insert msg id:%lu ", msg.id);
+            GLOG_DBG("msg actor:(%d:%lu)insert msg id:%lu ", actor().type(), actor().id(), msg.id);
         }
         onlist(fromc);
     }

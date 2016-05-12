@@ -25,7 +25,7 @@
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
-#include "awolmsg/awolmsg.pb.h"
+#include "awolmsg.pb.h"
 // @@protoc_insertion_point(includes)
 
 namespace awolapp {
@@ -73,6 +73,26 @@ inline bool CSAwalMsg_MsgCMD_Parse(
     const ::std::string& name, CSAwalMsg_MsgCMD* value) {
   return ::google::protobuf::internal::ParseNamedEnum<CSAwalMsg_MsgCMD>(
     CSAwalMsg_MsgCMD_descriptor(), name, value);
+}
+enum CSAwalMsg_AwolMsgSyncCode {
+  CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_REMOVE = 1,
+  CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_RECV = 2,
+  CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_GET = 3
+};
+bool CSAwalMsg_AwolMsgSyncCode_IsValid(int value);
+const CSAwalMsg_AwolMsgSyncCode CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_MIN = CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_REMOVE;
+const CSAwalMsg_AwolMsgSyncCode CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_MAX = CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_GET;
+const int CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_ARRAYSIZE = CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* CSAwalMsg_AwolMsgSyncCode_descriptor();
+inline const ::std::string& CSAwalMsg_AwolMsgSyncCode_Name(CSAwalMsg_AwolMsgSyncCode value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    CSAwalMsg_AwolMsgSyncCode_descriptor(), value);
+}
+inline bool CSAwalMsg_AwolMsgSyncCode_Parse(
+    const ::std::string& name, CSAwalMsg_AwolMsgSyncCode* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<CSAwalMsg_AwolMsgSyncCode>(
+    CSAwalMsg_AwolMsgSyncCode_descriptor(), name, value);
 }
 enum ActorType {
   ACTOR_TYPE_NONE = 0,
@@ -404,16 +424,26 @@ class MailOption : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 expire_timestamp() const;
   inline void set_expire_timestamp(::google::protobuf::uint32 value);
 
+  // optional uint32 start_timestamp = 2;
+  inline bool has_start_timestamp() const;
+  inline void clear_start_timestamp();
+  static const int kStartTimestampFieldNumber = 2;
+  inline ::google::protobuf::uint32 start_timestamp() const;
+  inline void set_start_timestamp(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:awolapp.MailOption)
  private:
   inline void set_has_expire_timestamp();
   inline void clear_has_expire_timestamp();
+  inline void set_has_start_timestamp();
+  inline void clear_has_start_timestamp();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::uint32 expire_timestamp_;
+  ::google::protobuf::uint32 start_timestamp_;
   friend void  protobuf_AddDesc_awolapp_2eproto();
   friend void protobuf_AssignDesc_awolapp_2eproto();
   friend void protobuf_ShutdownFile_awolapp_2eproto();
@@ -1487,10 +1517,17 @@ class CSAwalMsg_Notify : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .awolapp.AwolMsgItem msglist = 1;
+  // required .awolapp.CSAwalMsg.AwolMsgSyncCode sync = 1;
+  inline bool has_sync() const;
+  inline void clear_sync();
+  static const int kSyncFieldNumber = 1;
+  inline ::awolapp::CSAwalMsg_AwolMsgSyncCode sync() const;
+  inline void set_sync(::awolapp::CSAwalMsg_AwolMsgSyncCode value);
+
+  // repeated .awolapp.AwolMsgItem msglist = 2;
   inline int msglist_size() const;
   inline void clear_msglist();
-  static const int kMsglistFieldNumber = 1;
+  static const int kMsglistFieldNumber = 2;
   inline const ::awolapp::AwolMsgItem& msglist(int index) const;
   inline ::awolapp::AwolMsgItem* mutable_msglist(int index);
   inline ::awolapp::AwolMsgItem* add_msglist();
@@ -1501,12 +1538,15 @@ class CSAwalMsg_Notify : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:awolapp.CSAwalMsg.Notify)
  private:
+  inline void set_has_sync();
+  inline void clear_has_sync();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::awolapp::AwolMsgItem > msglist_;
+  int sync_;
   friend void  protobuf_AddDesc_awolapp_2eproto();
   friend void protobuf_AssignDesc_awolapp_2eproto();
   friend void protobuf_ShutdownFile_awolapp_2eproto();
@@ -1598,6 +1638,31 @@ class CSAwalMsg : public ::google::protobuf::Message {
   static inline bool MsgCMD_Parse(const ::std::string& name,
       MsgCMD* value) {
     return CSAwalMsg_MsgCMD_Parse(name, value);
+  }
+
+  typedef CSAwalMsg_AwolMsgSyncCode AwolMsgSyncCode;
+  static const AwolMsgSyncCode MSG_SYNC_REMOVE = CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_REMOVE;
+  static const AwolMsgSyncCode MSG_SYNC_RECV = CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_RECV;
+  static const AwolMsgSyncCode MSG_SYNC_GET = CSAwalMsg_AwolMsgSyncCode_MSG_SYNC_GET;
+  static inline bool AwolMsgSyncCode_IsValid(int value) {
+    return CSAwalMsg_AwolMsgSyncCode_IsValid(value);
+  }
+  static const AwolMsgSyncCode AwolMsgSyncCode_MIN =
+    CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_MIN;
+  static const AwolMsgSyncCode AwolMsgSyncCode_MAX =
+    CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_MAX;
+  static const int AwolMsgSyncCode_ARRAYSIZE =
+    CSAwalMsg_AwolMsgSyncCode_AwolMsgSyncCode_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  AwolMsgSyncCode_descriptor() {
+    return CSAwalMsg_AwolMsgSyncCode_descriptor();
+  }
+  static inline const ::std::string& AwolMsgSyncCode_Name(AwolMsgSyncCode value) {
+    return CSAwalMsg_AwolMsgSyncCode_Name(value);
+  }
+  static inline bool AwolMsgSyncCode_Parse(const ::std::string& name,
+      AwolMsgSyncCode* value) {
+    return CSAwalMsg_AwolMsgSyncCode_Parse(name, value);
   }
 
   // accessors -------------------------------------------------------
@@ -1911,6 +1976,30 @@ inline void MailOption::set_expire_timestamp(::google::protobuf::uint32 value) {
   set_has_expire_timestamp();
   expire_timestamp_ = value;
   // @@protoc_insertion_point(field_set:awolapp.MailOption.expire_timestamp)
+}
+
+// optional uint32 start_timestamp = 2;
+inline bool MailOption::has_start_timestamp() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void MailOption::set_has_start_timestamp() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void MailOption::clear_has_start_timestamp() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void MailOption::clear_start_timestamp() {
+  start_timestamp_ = 0u;
+  clear_has_start_timestamp();
+}
+inline ::google::protobuf::uint32 MailOption::start_timestamp() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailOption.start_timestamp)
+  return start_timestamp_;
+}
+inline void MailOption::set_start_timestamp(::google::protobuf::uint32 value) {
+  set_has_start_timestamp();
+  start_timestamp_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailOption.start_timestamp)
 }
 
 // -------------------------------------------------------------------
@@ -3048,7 +3137,32 @@ CSAwalMsg_Response::mutable_msglist() {
 
 // CSAwalMsg_Notify
 
-// repeated .awolapp.AwolMsgItem msglist = 1;
+// required .awolapp.CSAwalMsg.AwolMsgSyncCode sync = 1;
+inline bool CSAwalMsg_Notify::has_sync() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CSAwalMsg_Notify::set_has_sync() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CSAwalMsg_Notify::clear_has_sync() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CSAwalMsg_Notify::clear_sync() {
+  sync_ = 1;
+  clear_has_sync();
+}
+inline ::awolapp::CSAwalMsg_AwolMsgSyncCode CSAwalMsg_Notify::sync() const {
+  // @@protoc_insertion_point(field_get:awolapp.CSAwalMsg.Notify.sync)
+  return static_cast< ::awolapp::CSAwalMsg_AwolMsgSyncCode >(sync_);
+}
+inline void CSAwalMsg_Notify::set_sync(::awolapp::CSAwalMsg_AwolMsgSyncCode value) {
+  assert(::awolapp::CSAwalMsg_AwolMsgSyncCode_IsValid(value));
+  set_has_sync();
+  sync_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.CSAwalMsg.Notify.sync)
+}
+
+// repeated .awolapp.AwolMsgItem msglist = 2;
 inline int CSAwalMsg_Notify::msglist_size() const {
   return msglist_.size();
 }
@@ -3284,6 +3398,11 @@ template <> struct is_proto_enum< ::awolapp::CSAwalMsg_MsgCMD> : ::google::proto
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::CSAwalMsg_MsgCMD>() {
   return ::awolapp::CSAwalMsg_MsgCMD_descriptor();
+}
+template <> struct is_proto_enum< ::awolapp::CSAwalMsg_AwolMsgSyncCode> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::CSAwalMsg_AwolMsgSyncCode>() {
+  return ::awolapp::CSAwalMsg_AwolMsgSyncCode_descriptor();
 }
 template <> struct is_proto_enum< ::awolapp::ActorType> : ::google::protobuf::internal::true_type {};
 template <>

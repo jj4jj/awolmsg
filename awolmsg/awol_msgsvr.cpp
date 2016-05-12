@@ -16,6 +16,7 @@ struct MsgSvrImpl {
 	std::unordered_map<MsgKey, MsgPortal*>	recievers;
 	dcrpc::RpcClient						rpc;
     msg_buffer_t                            msgbuff;
+    std::vector<MsgPortal*>                 protals;
 };
 MsgSvr::~MsgSvr(){
 	destory();
@@ -49,8 +50,7 @@ int MsgSvr::init(const string & svraddr){
             return;
         }
         MsgKey mk;
-        mk.actor.type = msgop.actor().type();
-        mk.actor.id = msgop.actor().id();
+        mk.actor = msgop.actor();
         mk.type = msgop.type();
 
         auto it = this->impl->recievers.find(mk);
@@ -60,6 +60,7 @@ int MsgSvr::init(const string & svraddr){
         }
 
     });
+    impl->protals.resize(awolmsg::MAX_MSG_TYPE_NUM);
 	return 0;
 }
 int MsgSvr::destory(){
@@ -86,8 +87,8 @@ MsgPortal * MsgSvr::find(const MsgActor & actor, int type){
 }
 void MsgSvr::unregis(MsgPortal * portal){
     GLOG_DBG("unregister msg portal actor(%d:%lu) type:%d pointer:%p",
-        portal->msgbox().actor().type,
-        portal->msgbox().actor().id, portal->type(), portal);
+        portal->msgbox().actor().type(),
+        portal->msgbox().actor().id(), portal->type(), portal);
     MsgKey k;
     k.actor = portal->msgbox().actor();
     k.type = portal->type();
@@ -96,12 +97,14 @@ void MsgSvr::unregis(MsgPortal * portal){
 
 int MsgSvr::regis(MsgPortal * portal){
     GLOG_DBG("register msg portal actor(%d:%lu) type:%d pointer:%p",
-        portal->msgbox().actor().type,
-        portal->msgbox().actor().id, portal->type(), portal);
+        portal->msgbox().actor().type(),
+        portal->msgbox().actor().id(), portal->type(), portal);
     MsgKey k;
 	k.actor = portal->msgbox().actor();
 	k.type = portal->type();
 	impl->recievers[k] = portal;
+    assert(k.type < awolmsg::MAX_MSG_TYPE_NUM);
+    impl->protals[k.type] = portal;
 	return 0;
 }
 int MsgSvr::update(){
@@ -114,5 +117,9 @@ RpcClient * MsgSvr::rpc(){
 msg_buffer_t * MsgSvr::msg_buffer(){
     return &impl->msgbuff;
 }
+const MsgOptions & MsgSvr::options(int type){
+    return impl->protals[type]->options();
+}
+
 
 NS_END()

@@ -78,7 +78,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
     }
     void onremove(uint64_t id, const AppMsg & msg, bool fromc){
         GLOG_DBG("on app msg remove id:%ld fromc:%d", id, fromc);
-        if (this->options().owner != MsgOptions::MSG_OPT_OWN_SO){
+        if (this->options().owner() != MSG_OPT_OWN_SO){
             CSAwalMsg csmsg;
             csmsg.set_cmd(CSAwalMsg::MSG_CMD_NOTIFY);
             csmsg.mutable_notify()->set_sync(CSAwalMsg::MSG_SYNC_REMOVE);
@@ -89,7 +89,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
     }
     virtual void onnotify(uint64_t id, const AppMsg & msg){
         GLOG_DBG("notify new app msg id:%id", id);
-        if (this->options().owner != MsgOptions::MSG_OPT_OWN_SO){
+        if (this->options().owner() != MSG_OPT_OWN_SO){
             app_->onnotify(id, msg);
             CSAwalMsg csmsg;
             csmsg.set_cmd(CSAwalMsg::MSG_CMD_NOTIFY);

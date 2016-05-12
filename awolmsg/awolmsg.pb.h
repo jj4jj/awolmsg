@@ -37,38 +37,103 @@ void protobuf_ShutdownFile_awolmsg_2eproto();
 class MsgAgent;
 class MsgExt;
 class MsgFlag;
+class MsgStoreCallBack;
 class Msg;
 class Msg_MsgData;
 class NotifyMsg;
 
-enum MsgFlag_StoreEngine {
-  MsgFlag_StoreEngine_STORE_REDIS = 0,
-  MsgFlag_StoreEngine_STORE_MYSQL = 1
+enum MaxMsgTypeConstValue {
+  MAX_MSG_TYPE_NUM = 64
 };
-bool MsgFlag_StoreEngine_IsValid(int value);
-const MsgFlag_StoreEngine MsgFlag_StoreEngine_StoreEngine_MIN = MsgFlag_StoreEngine_STORE_REDIS;
-const MsgFlag_StoreEngine MsgFlag_StoreEngine_StoreEngine_MAX = MsgFlag_StoreEngine_STORE_MYSQL;
-const int MsgFlag_StoreEngine_StoreEngine_ARRAYSIZE = MsgFlag_StoreEngine_StoreEngine_MAX + 1;
+bool MaxMsgTypeConstValue_IsValid(int value);
+const MaxMsgTypeConstValue MaxMsgTypeConstValue_MIN = MAX_MSG_TYPE_NUM;
+const MaxMsgTypeConstValue MaxMsgTypeConstValue_MAX = MAX_MSG_TYPE_NUM;
+const int MaxMsgTypeConstValue_ARRAYSIZE = MaxMsgTypeConstValue_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* MsgFlag_StoreEngine_descriptor();
-inline const ::std::string& MsgFlag_StoreEngine_Name(MsgFlag_StoreEngine value) {
+const ::google::protobuf::EnumDescriptor* MaxMsgTypeConstValue_descriptor();
+inline const ::std::string& MaxMsgTypeConstValue_Name(MaxMsgTypeConstValue value) {
   return ::google::protobuf::internal::NameOfEnum(
-    MsgFlag_StoreEngine_descriptor(), value);
+    MaxMsgTypeConstValue_descriptor(), value);
 }
-inline bool MsgFlag_StoreEngine_Parse(
-    const ::std::string& name, MsgFlag_StoreEngine* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<MsgFlag_StoreEngine>(
-    MsgFlag_StoreEngine_descriptor(), name, value);
+inline bool MaxMsgTypeConstValue_Parse(
+    const ::std::string& name, MaxMsgTypeConstValue* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MaxMsgTypeConstValue>(
+    MaxMsgTypeConstValue_descriptor(), name, value);
+}
+enum MsgFlagOwnType {
+  MSG_OPT_OWN_BO = 0,
+  MSG_OPT_OWN_SO = 1,
+  MSG_OPT_OWN_CO = 2
+};
+bool MsgFlagOwnType_IsValid(int value);
+const MsgFlagOwnType MsgFlagOwnType_MIN = MSG_OPT_OWN_BO;
+const MsgFlagOwnType MsgFlagOwnType_MAX = MSG_OPT_OWN_CO;
+const int MsgFlagOwnType_ARRAYSIZE = MsgFlagOwnType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MsgFlagOwnType_descriptor();
+inline const ::std::string& MsgFlagOwnType_Name(MsgFlagOwnType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MsgFlagOwnType_descriptor(), value);
+}
+inline bool MsgFlagOwnType_Parse(
+    const ::std::string& name, MsgFlagOwnType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MsgFlagOwnType>(
+    MsgFlagOwnType_descriptor(), name, value);
+}
+enum MsgFalgStoreOptions {
+  MSG_OPT_STORE_NONE = 0,
+  MSG_OPT_STORE_TTL = 1,
+  MSG_OPT_STORE_SHIFT = 2,
+  MSG_OPT_STORE_MYSQL = 4
+};
+bool MsgFalgStoreOptions_IsValid(int value);
+const MsgFalgStoreOptions MsgFalgStoreOptions_MIN = MSG_OPT_STORE_NONE;
+const MsgFalgStoreOptions MsgFalgStoreOptions_MAX = MSG_OPT_STORE_MYSQL;
+const int MsgFalgStoreOptions_ARRAYSIZE = MsgFalgStoreOptions_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MsgFalgStoreOptions_descriptor();
+inline const ::std::string& MsgFalgStoreOptions_Name(MsgFalgStoreOptions value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MsgFalgStoreOptions_descriptor(), value);
+}
+inline bool MsgFalgStoreOptions_Parse(
+    const ::std::string& name, MsgFalgStoreOptions* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MsgFalgStoreOptions>(
+    MsgFalgStoreOptions_descriptor(), name, value);
+}
+enum MsgFalgCpermOptions {
+  MSG_OPT_CPERM_NONE = 0,
+  MSG_OPT_CPERM_SEND = 1,
+  MSG_OPT_CPERM_REMOVE = 2,
+  MSG_OPT_CPERM_LIST = 4,
+  MSG_OPT_CPERM_UPDATE = 8,
+  MSG_OPT_CPERM_ALL = 15
+};
+bool MsgFalgCpermOptions_IsValid(int value);
+const MsgFalgCpermOptions MsgFalgCpermOptions_MIN = MSG_OPT_CPERM_NONE;
+const MsgFalgCpermOptions MsgFalgCpermOptions_MAX = MSG_OPT_CPERM_ALL;
+const int MsgFalgCpermOptions_ARRAYSIZE = MsgFalgCpermOptions_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MsgFalgCpermOptions_descriptor();
+inline const ::std::string& MsgFalgCpermOptions_Name(MsgFalgCpermOptions value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MsgFalgCpermOptions_descriptor(), value);
+}
+inline bool MsgFalgCpermOptions_Parse(
+    const ::std::string& name, MsgFalgCpermOptions* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MsgFalgCpermOptions>(
+    MsgFalgCpermOptions_descriptor(), name, value);
 }
 enum MsgOP {
   MSG_OP_LIST = 1,
   MSG_OP_SET = 2,
   MSG_OP_GET = 3,
-  MSG_OP_RM = 4
+  MSG_OP_RM = 4,
+  MSG_OP_INSERT = 5
 };
 bool MsgOP_IsValid(int value);
 const MsgOP MsgOP_MIN = MSG_OP_LIST;
-const MsgOP MsgOP_MAX = MSG_OP_RM;
+const MsgOP MsgOP_MAX = MSG_OP_INSERT;
 const int MsgOP_ARRAYSIZE = MsgOP_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MsgOP_descriptor();
@@ -324,55 +389,152 @@ class MsgFlag : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  typedef MsgFlag_StoreEngine StoreEngine;
-  static const StoreEngine STORE_REDIS = MsgFlag_StoreEngine_STORE_REDIS;
-  static const StoreEngine STORE_MYSQL = MsgFlag_StoreEngine_STORE_MYSQL;
-  static inline bool StoreEngine_IsValid(int value) {
-    return MsgFlag_StoreEngine_IsValid(value);
-  }
-  static const StoreEngine StoreEngine_MIN =
-    MsgFlag_StoreEngine_StoreEngine_MIN;
-  static const StoreEngine StoreEngine_MAX =
-    MsgFlag_StoreEngine_StoreEngine_MAX;
-  static const int StoreEngine_ARRAYSIZE =
-    MsgFlag_StoreEngine_StoreEngine_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  StoreEngine_descriptor() {
-    return MsgFlag_StoreEngine_descriptor();
-  }
-  static inline const ::std::string& StoreEngine_Name(StoreEngine value) {
-    return MsgFlag_StoreEngine_Name(value);
-  }
-  static inline bool StoreEngine_Parse(const ::std::string& name,
-      StoreEngine* value) {
-    return MsgFlag_StoreEngine_Parse(name, value);
-  }
-
   // accessors -------------------------------------------------------
 
-  // optional .awolmsg.MsgFlag.StoreEngine engine = 1;
-  inline bool has_engine() const;
-  inline void clear_engine();
-  static const int kEngineFieldNumber = 1;
-  inline ::awolmsg::MsgFlag_StoreEngine engine() const;
-  inline void set_engine(::awolmsg::MsgFlag_StoreEngine value);
+  // optional .awolmsg.MsgFlagOwnType owner = 1;
+  inline bool has_owner() const;
+  inline void clear_owner();
+  static const int kOwnerFieldNumber = 1;
+  inline ::awolmsg::MsgFlagOwnType owner() const;
+  inline void set_owner(::awolmsg::MsgFlagOwnType value);
+
+  // optional uint32 store = 2;
+  inline bool has_store() const;
+  inline void clear_store();
+  static const int kStoreFieldNumber = 2;
+  inline ::google::protobuf::uint32 store() const;
+  inline void set_store(::google::protobuf::uint32 value);
+
+  // optional uint32 cperm = 3;
+  inline bool has_cperm() const;
+  inline void clear_cperm();
+  static const int kCpermFieldNumber = 3;
+  inline ::google::protobuf::uint32 cperm() const;
+  inline void set_cperm(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:awolmsg.MsgFlag)
  private:
-  inline void set_has_engine();
-  inline void clear_has_engine();
+  inline void set_has_owner();
+  inline void clear_has_owner();
+  inline void set_has_store();
+  inline void clear_has_store();
+  inline void set_has_cperm();
+  inline void clear_has_cperm();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  int engine_;
+  int owner_;
+  ::google::protobuf::uint32 store_;
+  ::google::protobuf::uint32 cperm_;
   friend void  protobuf_AddDesc_awolmsg_2eproto();
   friend void protobuf_AssignDesc_awolmsg_2eproto();
   friend void protobuf_ShutdownFile_awolmsg_2eproto();
 
   void InitAsDefaultInstance();
   static MsgFlag* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MsgStoreCallBack : public ::google::protobuf::Message {
+ public:
+  MsgStoreCallBack();
+  virtual ~MsgStoreCallBack();
+
+  MsgStoreCallBack(const MsgStoreCallBack& from);
+
+  inline MsgStoreCallBack& operator=(const MsgStoreCallBack& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MsgStoreCallBack& default_instance();
+
+  void Swap(MsgStoreCallBack* other);
+
+  // implements Message ----------------------------------------------
+
+  MsgStoreCallBack* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MsgStoreCallBack& from);
+  void MergeFrom(const MsgStoreCallBack& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint64 cookie = 1;
+  inline bool has_cookie() const;
+  inline void clear_cookie();
+  static const int kCookieFieldNumber = 1;
+  inline ::google::protobuf::uint64 cookie() const;
+  inline void set_cookie(::google::protobuf::uint64 value);
+
+  // optional int32 clientid = 2;
+  inline bool has_clientid() const;
+  inline void clear_clientid();
+  static const int kClientidFieldNumber = 2;
+  inline ::google::protobuf::int32 clientid() const;
+  inline void set_clientid(::google::protobuf::int32 value);
+
+  // optional .awolmsg.Msg msg = 3;
+  inline bool has_msg() const;
+  inline void clear_msg();
+  static const int kMsgFieldNumber = 3;
+  inline const ::awolmsg::Msg& msg() const;
+  inline ::awolmsg::Msg* mutable_msg();
+  inline ::awolmsg::Msg* release_msg();
+  inline void set_allocated_msg(::awolmsg::Msg* msg);
+
+  // @@protoc_insertion_point(class_scope:awolmsg.MsgStoreCallBack)
+ private:
+  inline void set_has_cookie();
+  inline void clear_has_cookie();
+  inline void set_has_clientid();
+  inline void clear_has_clientid();
+  inline void set_has_msg();
+  inline void clear_has_msg();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 cookie_;
+  ::awolmsg::Msg* msg_;
+  ::google::protobuf::int32 clientid_;
+  friend void  protobuf_AddDesc_awolmsg_2eproto();
+  friend void protobuf_AssignDesc_awolmsg_2eproto();
+  friend void protobuf_ShutdownFile_awolmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static MsgStoreCallBack* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -866,29 +1028,170 @@ inline void MsgExt::set_allocated_from(::awolmsg::MsgAgent* from) {
 
 // MsgFlag
 
-// optional .awolmsg.MsgFlag.StoreEngine engine = 1;
-inline bool MsgFlag::has_engine() const {
+// optional .awolmsg.MsgFlagOwnType owner = 1;
+inline bool MsgFlag::has_owner() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void MsgFlag::set_has_engine() {
+inline void MsgFlag::set_has_owner() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void MsgFlag::clear_has_engine() {
+inline void MsgFlag::clear_has_owner() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void MsgFlag::clear_engine() {
-  engine_ = 0;
-  clear_has_engine();
+inline void MsgFlag::clear_owner() {
+  owner_ = 0;
+  clear_has_owner();
 }
-inline ::awolmsg::MsgFlag_StoreEngine MsgFlag::engine() const {
-  // @@protoc_insertion_point(field_get:awolmsg.MsgFlag.engine)
-  return static_cast< ::awolmsg::MsgFlag_StoreEngine >(engine_);
+inline ::awolmsg::MsgFlagOwnType MsgFlag::owner() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgFlag.owner)
+  return static_cast< ::awolmsg::MsgFlagOwnType >(owner_);
 }
-inline void MsgFlag::set_engine(::awolmsg::MsgFlag_StoreEngine value) {
-  assert(::awolmsg::MsgFlag_StoreEngine_IsValid(value));
-  set_has_engine();
-  engine_ = value;
-  // @@protoc_insertion_point(field_set:awolmsg.MsgFlag.engine)
+inline void MsgFlag::set_owner(::awolmsg::MsgFlagOwnType value) {
+  assert(::awolmsg::MsgFlagOwnType_IsValid(value));
+  set_has_owner();
+  owner_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgFlag.owner)
+}
+
+// optional uint32 store = 2;
+inline bool MsgFlag::has_store() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void MsgFlag::set_has_store() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void MsgFlag::clear_has_store() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void MsgFlag::clear_store() {
+  store_ = 0u;
+  clear_has_store();
+}
+inline ::google::protobuf::uint32 MsgFlag::store() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgFlag.store)
+  return store_;
+}
+inline void MsgFlag::set_store(::google::protobuf::uint32 value) {
+  set_has_store();
+  store_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgFlag.store)
+}
+
+// optional uint32 cperm = 3;
+inline bool MsgFlag::has_cperm() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MsgFlag::set_has_cperm() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MsgFlag::clear_has_cperm() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void MsgFlag::clear_cperm() {
+  cperm_ = 0u;
+  clear_has_cperm();
+}
+inline ::google::protobuf::uint32 MsgFlag::cperm() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgFlag.cperm)
+  return cperm_;
+}
+inline void MsgFlag::set_cperm(::google::protobuf::uint32 value) {
+  set_has_cperm();
+  cperm_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgFlag.cperm)
+}
+
+// -------------------------------------------------------------------
+
+// MsgStoreCallBack
+
+// optional uint64 cookie = 1;
+inline bool MsgStoreCallBack::has_cookie() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void MsgStoreCallBack::set_has_cookie() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void MsgStoreCallBack::clear_has_cookie() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void MsgStoreCallBack::clear_cookie() {
+  cookie_ = GOOGLE_ULONGLONG(0);
+  clear_has_cookie();
+}
+inline ::google::protobuf::uint64 MsgStoreCallBack::cookie() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgStoreCallBack.cookie)
+  return cookie_;
+}
+inline void MsgStoreCallBack::set_cookie(::google::protobuf::uint64 value) {
+  set_has_cookie();
+  cookie_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgStoreCallBack.cookie)
+}
+
+// optional int32 clientid = 2;
+inline bool MsgStoreCallBack::has_clientid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void MsgStoreCallBack::set_has_clientid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void MsgStoreCallBack::clear_has_clientid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void MsgStoreCallBack::clear_clientid() {
+  clientid_ = 0;
+  clear_has_clientid();
+}
+inline ::google::protobuf::int32 MsgStoreCallBack::clientid() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgStoreCallBack.clientid)
+  return clientid_;
+}
+inline void MsgStoreCallBack::set_clientid(::google::protobuf::int32 value) {
+  set_has_clientid();
+  clientid_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgStoreCallBack.clientid)
+}
+
+// optional .awolmsg.Msg msg = 3;
+inline bool MsgStoreCallBack::has_msg() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MsgStoreCallBack::set_has_msg() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MsgStoreCallBack::clear_has_msg() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void MsgStoreCallBack::clear_msg() {
+  if (msg_ != NULL) msg_->::awolmsg::Msg::Clear();
+  clear_has_msg();
+}
+inline const ::awolmsg::Msg& MsgStoreCallBack::msg() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgStoreCallBack.msg)
+  return msg_ != NULL ? *msg_ : *default_instance_->msg_;
+}
+inline ::awolmsg::Msg* MsgStoreCallBack::mutable_msg() {
+  set_has_msg();
+  if (msg_ == NULL) msg_ = new ::awolmsg::Msg;
+  // @@protoc_insertion_point(field_mutable:awolmsg.MsgStoreCallBack.msg)
+  return msg_;
+}
+inline ::awolmsg::Msg* MsgStoreCallBack::release_msg() {
+  clear_has_msg();
+  ::awolmsg::Msg* temp = msg_;
+  msg_ = NULL;
+  return temp;
+}
+inline void MsgStoreCallBack::set_allocated_msg(::awolmsg::Msg* msg) {
+  delete msg_;
+  msg_ = msg;
+  if (msg) {
+    set_has_msg();
+  } else {
+    clear_has_msg();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolmsg.MsgStoreCallBack.msg)
 }
 
 // -------------------------------------------------------------------
@@ -1355,10 +1658,25 @@ inline void NotifyMsg::set_allocated_data(::std::string* data) {
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::awolmsg::MsgFlag_StoreEngine> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::awolmsg::MaxMsgTypeConstValue> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgFlag_StoreEngine>() {
-  return ::awolmsg::MsgFlag_StoreEngine_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MaxMsgTypeConstValue>() {
+  return ::awolmsg::MaxMsgTypeConstValue_descriptor();
+}
+template <> struct is_proto_enum< ::awolmsg::MsgFlagOwnType> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgFlagOwnType>() {
+  return ::awolmsg::MsgFlagOwnType_descriptor();
+}
+template <> struct is_proto_enum< ::awolmsg::MsgFalgStoreOptions> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgFalgStoreOptions>() {
+  return ::awolmsg::MsgFalgStoreOptions_descriptor();
+}
+template <> struct is_proto_enum< ::awolmsg::MsgFalgCpermOptions> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolmsg::MsgFalgCpermOptions>() {
+  return ::awolmsg::MsgFalgCpermOptions_descriptor();
 }
 template <> struct is_proto_enum< ::awolmsg::MsgOP> : ::google::protobuf::internal::true_type {};
 template <>
