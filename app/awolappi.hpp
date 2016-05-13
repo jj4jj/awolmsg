@@ -87,7 +87,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
             pushmsg(csmsg);
         }
     }
-    virtual void onnotify(uint64_t id, const AppMsg & msg){
+    virtual void onnotify(uint64_t id, uint32_t version, const AppMsg & msg){
         GLOG_DBG("notify new app msg id:%id", id);
         if (this->options().owner() != MSG_OPT_OWN_SO){
             app_->onnotify(id, msg);
@@ -109,7 +109,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
             while (it != this->msg_cache.end()){
                 AwolMsgItem & msg = *csmsg.mutable_response()->add_msglist();
                 msg.set_id(it->first);
-                app_->set_msg(*msg.mutable_msg(), it->second);
+                app_->set_msg(*msg.mutable_msg(), it->second.second);
                 ++it;
             }
             pushmsg(csmsg);

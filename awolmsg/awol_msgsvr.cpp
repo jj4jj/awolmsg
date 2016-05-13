@@ -56,7 +56,7 @@ int MsgSvr::init(const string & svraddr){
         auto it = this->impl->recievers.find(mk);
         if (it != this->impl->recievers.end()){
             MsgPortal * mp = it->second;
-            mp->onnotify(msgop.data(0).id(), msgop.data(0).data());
+            mp->onnotify(msgop.data(0).id(), msgop.data(0).ext().version(), msgop.data(0).data());
         }
 
     });

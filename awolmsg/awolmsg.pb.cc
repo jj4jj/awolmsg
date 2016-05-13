@@ -32,6 +32,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* MsgStoreCallBack_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   MsgStoreCallBack_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MsgMysqlStoreTable_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MsgMysqlStoreTable_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Msg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Msg_reflection_ = NULL;
@@ -73,10 +76,11 @@ void protobuf_AssignDesc_awolmsg_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MsgAgent));
   MsgExt_descriptor_ = file->message_type(1);
-  static const int MsgExt_offsets_[3] = {
+  static const int MsgExt_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgExt, time_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgExt, ttl_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgExt, from_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgExt, version_),
   };
   MsgExt_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -123,7 +127,26 @@ void protobuf_AssignDesc_awolmsg_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MsgStoreCallBack));
-  Msg_descriptor_ = file->message_type(4);
+  MsgMysqlStoreTable_descriptor_ = file->message_type(4);
+  static const int MsgMysqlStoreTable_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, actor_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, msgid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, msg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, version_),
+  };
+  MsgMysqlStoreTable_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      MsgMysqlStoreTable_descriptor_,
+      MsgMysqlStoreTable::default_instance_,
+      MsgMysqlStoreTable_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MsgMysqlStoreTable, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(MsgMysqlStoreTable));
+  Msg_descriptor_ = file->message_type(5);
   static const int Msg_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Msg, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Msg, actor_),
@@ -159,7 +182,7 @@ void protobuf_AssignDesc_awolmsg_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Msg_MsgData));
-  NotifyMsg_descriptor_ = file->message_type(5);
+  NotifyMsg_descriptor_ = file->message_type(6);
   static const int NotifyMsg_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyMsg, actor_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyMsg, clientsrc_),
@@ -202,6 +225,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     MsgStoreCallBack_descriptor_, &MsgStoreCallBack::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    MsgMysqlStoreTable_descriptor_, &MsgMysqlStoreTable::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     Msg_descriptor_, &Msg::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     Msg_MsgData_descriptor_, &Msg_MsgData::default_instance());
@@ -220,6 +245,8 @@ void protobuf_ShutdownFile_awolmsg_2eproto() {
   delete MsgFlag_reflection_;
   delete MsgStoreCallBack::default_instance_;
   delete MsgStoreCallBack_reflection_;
+  delete MsgMysqlStoreTable::default_instance_;
+  delete MsgMysqlStoreTable_reflection_;
   delete Msg::default_instance_;
   delete Msg_reflection_;
   delete Msg_MsgData::default_instance_;
@@ -236,39 +263,43 @@ void protobuf_AddDesc_awolmsg_2eproto() {
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\rawolmsg.proto\022\007awolmsg\"$\n\010MsgAgent\022\014\n\004"
-    "type\030\001 \002(\005\022\n\n\002id\030\002 \001(\004\"D\n\006MsgExt\022\014\n\004time"
+    "type\030\001 \002(\005\022\n\n\002id\030\002 \001(\004\"U\n\006MsgExt\022\014\n\004time"
     "\030\001 \001(\r\022\013\n\003ttl\030\002 \001(\r\022\037\n\004from\030\003 \001(\0132\021.awol"
-    "msg.MsgAgent\"O\n\007MsgFlag\022&\n\005owner\030\001 \001(\0162\027"
-    ".awolmsg.MsgFlagOwnType\022\r\n\005store\030\002 \001(\r\022\r"
-    "\n\005cperm\030\003 \001(\r\"O\n\020MsgStoreCallBack\022\016\n\006coo"
-    "kie\030\001 \001(\004\022\020\n\010clientid\030\002 \001(\005\022\031\n\003msg\030\003 \001(\013"
-    "2\014.awolmsg.Msg\"\330\001\n\003Msg\022\014\n\004type\030\001 \002(\005\022 \n\005"
-    "actor\030\002 \001(\0132\021.awolmsg.MsgAgent\022\"\n\004data\030\003"
-    " \003(\0132\024.awolmsg.Msg.MsgData\022\036\n\004flag\030\004 \001(\013"
-    "2\020.awolmsg.MsgFlag\022\032\n\002op\030\005 \001(\0162\016.awolmsg"
-    ".MsgOP\032A\n\007MsgData\022\n\n\002id\030\001 \002(\004\022\014\n\004data\030\002 "
-    "\001(\014\022\034\n\003ext\030\003 \001(\0132\017.awolmsg.MsgExt\"N\n\tNot"
-    "ifyMsg\022 \n\005actor\030\001 \001(\0132\021.awolmsg.MsgAgent"
-    "\022\021\n\tclientsrc\030\002 \001(\005\022\014\n\004data\030\003 \001(\014*,\n\024Max"
-    "MsgTypeConstValue\022\024\n\020MAX_MSG_TYPE_NUM\020@*"
-    "L\n\016MsgFlagOwnType\022\022\n\016MSG_OPT_OWN_BO\020\000\022\022\n"
-    "\016MSG_OPT_OWN_SO\020\001\022\022\n\016MSG_OPT_OWN_CO\020\002*v\n"
-    "\023MsgFalgStoreOptions\022\026\n\022MSG_OPT_STORE_NO"
-    "NE\020\000\022\025\n\021MSG_OPT_STORE_TTL\020\001\022\027\n\023MSG_OPT_S"
-    "TORE_SHIFT\020\002\022\027\n\023MSG_OPT_STORE_MYSQL\020\004*\250\001"
-    "\n\023MsgFalgCpermOptions\022\026\n\022MSG_OPT_CPERM_N"
-    "ONE\020\000\022\026\n\022MSG_OPT_CPERM_SEND\020\001\022\030\n\024MSG_OPT"
-    "_CPERM_REMOVE\020\002\022\026\n\022MSG_OPT_CPERM_LIST\020\004\022"
-    "\030\n\024MSG_OPT_CPERM_UPDATE\020\010\022\025\n\021MSG_OPT_CPE"
-    "RM_ALL\020\017*Z\n\005MsgOP\022\017\n\013MSG_OP_LIST\020\001\022\016\n\nMS"
-    "G_OP_SET\020\002\022\016\n\nMSG_OP_GET\020\003\022\r\n\tMSG_OP_RM\020"
-    "\004\022\021\n\rMSG_OP_INSERT\020\005", 1100);
+    "msg.MsgAgent\022\017\n\007version\030\004 \001(\r\"O\n\007MsgFlag"
+    "\022&\n\005owner\030\001 \001(\0162\027.awolmsg.MsgFlagOwnType"
+    "\022\r\n\005store\030\002 \001(\r\022\r\n\005cperm\030\003 \001(\r\"O\n\020MsgSto"
+    "reCallBack\022\016\n\006cookie\030\001 \001(\004\022\020\n\010clientid\030\002"
+    " \001(\005\022\031\n\003msg\030\003 \001(\0132\014.awolmsg.Msg\"^\n\022MsgMy"
+    "sqlStoreTable\022\014\n\004type\030\001 \001(\r\022\r\n\005actor\030\002 \001"
+    "(\t\022\r\n\005msgid\030\003 \001(\004\022\013\n\003msg\030\004 \001(\014\022\017\n\007versio"
+    "n\030\005 \001(\r\"\330\001\n\003Msg\022\014\n\004type\030\001 \002(\005\022 \n\005actor\030\002"
+    " \001(\0132\021.awolmsg.MsgAgent\022\"\n\004data\030\003 \003(\0132\024."
+    "awolmsg.Msg.MsgData\022\036\n\004flag\030\004 \001(\0132\020.awol"
+    "msg.MsgFlag\022\032\n\002op\030\005 \001(\0162\016.awolmsg.MsgOP\032"
+    "A\n\007MsgData\022\n\n\002id\030\001 \002(\004\022\014\n\004data\030\002 \001(\014\022\034\n\003"
+    "ext\030\003 \001(\0132\017.awolmsg.MsgExt\"N\n\tNotifyMsg\022"
+    " \n\005actor\030\001 \001(\0132\021.awolmsg.MsgAgent\022\021\n\tcli"
+    "entsrc\030\002 \001(\005\022\014\n\004data\030\003 \001(\014*,\n\024MaxMsgType"
+    "ConstValue\022\024\n\020MAX_MSG_TYPE_NUM\020@*L\n\016MsgF"
+    "lagOwnType\022\022\n\016MSG_OPT_OWN_BO\020\000\022\022\n\016MSG_OP"
+    "T_OWN_SO\020\001\022\022\n\016MSG_OPT_OWN_CO\020\002*v\n\023MsgFal"
+    "gStoreOptions\022\026\n\022MSG_OPT_STORE_NONE\020\000\022\025\n"
+    "\021MSG_OPT_STORE_TTL\020\001\022\027\n\023MSG_OPT_STORE_SH"
+    "IFT\020\002\022\027\n\023MSG_OPT_STORE_MYSQL\020\004*\250\001\n\023MsgFa"
+    "lgCpermOptions\022\026\n\022MSG_OPT_CPERM_NONE\020\000\022\026"
+    "\n\022MSG_OPT_CPERM_SEND\020\001\022\030\n\024MSG_OPT_CPERM_"
+    "REMOVE\020\002\022\026\n\022MSG_OPT_CPERM_LIST\020\004\022\030\n\024MSG_"
+    "OPT_CPERM_UPDATE\020\010\022\025\n\021MSG_OPT_CPERM_ALL\020"
+    "\017*Z\n\005MsgOP\022\017\n\013MSG_OP_LIST\020\001\022\016\n\nMSG_OP_SE"
+    "T\020\002\022\016\n\nMSG_OP_GET\020\003\022\r\n\tMSG_OP_RM\020\004\022\021\n\rMS"
+    "G_OP_INSERT\020\005", 1213);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "awolmsg.proto", &protobuf_RegisterTypes);
   MsgAgent::default_instance_ = new MsgAgent();
   MsgExt::default_instance_ = new MsgExt();
   MsgFlag::default_instance_ = new MsgFlag();
   MsgStoreCallBack::default_instance_ = new MsgStoreCallBack();
+  MsgMysqlStoreTable::default_instance_ = new MsgMysqlStoreTable();
   Msg::default_instance_ = new Msg();
   Msg_MsgData::default_instance_ = new Msg_MsgData();
   NotifyMsg::default_instance_ = new NotifyMsg();
@@ -276,6 +307,7 @@ void protobuf_AddDesc_awolmsg_2eproto() {
   MsgExt::default_instance_->InitAsDefaultInstance();
   MsgFlag::default_instance_->InitAsDefaultInstance();
   MsgStoreCallBack::default_instance_->InitAsDefaultInstance();
+  MsgMysqlStoreTable::default_instance_->InitAsDefaultInstance();
   Msg::default_instance_->InitAsDefaultInstance();
   Msg_MsgData::default_instance_->InitAsDefaultInstance();
   NotifyMsg::default_instance_->InitAsDefaultInstance();
@@ -649,6 +681,7 @@ void MsgAgent::Swap(MsgAgent* other) {
 const int MsgExt::kTimeFieldNumber;
 const int MsgExt::kTtlFieldNumber;
 const int MsgExt::kFromFieldNumber;
+const int MsgExt::kVersionFieldNumber;
 #endif  // !_MSC_VER
 
 MsgExt::MsgExt()
@@ -673,6 +706,7 @@ void MsgExt::SharedCtor() {
   time_ = 0u;
   ttl_ = 0u;
   from_ = NULL;
+  version_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -719,11 +753,12 @@ void MsgExt::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 7) {
+  if (_has_bits_[0 / 32] & 15) {
     ZR_(time_, ttl_);
     if (has_from()) {
       if (from_ != NULL) from_->::awolmsg::MsgAgent::Clear();
     }
+    version_ = 0u;
   }
 
 #undef OFFSET_OF_FIELD_
@@ -781,6 +816,21 @@ bool MsgExt::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(32)) goto parse_version;
+        break;
+      }
+
+      // optional uint32 version = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_version:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &version_)));
+          set_has_version();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -826,6 +876,11 @@ void MsgExt::SerializeWithCachedSizes(
       3, this->from(), output);
   }
 
+  // optional uint32 version = 4;
+  if (has_version()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->version(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -851,6 +906,11 @@ void MsgExt::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         3, this->from(), target);
+  }
+
+  // optional uint32 version = 4;
+  if (has_version()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->version(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -884,6 +944,13 @@ int MsgExt::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->from());
+    }
+
+    // optional uint32 version = 4;
+    if (has_version()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->version());
     }
 
   }
@@ -922,6 +989,9 @@ void MsgExt::MergeFrom(const MsgExt& from) {
     if (from.has_from()) {
       mutable_from()->::awolmsg::MsgAgent::MergeFrom(from.from());
     }
+    if (from.has_version()) {
+      set_version(from.version());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -951,6 +1021,7 @@ void MsgExt::Swap(MsgExt* other) {
     std::swap(time_, other->time_);
     std::swap(ttl_, other->ttl_);
     std::swap(from_, other->from_);
+    std::swap(version_, other->version_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1590,6 +1661,427 @@ void MsgStoreCallBack::Swap(MsgStoreCallBack* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = MsgStoreCallBack_descriptor_;
   metadata.reflection = MsgStoreCallBack_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int MsgMysqlStoreTable::kTypeFieldNumber;
+const int MsgMysqlStoreTable::kActorFieldNumber;
+const int MsgMysqlStoreTable::kMsgidFieldNumber;
+const int MsgMysqlStoreTable::kMsgFieldNumber;
+const int MsgMysqlStoreTable::kVersionFieldNumber;
+#endif  // !_MSC_VER
+
+MsgMysqlStoreTable::MsgMysqlStoreTable()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:awolmsg.MsgMysqlStoreTable)
+}
+
+void MsgMysqlStoreTable::InitAsDefaultInstance() {
+}
+
+MsgMysqlStoreTable::MsgMysqlStoreTable(const MsgMysqlStoreTable& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:awolmsg.MsgMysqlStoreTable)
+}
+
+void MsgMysqlStoreTable::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  type_ = 0u;
+  actor_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  msgid_ = GOOGLE_ULONGLONG(0);
+  msg_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  version_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+MsgMysqlStoreTable::~MsgMysqlStoreTable() {
+  // @@protoc_insertion_point(destructor:awolmsg.MsgMysqlStoreTable)
+  SharedDtor();
+}
+
+void MsgMysqlStoreTable::SharedDtor() {
+  if (actor_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete actor_;
+  }
+  if (msg_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete msg_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void MsgMysqlStoreTable::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* MsgMysqlStoreTable::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MsgMysqlStoreTable_descriptor_;
+}
+
+const MsgMysqlStoreTable& MsgMysqlStoreTable::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_awolmsg_2eproto();
+  return *default_instance_;
+}
+
+MsgMysqlStoreTable* MsgMysqlStoreTable::default_instance_ = NULL;
+
+MsgMysqlStoreTable* MsgMysqlStoreTable::New() const {
+  return new MsgMysqlStoreTable;
+}
+
+void MsgMysqlStoreTable::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<MsgMysqlStoreTable*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 31) {
+    ZR_(msgid_, version_);
+    if (has_actor()) {
+      if (actor_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+        actor_->clear();
+      }
+    }
+    if (has_msg()) {
+      if (msg_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+        msg_->clear();
+      }
+    }
+  }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool MsgMysqlStoreTable::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:awolmsg.MsgMysqlStoreTable)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint32 type = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &type_)));
+          set_has_type();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_actor;
+        break;
+      }
+
+      // optional string actor = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_actor:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_actor()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->actor().data(), this->actor().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "actor");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_msgid;
+        break;
+      }
+
+      // optional uint64 msgid = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_msgid:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &msgid_)));
+          set_has_msgid();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_msg;
+        break;
+      }
+
+      // optional bytes msg = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_msg:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_msg()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_version;
+        break;
+      }
+
+      // optional uint32 version = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_version:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &version_)));
+          set_has_version();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:awolmsg.MsgMysqlStoreTable)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:awolmsg.MsgMysqlStoreTable)
+  return false;
+#undef DO_
+}
+
+void MsgMysqlStoreTable::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:awolmsg.MsgMysqlStoreTable)
+  // optional uint32 type = 1;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->type(), output);
+  }
+
+  // optional string actor = 2;
+  if (has_actor()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->actor().data(), this->actor().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "actor");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->actor(), output);
+  }
+
+  // optional uint64 msgid = 3;
+  if (has_msgid()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->msgid(), output);
+  }
+
+  // optional bytes msg = 4;
+  if (has_msg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      4, this->msg(), output);
+  }
+
+  // optional uint32 version = 5;
+  if (has_version()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->version(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:awolmsg.MsgMysqlStoreTable)
+}
+
+::google::protobuf::uint8* MsgMysqlStoreTable::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:awolmsg.MsgMysqlStoreTable)
+  // optional uint32 type = 1;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->type(), target);
+  }
+
+  // optional string actor = 2;
+  if (has_actor()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->actor().data(), this->actor().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "actor");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->actor(), target);
+  }
+
+  // optional uint64 msgid = 3;
+  if (has_msgid()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->msgid(), target);
+  }
+
+  // optional bytes msg = 4;
+  if (has_msg()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        4, this->msg(), target);
+  }
+
+  // optional uint32 version = 5;
+  if (has_version()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->version(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:awolmsg.MsgMysqlStoreTable)
+  return target;
+}
+
+int MsgMysqlStoreTable::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional uint32 type = 1;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->type());
+    }
+
+    // optional string actor = 2;
+    if (has_actor()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->actor());
+    }
+
+    // optional uint64 msgid = 3;
+    if (has_msgid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt64Size(
+          this->msgid());
+    }
+
+    // optional bytes msg = 4;
+    if (has_msg()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::BytesSize(
+          this->msg());
+    }
+
+    // optional uint32 version = 5;
+    if (has_version()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->version());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MsgMysqlStoreTable::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const MsgMysqlStoreTable* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const MsgMysqlStoreTable*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void MsgMysqlStoreTable::MergeFrom(const MsgMysqlStoreTable& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_type()) {
+      set_type(from.type());
+    }
+    if (from.has_actor()) {
+      set_actor(from.actor());
+    }
+    if (from.has_msgid()) {
+      set_msgid(from.msgid());
+    }
+    if (from.has_msg()) {
+      set_msg(from.msg());
+    }
+    if (from.has_version()) {
+      set_version(from.version());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void MsgMysqlStoreTable::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void MsgMysqlStoreTable::CopyFrom(const MsgMysqlStoreTable& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MsgMysqlStoreTable::IsInitialized() const {
+
+  return true;
+}
+
+void MsgMysqlStoreTable::Swap(MsgMysqlStoreTable* other) {
+  if (other != this) {
+    std::swap(type_, other->type_);
+    std::swap(actor_, other->actor_);
+    std::swap(msgid_, other->msgid_);
+    std::swap(msg_, other->msg_);
+    std::swap(version_, other->version_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata MsgMysqlStoreTable::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = MsgMysqlStoreTable_descriptor_;
+  metadata.reflection = MsgMysqlStoreTable_reflection_;
   return metadata;
 }
 

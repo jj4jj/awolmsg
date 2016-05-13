@@ -38,6 +38,7 @@ class MsgAgent;
 class MsgExt;
 class MsgFlag;
 class MsgStoreCallBack;
+class MsgMysqlStoreTable;
 class Msg;
 class Msg_MsgData;
 class NotifyMsg;
@@ -313,6 +314,13 @@ class MsgExt : public ::google::protobuf::Message {
   inline ::awolmsg::MsgAgent* release_from();
   inline void set_allocated_from(::awolmsg::MsgAgent* from);
 
+  // optional uint32 version = 4;
+  inline bool has_version() const;
+  inline void clear_version();
+  static const int kVersionFieldNumber = 4;
+  inline ::google::protobuf::uint32 version() const;
+  inline void set_version(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:awolmsg.MsgExt)
  private:
   inline void set_has_time();
@@ -321,6 +329,8 @@ class MsgExt : public ::google::protobuf::Message {
   inline void clear_has_ttl();
   inline void set_has_from();
   inline void clear_has_from();
+  inline void set_has_version();
+  inline void clear_has_version();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -329,6 +339,7 @@ class MsgExt : public ::google::protobuf::Message {
   ::google::protobuf::uint32 time_;
   ::google::protobuf::uint32 ttl_;
   ::awolmsg::MsgAgent* from_;
+  ::google::protobuf::uint32 version_;
   friend void  protobuf_AddDesc_awolmsg_2eproto();
   friend void protobuf_AssignDesc_awolmsg_2eproto();
   friend void protobuf_ShutdownFile_awolmsg_2eproto();
@@ -535,6 +546,135 @@ class MsgStoreCallBack : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static MsgStoreCallBack* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MsgMysqlStoreTable : public ::google::protobuf::Message {
+ public:
+  MsgMysqlStoreTable();
+  virtual ~MsgMysqlStoreTable();
+
+  MsgMysqlStoreTable(const MsgMysqlStoreTable& from);
+
+  inline MsgMysqlStoreTable& operator=(const MsgMysqlStoreTable& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MsgMysqlStoreTable& default_instance();
+
+  void Swap(MsgMysqlStoreTable* other);
+
+  // implements Message ----------------------------------------------
+
+  MsgMysqlStoreTable* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MsgMysqlStoreTable& from);
+  void MergeFrom(const MsgMysqlStoreTable& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::google::protobuf::uint32 type() const;
+  inline void set_type(::google::protobuf::uint32 value);
+
+  // optional string actor = 2;
+  inline bool has_actor() const;
+  inline void clear_actor();
+  static const int kActorFieldNumber = 2;
+  inline const ::std::string& actor() const;
+  inline void set_actor(const ::std::string& value);
+  inline void set_actor(const char* value);
+  inline void set_actor(const char* value, size_t size);
+  inline ::std::string* mutable_actor();
+  inline ::std::string* release_actor();
+  inline void set_allocated_actor(::std::string* actor);
+
+  // optional uint64 msgid = 3;
+  inline bool has_msgid() const;
+  inline void clear_msgid();
+  static const int kMsgidFieldNumber = 3;
+  inline ::google::protobuf::uint64 msgid() const;
+  inline void set_msgid(::google::protobuf::uint64 value);
+
+  // optional bytes msg = 4;
+  inline bool has_msg() const;
+  inline void clear_msg();
+  static const int kMsgFieldNumber = 4;
+  inline const ::std::string& msg() const;
+  inline void set_msg(const ::std::string& value);
+  inline void set_msg(const char* value);
+  inline void set_msg(const void* value, size_t size);
+  inline ::std::string* mutable_msg();
+  inline ::std::string* release_msg();
+  inline void set_allocated_msg(::std::string* msg);
+
+  // optional uint32 version = 5;
+  inline bool has_version() const;
+  inline void clear_version();
+  static const int kVersionFieldNumber = 5;
+  inline ::google::protobuf::uint32 version() const;
+  inline void set_version(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:awolmsg.MsgMysqlStoreTable)
+ private:
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_actor();
+  inline void clear_has_actor();
+  inline void set_has_msgid();
+  inline void clear_has_msgid();
+  inline void set_has_msg();
+  inline void clear_has_msg();
+  inline void set_has_version();
+  inline void clear_has_version();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::std::string* actor_;
+  ::google::protobuf::uint64 msgid_;
+  ::google::protobuf::uint32 type_;
+  ::google::protobuf::uint32 version_;
+  ::std::string* msg_;
+  friend void  protobuf_AddDesc_awolmsg_2eproto();
+  friend void protobuf_AssignDesc_awolmsg_2eproto();
+  friend void protobuf_ShutdownFile_awolmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static MsgMysqlStoreTable* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1024,6 +1164,30 @@ inline void MsgExt::set_allocated_from(::awolmsg::MsgAgent* from) {
   // @@protoc_insertion_point(field_set_allocated:awolmsg.MsgExt.from)
 }
 
+// optional uint32 version = 4;
+inline bool MsgExt::has_version() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void MsgExt::set_has_version() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void MsgExt::clear_has_version() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void MsgExt::clear_version() {
+  version_ = 0u;
+  clear_has_version();
+}
+inline ::google::protobuf::uint32 MsgExt::version() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgExt.version)
+  return version_;
+}
+inline void MsgExt::set_version(::google::protobuf::uint32 value) {
+  set_has_version();
+  version_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgExt.version)
+}
+
 // -------------------------------------------------------------------
 
 // MsgFlag
@@ -1192,6 +1356,234 @@ inline void MsgStoreCallBack::set_allocated_msg(::awolmsg::Msg* msg) {
     clear_has_msg();
   }
   // @@protoc_insertion_point(field_set_allocated:awolmsg.MsgStoreCallBack.msg)
+}
+
+// -------------------------------------------------------------------
+
+// MsgMysqlStoreTable
+
+// optional uint32 type = 1;
+inline bool MsgMysqlStoreTable::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void MsgMysqlStoreTable::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void MsgMysqlStoreTable::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void MsgMysqlStoreTable::clear_type() {
+  type_ = 0u;
+  clear_has_type();
+}
+inline ::google::protobuf::uint32 MsgMysqlStoreTable::type() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgMysqlStoreTable.type)
+  return type_;
+}
+inline void MsgMysqlStoreTable::set_type(::google::protobuf::uint32 value) {
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgMysqlStoreTable.type)
+}
+
+// optional string actor = 2;
+inline bool MsgMysqlStoreTable::has_actor() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void MsgMysqlStoreTable::set_has_actor() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void MsgMysqlStoreTable::clear_has_actor() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void MsgMysqlStoreTable::clear_actor() {
+  if (actor_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    actor_->clear();
+  }
+  clear_has_actor();
+}
+inline const ::std::string& MsgMysqlStoreTable::actor() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgMysqlStoreTable.actor)
+  return *actor_;
+}
+inline void MsgMysqlStoreTable::set_actor(const ::std::string& value) {
+  set_has_actor();
+  if (actor_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    actor_ = new ::std::string;
+  }
+  actor_->assign(value);
+  // @@protoc_insertion_point(field_set:awolmsg.MsgMysqlStoreTable.actor)
+}
+inline void MsgMysqlStoreTable::set_actor(const char* value) {
+  set_has_actor();
+  if (actor_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    actor_ = new ::std::string;
+  }
+  actor_->assign(value);
+  // @@protoc_insertion_point(field_set_char:awolmsg.MsgMysqlStoreTable.actor)
+}
+inline void MsgMysqlStoreTable::set_actor(const char* value, size_t size) {
+  set_has_actor();
+  if (actor_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    actor_ = new ::std::string;
+  }
+  actor_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:awolmsg.MsgMysqlStoreTable.actor)
+}
+inline ::std::string* MsgMysqlStoreTable::mutable_actor() {
+  set_has_actor();
+  if (actor_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    actor_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:awolmsg.MsgMysqlStoreTable.actor)
+  return actor_;
+}
+inline ::std::string* MsgMysqlStoreTable::release_actor() {
+  clear_has_actor();
+  if (actor_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = actor_;
+    actor_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void MsgMysqlStoreTable::set_allocated_actor(::std::string* actor) {
+  if (actor_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete actor_;
+  }
+  if (actor) {
+    set_has_actor();
+    actor_ = actor;
+  } else {
+    clear_has_actor();
+    actor_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolmsg.MsgMysqlStoreTable.actor)
+}
+
+// optional uint64 msgid = 3;
+inline bool MsgMysqlStoreTable::has_msgid() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MsgMysqlStoreTable::set_has_msgid() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MsgMysqlStoreTable::clear_has_msgid() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void MsgMysqlStoreTable::clear_msgid() {
+  msgid_ = GOOGLE_ULONGLONG(0);
+  clear_has_msgid();
+}
+inline ::google::protobuf::uint64 MsgMysqlStoreTable::msgid() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgMysqlStoreTable.msgid)
+  return msgid_;
+}
+inline void MsgMysqlStoreTable::set_msgid(::google::protobuf::uint64 value) {
+  set_has_msgid();
+  msgid_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgMysqlStoreTable.msgid)
+}
+
+// optional bytes msg = 4;
+inline bool MsgMysqlStoreTable::has_msg() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void MsgMysqlStoreTable::set_has_msg() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void MsgMysqlStoreTable::clear_has_msg() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void MsgMysqlStoreTable::clear_msg() {
+  if (msg_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    msg_->clear();
+  }
+  clear_has_msg();
+}
+inline const ::std::string& MsgMysqlStoreTable::msg() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgMysqlStoreTable.msg)
+  return *msg_;
+}
+inline void MsgMysqlStoreTable::set_msg(const ::std::string& value) {
+  set_has_msg();
+  if (msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    msg_ = new ::std::string;
+  }
+  msg_->assign(value);
+  // @@protoc_insertion_point(field_set:awolmsg.MsgMysqlStoreTable.msg)
+}
+inline void MsgMysqlStoreTable::set_msg(const char* value) {
+  set_has_msg();
+  if (msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    msg_ = new ::std::string;
+  }
+  msg_->assign(value);
+  // @@protoc_insertion_point(field_set_char:awolmsg.MsgMysqlStoreTable.msg)
+}
+inline void MsgMysqlStoreTable::set_msg(const void* value, size_t size) {
+  set_has_msg();
+  if (msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    msg_ = new ::std::string;
+  }
+  msg_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:awolmsg.MsgMysqlStoreTable.msg)
+}
+inline ::std::string* MsgMysqlStoreTable::mutable_msg() {
+  set_has_msg();
+  if (msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    msg_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:awolmsg.MsgMysqlStoreTable.msg)
+  return msg_;
+}
+inline ::std::string* MsgMysqlStoreTable::release_msg() {
+  clear_has_msg();
+  if (msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = msg_;
+    msg_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void MsgMysqlStoreTable::set_allocated_msg(::std::string* msg) {
+  if (msg_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete msg_;
+  }
+  if (msg) {
+    set_has_msg();
+    msg_ = msg;
+  } else {
+    clear_has_msg();
+    msg_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolmsg.MsgMysqlStoreTable.msg)
+}
+
+// optional uint32 version = 5;
+inline bool MsgMysqlStoreTable::has_version() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void MsgMysqlStoreTable::set_has_version() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void MsgMysqlStoreTable::clear_has_version() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void MsgMysqlStoreTable::clear_version() {
+  version_ = 0u;
+  clear_has_version();
+}
+inline ::google::protobuf::uint32 MsgMysqlStoreTable::version() const {
+  // @@protoc_insertion_point(field_get:awolmsg.MsgMysqlStoreTable.version)
+  return version_;
+}
+inline void MsgMysqlStoreTable::set_version(::google::protobuf::uint32 value) {
+  set_has_version();
+  version_ = value;
+  // @@protoc_insertion_point(field_set:awolmsg.MsgMysqlStoreTable.version)
 }
 
 // -------------------------------------------------------------------

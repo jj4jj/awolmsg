@@ -470,9 +470,10 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
             GLOG_ERR("msg pack error ! bytesize:%d", msg.data(0).ByteSize());
             return -1;
         }
-        strnprintf(cmd.sql, 1024 + msg.ByteSize(), "UPDATE msg SET msg='%s' WHERE type=%d  AND actor='%d:%lu'  AND msgid=%lu;",
+        strnprintf(cmd.sql, 1024 + msg.ByteSize(), "UPDATE msg SET msg='%s' version=version+1 WHERE type=%d  AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
             this->tmp_msgbuff.buffer, 
-            msgtype, msg.actor().type(), msg.actor().id(), msg.data(0).id());
+            msgtype, msg.actor().type(), msg.actor().id(),
+            msg.data(0).id(), msg.data(0).version());
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
             return -2;
@@ -481,9 +482,16 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
     }
     else if (msg.op() == MSG_OP_RM){
         actor_state_update(actor, clientid);
-        strnprintf(cmd.sql, 1024 , "DELETE FROM msg WHERE type=%d AND actor='%d:%lu' AND msgid=%lu;",
-            msg.data(0).SerializeAsString().c_str(), msgtype, msg.actor().type(),
-            msg.actor().id(), msg.data(0).id());
+        if (msg.data(0).id() > 0){
+            strnprintf(cmd.sql, 1024, "DELETE FROM msg WHERE type=%d AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
+                msg.data(0).SerializeAsString().c_str(), msgtype, msg.actor().type(),
+                msg.actor().id(), msg.data(0).id(), msg.data(0).version());
+        }
+        else {
+            strnprintf(cmd.sql, 1024, "DELETE FROM msg WHERE type=%d AND actor='%d:%lu';",
+                msg.data(0).SerializeAsString().c_str(), msgtype, msg.actor().type(),
+                msg.actor().id());
+        }
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
             return -2;

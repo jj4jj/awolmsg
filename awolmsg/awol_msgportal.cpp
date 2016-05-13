@@ -54,13 +54,21 @@ static void _safe_portal_dispatch_onrm(const MsgActor & actor, int type, bool fr
     }
     return portal->onremove(ret, id, fromc);
 }
-static void _safe_portal_dispatch_onget(const MsgActor & actor, int type, bool fromc, int ret, uint64_t id, const string & msg){
+static void _safe_portal_dispatch_onget(const MsgActor & actor, int type, bool fromc, int ret, const MsgKeyData & mkd){
     MsgPortal * portal = MsgSvr::instance().find(actor, type);
     if (!portal){
         GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
         return;
     }
-    return portal->onget(ret, id, msg, fromc);
+    return portal->onget(ret, mkd.id, mkd.version, mkd.data, fromc);
+}
+static void _safe_portal_dispatch_onclean(const MsgActor & actor, int type, int ret){
+    MsgPortal * portal = MsgSvr::instance().find(actor, type);
+    if (!portal){
+        GLOG_ERR("msg portal not found when dispatching .... actor(%d:%d) type(%d)", actor.type(), actor.id(), type);
+        return;
+    }
+    return portal->onclean(ret);
 }
 
 
@@ -81,11 +89,11 @@ int MsgPortal::put(const std::string & m) {//server
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
     return msgbox_.put(m, cb);
 }
-int MsgPortal::sync(uint64_t id, const std::string & m, int op){
+int MsgPortal::sync(uint64_t id, uint32_t verison, const std::string & m, int op){
     auto cb = std::bind(_safe_portal_dispatch_onsync,
         this->actor(), this->type(), op,
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-    return msgbox_.sync(id, m, cb);
+    return msgbox_.sync(id, verison, m, cb);
 }
 int MsgPortal::list(bool fromc){
 	if (options().check(fromc, MSG_OPT_CPERM_LIST)){
@@ -98,24 +106,33 @@ int MsgPortal::list(bool fromc){
 		return ErrorCode::AWOL_EC_NO_PERM;
 	}
 }
-int MsgPortal::remove(uint64_t id, bool fromc){//client or server
+int MsgPortal::remove(uint64_t id, uint32_t version, bool fromc){//client or server
 	if (options().check(fromc, MSG_OPT_CPERM_REMOVE)){
         auto cb = std::bind(_safe_portal_dispatch_onrm,
             this->actor(), this->type(), fromc,
             std::placeholders::_1, std::placeholders::_2);
-        return msgbox_.remove(id, cb);
+        return msgbox_.remove(id, version, cb);
     }
 	else {
 		return ErrorCode::AWOL_EC_NO_PERM;
 	}
 }
+int MsgPortal::clean(){
+    auto cb = std::bind(_safe_portal_dispatch_onclean,
+        this->actor(), this->type(), std::placeholders::_1);
+    return msgbox_.clean(cb);
+}
+
 int MsgPortal::get(uint64_t id, bool fromc){
     auto cb = std::bind(_safe_portal_dispatch_onget,
         this->actor(), this->type(), fromc,
-        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+        std::placeholders::_1, std::placeholders::_2);
     return msgbox_.get(id, cb);
 }
-
+void MsgPortal::onclean(int ret){
+    //remove response to client
+    GLOG_DBG("... ret:%d id ...", ret);
+}
 void MsgPortal::onremove(int ret, uint64_t id, bool fromc){
 	//remove response to client
 	GLOG_DBG("... ret:%d id:%lu fromc:%d", ret, id, fromc);
@@ -128,7 +145,7 @@ void MsgPortal::onlist(int ret, const MsgList & vms, bool fromc){
 	//list response to client
 	GLOG_DBG("... ret:%d fromc:%d vms.size:%zd", ret, fromc, vms.size());
 }
-void MsgPortal::onnotify(uint64_t id, const std::string & msg){
+void MsgPortal::onnotify(uint64_t id, uint32_t verison, const std::string & msg){
 	//new msg response to client
 	GLOG_DBG("...notify msg id:%lu msg.length:%d", id, msg.length());
 }
@@ -141,7 +158,7 @@ void MsgPortal::onput(int ret, uint64_t id, const std::string & msg){
 	//new msg response to client
 	GLOG_DBG("... ret:%d msg.length:%d", ret, msg.length());
 }
-void MsgPortal::onget(int ret, uint64_t id, const std::string & msg, bool fromc){
+void MsgPortal::onget(int ret, uint64_t id, uint32_t verison, const std::string & msg, bool fromc){
     GLOG_DBG("... ret:%d id:%lu msg.length:%d", ret, id, msg.length());
 }
 

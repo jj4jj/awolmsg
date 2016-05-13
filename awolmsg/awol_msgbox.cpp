@@ -22,30 +22,48 @@ typedef msgproto_t<awolmsg::Msg> MsgOPT;
 NS_BEGIN(awolmsg)
 MsgBox::MsgBox(const MsgActor & actor, int t_):actor_(actor),type_(t_){}
 typedef dcsutil::sequence_number_t<8,24> msgsn;
-static inline int construct_MsgOPT(char * msgbuff, int msgbufflen, const MsgOptions & options, MsgOP op,
-    const MsgActor & actor, int type, const string & m_ = "",
-    uint64_t  msgid = 0, const MsgActor & actor_from = MsgActor::empty){
+
+static inline int construct_simple_MsgOPT(char * msgbuff, int msgbufflen, const MsgOptions & options, MsgOP op,
+    const MsgActor & actor_to, int type, uint64_t  msgid = 0){
+    MsgOPT msg;
+    msg.mutable_flag()->CopyFrom(options);
+    msg.mutable_actor()->CopyFrom(actor_to);
+    msg.set_type(type);
+    if (msgid > 0){
+        auto rmsg = msg.add_data();
+        rmsg->set_id(msgid);
+    }
+    msg.set_op(op);
+    if (!msg.Pack(msgbuff, msgbufflen)){
+        GLOG_ERR("pack message error ! msg size:%d buff size:%d",
+            msg.ByteSize(), msgbufflen);
+        return -1;
+    }
+    return msgbufflen;
+}
+
+static inline int construct_mmsg_MsgOPT(char * msgbuff, int msgbufflen, const MsgOptions & options, MsgOP op,
+    const MsgActor & actor_to, int type, const string & m_ = "", uint64_t  msgid = 0,
+    uint32_t version = 0, const MsgActor & actor_from = MsgActor::empty){
 	MsgOPT msg;
     msg.mutable_flag()->CopyFrom(options);
-	msg.mutable_actor()->set_type(actor.type());
-    msg.mutable_actor()->set_id(actor.id());
+    msg.mutable_actor()->CopyFrom(actor_to);
 	msg.set_type(type);
-	if (m_.length() > 0 || msgid > 0){
-		auto rmsg = msg.add_data();
-		if (msgid == 0){
-			rmsg->set_id(msgsn::next());
-		}
-		else {
-			rmsg->set_id(msgid);
-		}
-		if (m_.length() > 0){
-			rmsg->set_data(m_.data(), m_.length());
-		}
-        if (actor_from.type() > 0 || actor.id() > 0){
-            rmsg->mutable_ext()->mutable_from()->set_type(actor_from.type());
-            rmsg->mutable_ext()->mutable_from()->set_id(actor_from.id());
-		}
-	}
+    assert(m_.length() > 0);
+    auto rmsg = msg.add_data();
+    if (msgid == 0){
+        rmsg->set_id(msgsn::next());
+    }
+    else {
+        rmsg->set_id(msgid);
+    }
+    rmsg->set_data(m_.data(), m_.length());
+    if (actor_from.type() > 0 || actor_from.id() > 0){
+        rmsg->mutable_ext()->mutable_from()->CopyFrom(actor_from);
+    }
+    if (version > 0){
+        rmsg->mutable_ext()->set_version(version);
+    }
 	msg.set_op(op);
     if (!msg.Pack(msgbuff, msgbufflen)){
 		GLOG_ERR("pack message error ! msg size:%d buff size:%d",
@@ -58,7 +76,7 @@ int MsgBox::list(MsgListCallBack lcb){
 	int ret = 0;
 	dcrpc::RpcValues args;
 	char buff[256];
-	int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_LIST, actor_, type_);
+	int ibuff = construct_simple_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_LIST, actor_, type_);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;
@@ -73,16 +91,15 @@ int MsgBox::list(MsgListCallBack lcb){
 		awolmsg::Msg::MsgData mdata;
 		for (int i = 0; i < result.length(); ++i){
 			mdata.ParseFromArray(result.getb(i).data(), result.getb(i).length());
-			msglist.push_back(MsgKeyData(mdata.id(), mdata.data()));
+			msglist.push_back(MsgKeyData(mdata.id(), mdata.data(), mdata.ext().version()));
 		}
 		lcb(ret, msglist);
 	});
 }
-int	MsgBox::get(uint64_t uid, MsgOPCallBack cb){
+int	MsgBox::get(uint64_t uid, MsgGetCallBack cb){
     dcrpc::RpcValues args;
     char buff[256];
-    int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_GET, actor_,
-        type_, "", uid);
+    int ibuff = construct_simple_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_GET, actor_, type_, uid);
     if (ibuff < 0){
         GLOG_ERR("msg pack error !");
         return -1;
@@ -95,14 +112,19 @@ int	MsgBox::get(uint64_t uid, MsgOPCallBack cb){
         }
         if (ret){
             GLOG_ERR("sync from error :%d result length:%d", ret, result.length());
-            return cb(-1, uid, "");
+            return cb(-1, MsgKeyData(uid, "", 0));
         }
         else {
             if (result.length() == 0){
-                return cb(0, uid, "");
+                return cb(0, MsgKeyData(uid, "", 0));
             }
             else {
-                return cb(0, uid, result.getb());
+                awolmsg::Msg::MsgData mdata;
+                if (!mdata.ParseFromArray(result.getb().data(), result.getb().length())){
+                    GLOG_ERR("unpack msg data error ! ");
+                    return cb(-2, MsgKeyData(uid, "", 0));
+                }
+                return cb(0, MsgKeyData(mdata.id(), mdata.data(), mdata.ext().version()));
             }
         }
     });
@@ -110,8 +132,7 @@ int	MsgBox::get(uint64_t uid, MsgOPCallBack cb){
 int	MsgBox::send(const MsgActor & sendto, const string & m_, MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256*1024];
-    int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_INSERT, sendto,
-		type_, m_, 0, actor_);
+    int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_INSERT, sendto, type_, m_, 0, 0, actor_);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;
@@ -150,8 +171,7 @@ int	MsgBox::send(const MsgActor & sendto, const string & m_, MsgOPCallBack cb){
 int	MsgBox::put(const string & m, MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256 * 1024];
-    int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_INSERT, actor_,
-		type_, m, 0, actor_);
+    int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_INSERT, actor_, type_, m, 0, 0, actor_);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;
@@ -187,11 +207,10 @@ int	MsgBox::put(const string & m, MsgOPCallBack cb){
         }
 	});
 }
-int	MsgBox::remove(uint64_t uid, MsgOPCallBack cb){ //remove one msg
+int	MsgBox::remove(uint64_t uid, uint32_t version, MsgOPCallBack cb){ //remove one msg
 	dcrpc::RpcValues args;
 	char buff[256];
-    int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_RM, actor_,
-		type_, "", uid);
+    int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_RM, actor_, type_, "", uid , version);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;
@@ -213,11 +232,10 @@ int	MsgBox::remove(uint64_t uid, MsgOPCallBack cb){ //remove one msg
 	return 0;
 }
 
-int	MsgBox::sync(uint64_t uid, const string & m_, MsgOPCallBack cb){
+int	MsgBox::sync(uint64_t uid, uint32_t version, const string & m_, MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256 * 1024];
-    int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_SET, actor_,
-		type_, m_, uid);
+    int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_SET, actor_, type_, m_, uid, version);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;
@@ -248,8 +266,7 @@ int	MsgBox::sync(uint64_t uid, const string & m_, MsgOPCallBack cb){
 int	MsgBox::clean(MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256];
-    int ibuff = construct_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_RM, actor_,
-		type_, "", 0);
+    int ibuff = construct_simple_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_RM, actor_, type_);
 	if (ibuff < 0){
 		GLOG_ERR("msg pack error !");
 		return -1;

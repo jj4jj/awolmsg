@@ -13,6 +13,7 @@ message MsgExt {
     optional uint32		time=1;
     optional uint32		ttl=2;
 	optional MsgAgent	from=3;
+	optional uint32		version=4;
 }
 
 enum MsgFlagOwnType {
@@ -52,6 +53,14 @@ message MsgStoreCallBack {
 	optional	uint64	cookie=1;
 	optional	int32	clientid=2;
 	optional	Msg		msg=3;
+};
+
+message MsgMysqlStoreTable {
+	optional	uint32	type=1;	 //msg type
+	optional	string	actor=2; //type:id
+	optional	uint64	msgid=3; //msgid
+	optional	bytes	msg=4;		//msgdata
+	optional	uint32	version=5;	//version
 };
 
 message Msg {

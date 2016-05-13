@@ -13,18 +13,20 @@ struct MsgPortal : noncopyable {
 public:
 	virtual int send(const MsgActor & actor, const std::string & m, bool fromc = true);
 	virtual int put(const std::string & m);//server
-	virtual int sync(uint64_t id, const std::string & m, int op = 0);
+    virtual int sync(uint64_t id, uint32_t verison, const std::string & m, int op = 0);
 	virtual int list(bool fromc = true);
-	virtual int remove(uint64_t id, bool fromc = true);//client or server
+    virtual int remove(uint64_t id, uint32_t verison, bool fromc = true);//client or server
     virtual int get(uint64_t id, bool fromc = true);
+    virtual int clean();
 public:
-    virtual void onget(int ret, uint64_t id, const string & msg, bool fromc);
+    virtual void onget(int ret, uint64_t id, uint32_t verison, const string & msg, bool fromc);
     virtual void onremove(int ret, uint64_t id, bool fromc);
     virtual void onsync(int ret, uint64_t id, const string & msg, int op);
     virtual void onlist(int ret, const MsgList & vms, bool fromc);
-	virtual void onnotify(uint64_t id, const std::string & msg);
+    virtual void onnotify(uint64_t id, uint32_t verison, const std::string & msg);
     virtual void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg, bool fromc);
     virtual void onput(int ret, uint64_t id, const std::string & msg);
+    virtual void onclean(int ret);
 public:
 	MsgPortal(const MsgActor & actor, int type);
 	int type() const { return msgbox_.type(); };
@@ -44,6 +46,14 @@ struct MsgPortalT : public MsgPortal {
     typedef std::pair<uint64_t, MsgT>   VMsgT;
     typedef std::vector<VMsgT>          VMsgTList;
 public:
+    virtual int remove(uint64_t id, bool fromc = true){//client or server
+        auto it = msg_cache.find(id);
+        if (it == msg_cache.end()){
+            GLOG_ERR("remove msg id:%lu not exist with fromc:%d", id, fromc);
+            return ErrorCode::AWOL_EC_MSG_NOT_FOUND;
+        }
+        return MsgPortal::remove(id, it->second.first, fromc);
+    }
     virtual int send(const MsgActor & actor, const MsgT & m, bool fromc = true){
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
         if (!m.SerializeToArray(msgbuff.buffer, msgbuff.max_size)){
@@ -66,7 +76,8 @@ public:
             GLOG_ERR("op mail id:%lu not exist with op:%d", id, op);
             return ErrorCode::AWOL_EC_MSG_NOT_FOUND;
         }
-        MsgT & m = it->second;
+        uint32_t ver = it->second.first;
+        MsgT & m = it->second.second;
         int ret = onsyncop(id, m, op);
         if (ret){
             GLOG_ERR("check op error ret:%d", ret);
@@ -77,7 +88,7 @@ public:
             GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
             return ErrorCode::AWOL_EC_ERROR_PACK;
         }
-        return MsgPortal::sync(id, std::string(msgbuff.buffer, m.ByteSize()), op);
+        return MsgPortal::sync(id, ver, std::string(msgbuff.buffer, m.ByteSize()), op);
     }
 public:
     virtual void onget(uint64_t id, const MsgT & msg, bool fromc){
@@ -110,7 +121,15 @@ public:
         return 0;
     }
 public:
-    void onget(int ret, uint64_t id, const string & msg, bool fromc){
+    virtual void onclean(int ret){
+        GLOG_DBG("on clean ret", ret);
+        if (ret){
+            GLOG_ERR("onclean msg error :%d", ret);
+            return;
+        }
+        msg_cache.clear();
+    }
+    void onget(int ret, uint64_t id, uint32_t version, const string & msg, bool fromc){
         if (ret){
             GLOG_ERR("onget msg error :%d", ret);
             return;
@@ -119,7 +138,7 @@ public:
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
         }
-        msg_cache[id] = mm;
+        msg_cache[id] = std::make_pair(version, mm);
         onget(id, mm, fromc);
     }
     void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg){
@@ -138,6 +157,13 @@ public:
             GLOG_ERR("onupdate msg error :%d", ret);
             return;
         }
+        auto it = msg_cache.find(id);
+        if (it == msg_cache.end()){
+            GLOG_ERR("msg not found id = %lu on sync op = %d", id, op);
+            return;
+        }
+        //update version
+        it->second.first = it->second.first + 1;
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
@@ -153,7 +179,7 @@ public:
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
         }
-        msg_cache[id] = mm;
+        msg_cache[id] = std::make_pair(0, mm);
         onput(id, mm);
     }
     void onlist(int ret, const MsgList & vms, bool fromc){
@@ -163,14 +189,15 @@ public:
         }
         msg_cache.clear();
         for (int i = 0; i < vms.size(); ++i){
-            auto & msg = vms.at(i);
+            const MsgKeyData & msg = vms.at(i);
             MsgT mm;
             if (!mm.ParseFromArray(msg.data.data(), msg.data.length())){
                 GLOG_ERR("parse from array error ! length:%d", msg.data.length());
             }
             assert(msg.id > 0);
-            msg_cache[msg.id] = mm;
-            GLOG_DBG("msg actor:(%d:%lu)insert msg id:%lu ", actor().type(), actor().id(), msg.id);
+            msg_cache[msg.id] = std::make_pair(msg.version, mm);
+            GLOG_DBG("msg actor:(%d:%lu)insert msg id:%lu version:%d",
+                actor().type(), actor().id(), msg.id, msg.version);
         }
         onlist(fromc);
     }
@@ -178,6 +205,7 @@ public:
         GLOG_DBG("on remove msg ret:%d id:%lu fromc:%d", ret, id, fromc);
         if (ret){
             GLOG_ERR("on remove msg ret:%d id:%lu fromc:%d", ret, id, fromc);
+            return;
         }
         auto pmsg = getmsg(id);
         if (!pmsg){
@@ -187,13 +215,13 @@ public:
         onremove(id, *pmsg, fromc);
         msg_cache.erase(id);
     }
-    void onnotify(uint64_t id, const string & msg){
+    void onnotify(uint64_t id, uint32_t version, const string & msg){
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("notify msg id:%lu unpack erorr len:%zd !", id, msg.length());
             return;
         }
-        msg_cache[id] = mm;
+        msg_cache[id] = std::make_pair(version ,mm);
         return onnotify(id, mm);
     }
     MsgT * getmsg(uint64_t id){
@@ -201,13 +229,13 @@ public:
         if (it == msg_cache.end()){
             return nullptr;
         }
-        return &it->second;
+        return &(it->second.second);
     }
 public:
     MsgPortalT(const MsgActor & actor) :MsgPortal(actor, MsgTypeV){}
     virtual ~MsgPortalT(){ msg_cache.clear(); }
 public:
-    std::unordered_map<uint64_t, MsgT>   msg_cache;
+    std::unordered_map<uint64_t, std::pair<uint32_t, MsgT> >   msg_cache;
 };
 
 
