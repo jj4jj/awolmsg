@@ -75,9 +75,3 @@ message Msg {
 		optional MsgExt	ext=3;
 	}
 };
-
-message NotifyMsg {
-	optional MsgAgent	actor=1;
-	optional int32		clientsrc=2;
-	optional bytes		data=3;
-};
