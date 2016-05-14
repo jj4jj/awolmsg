@@ -19,6 +19,8 @@ public:
     virtual int get(uint64_t id, bool fromc = true);
     virtual int clean();
 public:
+	static  int sendto(const MsgActor & actorto, int type, const std::string & m);
+public:
     virtual void onget(int ret, uint64_t id, uint32_t verison, const string & msg, bool fromc);
     virtual void onremove(int ret, uint64_t id, bool fromc);
     virtual void onsync(int ret, uint64_t id, const string & msg, int op);
@@ -46,6 +48,14 @@ struct MsgPortalT : public MsgPortal {
     typedef std::pair<uint64_t, MsgT>   VMsgT;
     typedef std::vector<VMsgT>          VMsgTList;
 public:
+	static int 	sendto(const MsgActor & actorto, const MsgT & m){
+		msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
+		if (!m.SerializeToArray(msgbuff.buffer, msgbuff.max_size)){
+			GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
+			return ErrorCode::AWOL_EC_ERROR_PACK;
+		}
+		return MsgPortal::sendto(actorto, MsgTypeV, std::string(msgbuff.buffer, m.ByteSize()));
+	}
     virtual int remove(uint64_t id, bool fromc = true){//client or server
         auto it = msg_cache.find(id);
         if (it == msg_cache.end()){
@@ -134,9 +144,14 @@ public:
             GLOG_ERR("onget msg error :%d", ret);
             return;
         }
+		if (msg.empty()){
+			GLOG_IFO("get data id = %lu is empty fromc:%d !", id, fromc);
+			return;
+		}
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
+			return;
         }
         msg_cache[id] = std::make_pair(version, mm);
         onget(id, mm, fromc);
@@ -154,19 +169,20 @@ public:
     }
     void onsync(int ret, uint64_t id, const std::string & msg, int op){
         if (ret){
-            GLOG_ERR("onupdate msg error :%d", ret);
+            GLOG_ERR("onsync msg error :%d", ret);
             return;
         }
         auto it = msg_cache.find(id);
         if (it == msg_cache.end()){
-            GLOG_ERR("msg not found id = %lu on sync op = %d", id, op);
+            GLOG_ERR("onsync msg not found id = %lu on sync op = %d", id, op);
             return;
         }
         //update version
         it->second.first = it->second.first + 1;
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
-            GLOG_ERR("parse from array error ! length:%d", msg.length());
+            GLOG_ERR("onsync parse from array error ! length:%d", msg.length());
+			return;
         }
         onsync(id, mm, op);
     }
@@ -178,6 +194,7 @@ public:
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
+			return;
         }
         msg_cache[id] = std::make_pair(0, mm);
         onput(id, mm);
@@ -193,6 +210,7 @@ public:
             MsgT mm;
             if (!mm.ParseFromArray(msg.data.data(), msg.data.length())){
                 GLOG_ERR("parse from array error ! length:%d", msg.data.length());
+				continue;
             }
             assert(msg.id > 0);
             msg_cache[msg.id] = std::make_pair(msg.version, mm);

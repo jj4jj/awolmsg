@@ -10,6 +10,7 @@ namespace awolmsg {
 	struct MsgSvrImpl;
 	struct MsgPortal;
     struct MsgOptions;
+	struct Msg;
 	class MsgSvr : noncopyable {
 	public:
 		static MsgSvr & instance();
@@ -20,6 +21,7 @@ namespace awolmsg {
         bool ready();
 		int regis(MsgPortal * portal);
         void unregis(MsgPortal * portal);
+		void		dispatch(const Msg & m);
         MsgPortal * find(const MsgActor & actor, int type);
 		dcrpc::RpcClient * rpc();
         msg_buffer_t *     msg_buffer();

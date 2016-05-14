@@ -18,7 +18,7 @@ namespace awolapp {
     public:
         int request(const string & req);
         virtual void response(const string & resp); //send to client actor
-
+		static int sendto(const MsgActor & actor, const awolapp::Mail & mail);
     public:
         int   onop_do(uint64_t id, Mail & mail, int op);
         void  onop_did(uint64_t id, const Mail & mail, int op);

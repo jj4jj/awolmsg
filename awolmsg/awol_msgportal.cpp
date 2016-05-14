@@ -71,6 +71,9 @@ static void _safe_portal_dispatch_onclean(const MsgActor & actor, int type, int 
     return portal->onclean(ret);
 }
 
+int MsgPortal::sendto(const MsgActor & actorto, int type, const std::string & m){
+	return MsgBox::sendto(actorto, type, m);
+}
 
 int MsgPortal::send(const MsgActor & actorto, const std::string & m, bool fromc){
 	if (options().check(fromc)){

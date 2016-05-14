@@ -40,12 +40,13 @@ int MailBox::remove(uint64_t id){
 int MailBox::insert(const Mail & mail){
     return impl->put(mail);
 }
+int MailBox::sendto(const MsgActor & actor, const awolapp::Mail & mail){
+	return MailBoxImpl::sendto(actor, mail);
+}
 int MailBox::request(const string & req){    
-    GLOG_IFO("recv client request msg: [%s]", req.c_str());
     return impl->request(req);
 }
 void MailBox::response(const string & resp){ //send to client actor
-    GLOG_IFO("send to client response msg:[%s]", resp.c_str());
 }
 void MailBox::onread(uint64_t id, const Mail & mail){
 }

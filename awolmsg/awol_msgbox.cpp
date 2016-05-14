@@ -88,10 +88,16 @@ int MsgBox::list(MsgListCallBack lcb){
 			return;
 		}
 		MsgList msglist;
-		awolmsg::Msg::MsgData mdata;
-		for (int i = 0; i < result.length(); ++i){
-			mdata.ParseFromArray(result.getb(i).data(), result.getb(i).length());
-			msglist.push_back(MsgKeyData(mdata.id(), mdata.data(), mdata.ext().version()));
+		if (ret == 0){
+			awolmsg::Msg::MsgData mdata;
+			for (int i = 0; i < result.length(); ++i){
+				if (mdata.ParseFromArray(result.getb(i).data(), result.getb(i).length())){
+					msglist.push_back(MsgKeyData(mdata.id(), mdata.data(), mdata.ext().version()));
+				}
+				else {
+					GLOG_ERR("onlist unpack msg error idx:%d !", i);
+				}
+			}
 		}
 		lcb(ret, msglist);
 	});
@@ -129,6 +135,39 @@ int	MsgBox::get(uint64_t uid, MsgGetCallBack cb){
         }
     });
 }
+int MsgBox::sendto(const MsgActor & sendto, int type, const std::string & m_){
+	dcrpc::RpcValues args;
+	char buff[256 * 1024];
+	int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), MsgSvr::instance().options(type), MSG_OP_INSERT, sendto, type, m_);
+	if (ibuff < 0){
+		GLOG_ERR("sendto actor(%s) type:%d msg pack error msg length:%d!",
+			sendto.ShortDebugString().c_str(), type, m_.length());
+		return -1;
+	}
+	args.addb(buff, ibuff);
+	return RPC->call("msg", args, [](int ret, const RpcValues & result){
+		GLOG_DBG("sendto rpc call ret:%d result length:%d", ret, result.length());
+		if (ret){
+			GLOG_ERR("rpc sendto msg error ! ret:%d !", ret);
+			return;
+		}
+		else {
+			awolmsg::Msg recvmsg;
+			if (!recvmsg.ParseFromString(result.getb())){
+				GLOG_ERR("unpack msg error ! data :%d", result.getb().length());
+				return;
+			}
+			if (recvmsg.data_size() == 0){
+				GLOG_ERR("sendto msg reply msg length error !");
+				return;
+			}
+			else { //send to msgsvr dispatching
+				GLOG_DBG("sendto msg success msgsvr dispatching ...");
+				MsgSvr::instance().dispatch(recvmsg);
+			}
+		}
+	});
+}
 int	MsgBox::send(const MsgActor & sendto, const string & m_, MsgOPCallBack cb){
 	dcrpc::RpcValues args;
 	char buff[256*1024];
@@ -158,9 +197,6 @@ int	MsgBox::send(const MsgActor & sendto, const string & m_, MsgOPCallBack cb){
             if (recvmsg.data_size() == 0){
                 cb(-3, 0, "");
                 return;
-            }
-            if (recvmsg.data(0).id() == 0){
-                cb(-4, 0, "");
             }
             else {
                 cb(0, recvmsg.data(0).id(), recvmsg.data(0).data());
@@ -197,9 +233,6 @@ int	MsgBox::put(const string & m, MsgOPCallBack cb){
             if (recvmsg.data_size() == 0){
                 cb(-3, 0, "");
                 return;
-            }
-            if (recvmsg.data(0).id() == 0){
-                cb(-4, 0, "");
             }
             else {
                 cb(0, recvmsg.data(0).id(), recvmsg.data(0).data());

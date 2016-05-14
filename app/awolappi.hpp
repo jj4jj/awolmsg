@@ -44,9 +44,11 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
     int request(const string & str){
         CSAwalMsg   msg;
         if (!msg.ParseFromString(str.data())){
-            GLOG_ERR("parse from arrray error !");
+            GLOG_ERR("request parse from arrray error !");
             return -1;
         }
+		GLOG_DBG("actor(%s) request msg:[%s]", AppPortal::actor().ShortDebugString().c_str(),
+			msg.ShortDebugString().c_str());
         auto & req = msg.request();
         const MsgAgent & magt = req.sendto();
         auto & appmsg = app_->get_msg(req.msg());
@@ -73,7 +75,10 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
         }
         if (!msg.SerializeToArray(msgbuff_.buffer, msgbuff_.max_size)){
             GLOG_ERR("pack msg error msg size:%d", msg.ByteSize());
+			return;
         }
+		GLOG_DBG("actor(%s) response msg:[%s]", 
+			AppPortal::actor().ShortDebugString().c_str(), msg.ShortDebugString().c_str());
         return app_->response(string(msgbuff_.buffer, msg.ByteSize()));
     }
     void onremove(uint64_t id, const AppMsg & msg, bool fromc){
@@ -87,8 +92,8 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
             pushmsg(csmsg);
         }
     }
-    virtual void onnotify(uint64_t id, uint32_t version, const AppMsg & msg){
-        GLOG_DBG("notify new app msg id:%id", id);
+    virtual void onnotify(uint64_t id, const AppMsg & msg){
+        GLOG_DBG("notify new app msg id:%ld", id);
         if (this->options().owner() != MSG_OPT_OWN_SO){
             app_->onnotify(id, msg);
             CSAwalMsg csmsg;

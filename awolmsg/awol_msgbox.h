@@ -17,7 +17,8 @@ public:
     int	sync(uint64_t uid, uint32_t version, const std::string & m_, MsgOPCallBack cb = nullptr);
 	int	clean(MsgOPCallBack cb = nullptr);
     int	get(uint64_t uid, MsgGetCallBack cb = nullptr);
-
+public:
+	static int sendto(const MsgActor & sendto, int type, const std::string & m_);
 private:
 	MsgActor		actor_;
 	int				type_{ 0 };

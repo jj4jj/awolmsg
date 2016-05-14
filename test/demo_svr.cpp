@@ -156,6 +156,9 @@ struct TestMailBox : public awolapp::MailBox {
     virtual void onfetch(uint64_t id, const Mail & mail){
 
     }
+	void onlist() {
+
+	}
 
 };
 
@@ -180,16 +183,17 @@ int main(int argc, char * argv[]){
 
     //send to ma2
     TestMailBox mb(ma1);
-    //mb.put(mail);
-    //mb.put(mail);
+	//mb.insert(mail);
+    //mb.insert(mail);
     //send to ma2
-    //mb.sendto(ma2, mail, false);
 
     //mb.insert(mail);;
 
     TestMailBox mb2(ma2);
+	mb2.list();
     mail.set_subject("send to ma2");
     //mb2.insert(mail);;
+	TestMailBox::sendto(ma2, mail);
 
     CSAwalMsg request;
     request.set_cmd(CSAwalMsg_MsgCMD_MSG_CMD_LIST);

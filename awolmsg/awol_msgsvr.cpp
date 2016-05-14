@@ -39,30 +39,35 @@ int MsgSvr::init(const string & svraddr){
     impl->msgbuff.create(1024 * 1024);
     //////////////////////////////////////////////////////////////////////
     impl->rpc.notify("msg", [this](int ret, const dcrpc::RpcValues & vals){
-        //SET MSG
+		if (ret){
+			GLOG_ERR("msg notify ret :%d", ret);
+			return;
+		}
         MsgOPT msgop;
         if (!msgop.Unpack(vals.getb().data(), vals.getb().length())){
             GLOG_ERR("msg notify unpack error ! size:%d", vals.getb().length());
             return;
         }
-        if (msgop.data_size() == 0){
-            GLOG_ERR("msg notify data list is empty !");
-            return;
-        }
-        MsgKey mk;
-        mk.actor = msgop.actor();
-        mk.type = msgop.type();
-
-        auto it = this->impl->recievers.find(mk);
-        if (it != this->impl->recievers.end()){
-            MsgPortal * mp = it->second;
-            mp->onnotify(msgop.data(0).id(), msgop.data(0).ext().version(), msgop.data(0).data());
-        }
-
+		this->dispatch(msgop);
     });
     impl->protals.resize(awolmsg::MAX_MSG_TYPE_NUM);
 	return 0;
 }
+void	MsgSvr::dispatch(const Msg & msgop){
+	if (msgop.data_size() == 0){
+		GLOG_ERR("msg notify data list is empty !");
+		return;
+	}
+	MsgKey mk;
+	mk.actor = msgop.actor();
+	mk.type = msgop.type();
+	auto it = this->impl->recievers.find(mk);
+	if (it != this->impl->recievers.end()){
+		MsgPortal * mp = it->second;
+		mp->onnotify(msgop.data(0).id(), msgop.data(0).ext().version(), msgop.data(0).data());
+	}
+}
+
 int MsgSvr::destory(){
 	if (impl){
 		impl->rpc.destroy();

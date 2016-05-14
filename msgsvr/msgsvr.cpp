@@ -98,7 +98,7 @@ public:
                     GLOG_IFO("subscriber number :%d", reply->element[2]->integer);
                 }
                 if (strcasecmp("message", reply->element[0]->str) == 0){
-                    GLOG_DBG("recv (subscribe) notify msg len:%d", reply->element[2]->str, reply->element[2]->len);
+                    GLOG_DBG("recv (subscribe) notify msg len:%d", reply->element[2]->len);
                     msgproto_t<awolmsg::NotifyMsg> notifymsg;
                     if (!notifymsg.Unpack(reply->element[2]->str, reply->element[2]->len)){
                         GLOG_ERR("unpack msg error recv notify msg:%s lenth:%d",
@@ -134,7 +134,7 @@ public:
         }
     }
     int recv_notify_actor_msg(const MsgActor & actor, const string & replymsg, int clientsrc){
-        auto it = actor_map_fds.find(actor);
+		auto it = actor_map_fds.find(actor);
         if (it != actor_map_fds.end()){
             int clientfd = it->second->id;
             if (clientfd != clientsrc){
@@ -146,10 +146,13 @@ public:
                 return 0;
             }
         }
+		else {
+			GLOG_DBG("not found actor:%s clientfd:%d", actor.ShortDebugString().c_str(), clientsrc);
+		}
         return -1;
     }
-    void send_notify_actor_msg(const MsgActor & actor, const string & replymsg, int clientsrc){
-        if (recv_notify_actor_msg(actor, replymsg, clientsrc) == 0){
+    void send_notify_actor_msg(const MsgActor & actor, const string & replymsg, int clientsrc){		
+		if (recv_notify_actor_msg(actor, replymsg, clientsrc) == 0){
             return;
         }
         //notify other server 
@@ -193,27 +196,38 @@ public:
 		return ret;
 	}
 };
-
+#define MSGSVR_VERSION	("0.0.1")
 int main(int argc, char ** argv){
 	cmdline_opt_t cmdline(argc, argv);
 
     //todo addres tobe configuration
+	cmdline.parse("version:n:v:version;"
+		"db:r:d:mysql database name:test;"
+		"db-user:r::mysql user name:test;"
+		"db-pwd:r::mysql password:123456;"
+		"listen:r:l:rpc listen address (tcp):127.0.0.1:8888;"
+		"redis:r::redis address:127.0.0.1:6379;");
+	if (cmdline.getoptstr("version")){
+		puts(MSGSVR_VERSION);
+		return 0;
+	}
+
 	dcrpc::RpcServer	rpc;
-	if (rpc.init("127.0.0.1:8888")){
+	if (rpc.init(cmdline.getoptstr("listen"))){
 		return -1;
 	}
 
 	RedisAsyncAgent redis;
-	if (redis.init("127.0.0.1:6379")){
+	if (redis.init(cmdline.getoptstr("redis"))){
 		return -2;
 	}
 
     mysqlclient_pool_t  mysql;
     mysqlclient_t::cnnx_conf_t config;
     config.ip = "127.0.0.1";
-    config.uname = "gsgame";
-    config.passwd = "gsgame";
-    config.dbname = "msg";
+    config.uname = cmdline.getoptstr("db-user");
+	config.passwd = cmdline.getoptstr("db-pwd");
+    config.dbname = cmdline.getoptstr("db");
     if (mysql.init(config, 2)){
         return -3;
     }
@@ -473,7 +487,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
         strnprintf(cmd.sql, 1024 + msg.ByteSize(), "UPDATE msg SET msg='%s' version=version+1 WHERE type=%d  AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
             this->tmp_msgbuff.buffer, 
             msgtype, msg.actor().type(), msg.actor().id(),
-            msg.data(0).id(), msg.data(0).version());
+            msg.data(0).id(), msg.data(0).ext().version());
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
             return -2;
@@ -485,7 +499,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
         if (msg.data(0).id() > 0){
             strnprintf(cmd.sql, 1024, "DELETE FROM msg WHERE type=%d AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
                 msg.data(0).SerializeAsString().c_str(), msgtype, msg.actor().type(),
-                msg.actor().id(), msg.data(0).id(), msg.data(0).version());
+                msg.actor().id(), msg.data(0).id(), msg.data(0).ext().version());
         }
         else {
             strnprintf(cmd.sql, 1024, "DELETE FROM msg WHERE type=%d AND actor='%d:%lu';",
