@@ -14,19 +14,37 @@ enum MsgType {
 };
 
 
+enum MailContentType {
+	MAIL_CONTENT_BLOB=0;
+	MAIL_CONTENT_REFER=1;
+	MAIL_CONTENT_TEXT=2;
+	MAIL_CONTENT_HTML=3;
+};
+
 message MailAttachment {
-    optional    int32   type=1;
-    optional    bytes   data=2;
+    optional    int32			type=1;
+    optional    bytes			data=2;
 };
 
 message MailContent {
-	optional	int32	type=1;
-	optional	bytes	data=2;
+	optional	MailContentType	type=1;
+	optional	bytes			data=2;
+	optional	uint64			refer=3;
+};
+
+message MailFilter {
+	repeated	uint64		player_id_list = 1;
+	optional	uint32		min_lv=2;
+	optional	uint32		max_lv=3;
+	optional	uint32		lt_regis_time=4;
+	optional	uint32		gt_regis_time=5;
 };
 
 message MailOption {
-    optional    uint32  expire_timestamp=1;
-	optional	uint32	start_timestamp=2;
+    optional    uint32				expire_timestamp=1;
+	optional	uint32				start_timestamp=2;
+	optional	uint32				system_mail=3;
+	optional	MailFilter			fitler=4;
 };
 
 enum MailState {
