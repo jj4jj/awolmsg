@@ -190,9 +190,9 @@ struct TestMailBox : public awolapp::MailBox {
 int main(int argc, char * argv[]){
     MsgSvr & msgsvr = MsgSvr::instance();
     msgsvr.init("127.0.0.1:8888");
-    while (!msgsvr.ready()){
-        msgsvr.update();
-    }
+    //while (!msgsvr.ready()){
+    //    msgsvr.update();
+    //}
 
     MsgActor ma1(ActorType::ACTOR_TYPE_PLAYER, 1); //P1
     MsgActor ma2(ActorType::ACTOR_TYPE_PLAYER, 2); //P2
@@ -201,11 +201,11 @@ int main(int argc, char * argv[]){
     Mail mail;
     mail.set_sender("from ma1");
     mail.set_subject("put self");
-    mail.mutable_content()->set_type(1);
+    mail.mutable_content()->set_type((MailContentType)1);
     mail.mutable_content()->set_data("test content");
 
     //send to ma2
-    TestMailBox mb(ma1);
+    TestMailBox mb1(ma1);
 	//mb.insert(mail);
     //mb.insert(mail);
     //send to ma2
@@ -223,6 +223,13 @@ int main(int argc, char * argv[]){
     request.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_LIST);
 	//mb.request(request.SerializeAsString());
     mb2.request(request.SerializeAsString());
+
+
+	TestMailBox mb(ma);
+	mb.insert(mail);
+
+	//checking
+
 
 
     while (true){

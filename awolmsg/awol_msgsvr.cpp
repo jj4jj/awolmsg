@@ -32,7 +32,7 @@ int MsgSvr::init(const string & svraddr){
 	}
 	impl = new MsgSvrImpl();
 	/////////////////////////
-	int ret = impl->rpc.init(svraddr);
+	int ret = impl->rpc.init(svraddr, 128);
     if (ret){
         return -2;
     }
