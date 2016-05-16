@@ -279,20 +279,20 @@ void protobuf_AddDesc_awolmsg_2eproto() {
     "A\n\007MsgData\022\n\n\002id\030\001 \002(\004\022\014\n\004data\030\002 \001(\014\022\034\n\003"
     "ext\030\003 \001(\0132\017.awolmsg.MsgExt\"N\n\tNotifyMsg\022"
     " \n\005actor\030\001 \001(\0132\021.awolmsg.MsgAgent\022\021\n\tcli"
-    "entsrc\030\002 \001(\005\022\014\n\004data\030\003 \001(\014*,\n\024MaxMsgType"
-    "ConstValue\022\024\n\020MAX_MSG_TYPE_NUM\020@*L\n\016MsgF"
-    "lagOwnType\022\022\n\016MSG_OPT_OWN_BO\020\000\022\022\n\016MSG_OP"
-    "T_OWN_SO\020\001\022\022\n\016MSG_OPT_OWN_CO\020\002*v\n\023MsgFal"
-    "gStoreOptions\022\026\n\022MSG_OPT_STORE_NONE\020\000\022\025\n"
-    "\021MSG_OPT_STORE_TTL\020\001\022\027\n\023MSG_OPT_STORE_SH"
-    "IFT\020\002\022\027\n\023MSG_OPT_STORE_MYSQL\020\004*\250\001\n\023MsgFa"
-    "lgCpermOptions\022\026\n\022MSG_OPT_CPERM_NONE\020\000\022\026"
-    "\n\022MSG_OPT_CPERM_SEND\020\001\022\030\n\024MSG_OPT_CPERM_"
-    "REMOVE\020\002\022\026\n\022MSG_OPT_CPERM_LIST\020\004\022\030\n\024MSG_"
-    "OPT_CPERM_UPDATE\020\010\022\025\n\021MSG_OPT_CPERM_ALL\020"
-    "\017*Z\n\005MsgOP\022\017\n\013MSG_OP_LIST\020\001\022\016\n\nMSG_OP_SE"
-    "T\020\002\022\016\n\nMSG_OP_GET\020\003\022\r\n\tMSG_OP_RM\020\004\022\021\n\rMS"
-    "G_OP_INSERT\020\005", 1213);
+    "entsrc\030\002 \001(\005\022\014\n\004data\030\003 \001(\014*C\n\024MaxMsgType"
+    "ConstValue\022\024\n\020MAX_MSG_TYPE_NUM\020@\022\025\n\021MAX_"
+    "MSG_LIST_SIZE\020d*L\n\016MsgFlagOwnType\022\022\n\016MSG"
+    "_OPT_OWN_BO\020\000\022\022\n\016MSG_OPT_OWN_SO\020\001\022\022\n\016MSG"
+    "_OPT_OWN_CO\020\002*v\n\023MsgFalgStoreOptions\022\026\n\022"
+    "MSG_OPT_STORE_NONE\020\000\022\025\n\021MSG_OPT_STORE_TT"
+    "L\020\001\022\027\n\023MSG_OPT_STORE_SHIFT\020\002\022\027\n\023MSG_OPT_"
+    "STORE_MYSQL\020\004*\250\001\n\023MsgFalgCpermOptions\022\026\n"
+    "\022MSG_OPT_CPERM_NONE\020\000\022\026\n\022MSG_OPT_CPERM_S"
+    "END\020\001\022\030\n\024MSG_OPT_CPERM_REMOVE\020\002\022\026\n\022MSG_O"
+    "PT_CPERM_LIST\020\004\022\030\n\024MSG_OPT_CPERM_UPDATE\020"
+    "\010\022\025\n\021MSG_OPT_CPERM_ALL\020\017*Z\n\005MsgOP\022\017\n\013MSG"
+    "_OP_LIST\020\001\022\016\n\nMSG_OP_SET\020\002\022\016\n\nMSG_OP_GET"
+    "\020\003\022\r\n\tMSG_OP_RM\020\004\022\021\n\rMSG_OP_INSERT\020\005", 1236);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "awolmsg.proto", &protobuf_RegisterTypes);
   MsgAgent::default_instance_ = new MsgAgent();
@@ -327,6 +327,7 @@ const ::google::protobuf::EnumDescriptor* MaxMsgTypeConstValue_descriptor() {
 bool MaxMsgTypeConstValue_IsValid(int value) {
   switch(value) {
     case 64:
+    case 100:
       return true;
     default:
       return false;

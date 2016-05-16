@@ -32,7 +32,7 @@ MailBox::~MailBox(){
     }
 }
 int MailBox::list(){
-    return impl->list(false);
+    return impl->list();
 }
 int MailBox::remove(uint64_t id){
     return impl->remove(id);
@@ -52,7 +52,7 @@ void MailBox::onread(uint64_t id, const Mail & mail){
 }
 void MailBox::onfetch(uint64_t id, const Mail & mail){
 }
-void MailBox::onop_did(uint64_t id, const Mail & mail, int op){
+void MailBox::onmsgop(uint64_t id, const Mail & mail, int op){
     if (op == MAIL_OP_READ){
         GLOG_DBG("on mail fetch id:%id", id);
         this->onfetch(id, mail);
@@ -62,11 +62,12 @@ void MailBox::onop_did(uint64_t id, const Mail & mail, int op){
         this->onread(id, mail);
     }
 }
-int MailBox::onop_do(uint64_t id, Mail & m, int op){
+int MailBox::checkop(uint64_t id, Mail & m, int op){
     if (op == MAIL_OP_READ && m.state() == MAIL_STATE_INIT){
         m.set_state(MAIL_STATE_READ);
     }
-    else if (op == MAIL_OP_FETCH && (m.state() == MAIL_STATE_READ || m.state() == MAIL_STATE_INIT)){
+    else if (op == MAIL_OP_FETCH && 
+			(m.state() == MAIL_STATE_READ || m.state() == MAIL_STATE_INIT)){
         m.set_state(MAIL_STATE_FETCH);
     }
     else {

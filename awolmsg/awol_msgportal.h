@@ -56,12 +56,32 @@ public:
 		}
 		return MsgPortal::sendto(actorto, MsgTypeV, std::string(msgbuff.buffer, m.ByteSize()));
 	}
+	bool	lock(uint64_t id){
+		uint32_t time_now = dcsutil::time_unixtime_s();
+		auto it = msg_locking.find(id);
+		static const int MSG_LOCKING_TIME = 5;
+		if (it == msg_locking.end()){
+			msg_locking[id] = time_now + MSG_LOCKING_TIME;
+			return true;
+		}
+		else if (time_now > it->second){
+			it->second = time_now + MSG_LOCKING_TIME;
+			return true;
+		}
+		return false;
+	}
+	void	unlock(uint64_t id){
+		msg_locking.erase(id);
+	}
     virtual int remove(uint64_t id, bool fromc = true){//client or server
         auto it = msg_cache.find(id);
         if (it == msg_cache.end()){
             GLOG_ERR("remove msg id:%lu not exist with fromc:%d", id, fromc);
             return ErrorCode::AWOL_EC_MSG_NOT_FOUND;
         }
+		if (!lock(id)){
+			return ErrorCode::AWOL_EC_MSG_OP_RETRY_LATER;
+		}
         return MsgPortal::remove(id, it->second.first, fromc);
     }
     virtual int send(const MsgActor & actor, const MsgT & m, bool fromc = true){
@@ -86,11 +106,14 @@ public:
             GLOG_ERR("op mail id:%lu not exist with op:%d", id, op);
             return ErrorCode::AWOL_EC_MSG_NOT_FOUND;
         }
+		if (!lock(id)){
+			return ErrorCode::AWOL_EC_MSG_OP_RETRY_LATER;
+		}
         uint32_t ver = it->second.first;
         MsgT & m = it->second.second;
-        int ret = onsyncop(id, m, op);
+        int ret = checkop(id, m, op);
         if (ret){
-            GLOG_ERR("check op error ret:%d", ret);
+            GLOG_ERR("check op:%d error ret:%d", op, ret);
             return ret;
         }
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
@@ -98,13 +121,13 @@ public:
             GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
             return ErrorCode::AWOL_EC_ERROR_PACK;
         }
-        return MsgPortal::sync(id, ver, std::string(msgbuff.buffer, m.ByteSize()), op);
+        return MsgPortal::sync(id, ver+1, std::string(msgbuff.buffer, m.ByteSize()), op);
     }
 public:
     virtual void onget(uint64_t id, const MsgT & msg, bool fromc){
         GLOG_DBG("on get msg id:%lu [%s]", id, msg.ShortDebugString().c_str());
     }
-    virtual void osend(const MsgActor & actorto, uint64_t id, const MsgT & msg){
+    virtual void onsend(const MsgActor & actorto, uint64_t id, const MsgT & msg){
         GLOG_DBG("on send to actor(%d:%d) msg id:%lu [%s]",
             actorto.type(), actorto.id(), id, msg.ShortDebugString().c_str());
     }
@@ -123,7 +146,7 @@ public:
     virtual void onsync(uint64_t id, const MsgT & msg, int op){
         GLOG_DBG("on update msg id:%d op:%d [%s]", id, op, msg.ShortDebugString().c_str());
     }
-    virtual int  onsyncop(uint64_t id, MsgT & msg, int op){
+    virtual int  checkop(uint64_t id, MsgT & msg, int op){
         if (op != 0){
             GLOG_ERR("op = %d id:%lu not permitted !", op, id);
             return ErrorCode::AWOL_EC_MSG_UPDATE_OP_ERROR;
@@ -139,7 +162,7 @@ public:
         }
         msg_cache.clear();
     }
-    void onget(int ret, uint64_t id, uint32_t version, const string & msg, bool fromc){
+    virtual void onget(int ret, uint64_t id, uint32_t version, const string & msg, bool fromc){
         if (ret){
             GLOG_ERR("onget msg error :%d", ret);
             return;
@@ -156,7 +179,7 @@ public:
         msg_cache[id] = std::make_pair(version, mm);
         onget(id, mm, fromc);
     }
-    void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg){
+    virtual void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg){
         if (ret){
             GLOG_ERR("onput msg error :%d", ret);
             return;
@@ -164,11 +187,13 @@ public:
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("parse from array error ! length:%d", msg.length());
+			return;
         }
-        osend(actorto, id, msg);
+		onsend(actorto, id, mm);
     }
-    void onsync(int ret, uint64_t id, const std::string & msg, int op){
-        if (ret){
+    virtual void onsync(int ret, uint64_t id, const std::string & msg, int op){
+		unlock(id);
+		if (ret){
             GLOG_ERR("onsync msg error :%d", ret);
             return;
         }
@@ -186,7 +211,7 @@ public:
         }
         onsync(id, mm, op);
     }
-    void onput(int ret, uint64_t id, const std::string & msg){
+    virtual void onput(int ret, uint64_t id, const std::string & msg){
         if (ret){
             GLOG_ERR("onput msg error :%d", ret);
             return;
@@ -199,7 +224,7 @@ public:
         msg_cache[id] = std::make_pair(0, mm);
         onput(id, mm);
     }
-    void onlist(int ret, const MsgList & vms, bool fromc){
+    virtual void onlist(int ret, const MsgList & vms, bool fromc){
         if (ret){
             GLOG_ERR("onlist error ret:%d", ret);
             return;
@@ -219,8 +244,9 @@ public:
         }
         onlist(fromc);
     }
-    void onremove(int ret, uint64_t id, bool fromc = true){
-        GLOG_DBG("on remove msg ret:%d id:%lu fromc:%d", ret, id, fromc);
+    virtual void onremove(int ret, uint64_t id, bool fromc = true){
+		unlock(id);
+		GLOG_DBG("on remove msg ret:%d id:%lu fromc:%d", ret, id, fromc);
         if (ret){
             GLOG_ERR("on remove msg ret:%d id:%lu fromc:%d", ret, id, fromc);
             return;
@@ -233,7 +259,7 @@ public:
         onremove(id, *pmsg, fromc);
         msg_cache.erase(id);
     }
-    void onnotify(uint64_t id, uint32_t version, const string & msg){
+    virtual void onnotify(uint64_t id, uint32_t version, const string & msg){
         MsgT mm;
         if (!mm.ParseFromArray(msg.data(), msg.length())){
             GLOG_ERR("notify msg id:%lu unpack erorr len:%zd !", id, msg.length());
@@ -242,6 +268,7 @@ public:
         msg_cache[id] = std::make_pair(version ,mm);
         return onnotify(id, mm);
     }
+
     MsgT * getmsg(uint64_t id){
         auto it = msg_cache.find(id);
         if (it == msg_cache.end()){
@@ -251,9 +278,10 @@ public:
     }
 public:
     MsgPortalT(const MsgActor & actor) :MsgPortal(actor, MsgTypeV){}
-    virtual ~MsgPortalT(){ msg_cache.clear(); }
+	virtual ~MsgPortalT(){ msg_cache.clear(); msg_locking.clear();}
 public:
     std::unordered_map<uint64_t, std::pair<uint32_t, MsgT> >   msg_cache;
+	std::unordered_map<uint64_t, uint32_t>					   msg_locking;
 };
 
 

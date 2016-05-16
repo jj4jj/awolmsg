@@ -49,7 +49,6 @@ static inline int construct_mmsg_MsgOPT(char * msgbuff, int msgbufflen, const Ms
     msg.mutable_flag()->CopyFrom(options);
     msg.mutable_actor()->CopyFrom(actor_to);
 	msg.set_type(type);
-    assert(m_.length() > 0);
     auto rmsg = msg.add_data();
     if (msgid == 0){
         rmsg->set_id(msgsn::next());

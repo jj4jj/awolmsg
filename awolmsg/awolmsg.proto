@@ -2,6 +2,7 @@ package awolmsg;
 
 enum MaxMsgTypeConstValue {
 	MAX_MSG_TYPE_NUM = 64;
+	MAX_MSG_LIST_SIZE = 100;
 };
 
 message MsgAgent {

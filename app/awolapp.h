@@ -17,7 +17,8 @@ public:
     int request(const string & req){GLOG_TRA("recv client request msg: [%d]", req.length ()); return impl->request(req);}
 public:
     virtual void onop(AppMsg & msg, int op);
-    virtual void response(const string & resp) = 0; //send to client actor
+	virtual void checkop(AppMsg & msg, int op);
+	virtual void response(const string & resp) = 0; //send to client actor
     virtual void set_msg(AwolMsg & msg, const AppMsg & appmsg) = 0;
     virtual const AppMsg & get_msg(const AwolMsg & msg) = 0;
 };

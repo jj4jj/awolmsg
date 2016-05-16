@@ -401,7 +401,7 @@ static void mysql_command_dispatch(void *ud, const result_t & res, const command
     if (res.status != 0){
         result.addi(res.status);
         result.addi(res.err_no);
-        result.adds(res.error);
+        result.adds("mysql error !");
         GLOG_ERR("mysql status status:%d error:%d error:%s",
             res.status, res.err_no, res.error.c_str());
         service->resume(cb.cookie(), result, res.status, "mysql error !");
@@ -455,8 +455,8 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
     if (msg.op() == MSG_OP_LIST){
         actor_state_update(actor, clientid);
         ///////////////////////////////////////////////////////////
-        strnprintf(cmd.sql, 128, "SELECT msg FROM msg WHERE type=%d AND actor='%d:%lu' LIMIT 100 OFFSET 0;",
-            msgtype, msg.actor().type(), msg.actor().id());
+        strnprintf(cmd.sql, 128, "SELECT msg FROM msg WHERE type=%d AND actor='%d:%lu' LIMIT %d OFFSET 0;",
+			msgtype, msg.actor().type(), msg.actor().id(), MAX_MSG_LIST_SIZE);
         cmd.need_result = true;
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
@@ -484,13 +484,19 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
             GLOG_ERR("msg pack error ! bytesize:%d", msg.data(0).ByteSize());
             return -1;
         }
-        strnprintf(cmd.sql, 1024 + msg.ByteSize(), "UPDATE msg SET msg='%s' version=version+1 WHERE type=%d  AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
-            this->tmp_msgbuff.buffer, 
+		int version = msg.data(0).ext().version();
+		if ( version < 1){
+			GLOG_ERR("update msg version error :%d ", version);
+			return -2;
+		}
+        strnprintf(cmd.sql, 1024 + msg.ByteSize(),
+			"UPDATE msg SET msg='%s',version=%d WHERE type=%d  AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
+            this->tmp_msgbuff.buffer,version, 
             msgtype, msg.actor().type(), msg.actor().id(),
-            msg.data(0).id(), msg.data(0).ext().version());
+            msg.data(0).id(), version-1);
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
-            return -2;
+            return -3;
         }
         return mysql_pool->execute(cmd, mysql_command_dispatch, this);
     }
@@ -498,13 +504,11 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
         actor_state_update(actor, clientid);
         if (msg.data(0).id() > 0){
             strnprintf(cmd.sql, 1024, "DELETE FROM msg WHERE type=%d AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
-                msg.data(0).SerializeAsString().c_str(), msgtype, msg.actor().type(),
-                msg.actor().id(), msg.data(0).id(), msg.data(0).ext().version());
+                msgtype, msg.actor().type(), msg.actor().id(), msg.data(0).id(), msg.data(0).ext().version());
         }
         else {
             strnprintf(cmd.sql, 1024, "DELETE FROM msg WHERE type=%d AND actor='%d:%lu';",
-                msg.data(0).SerializeAsString().c_str(), msgtype, msg.actor().type(),
-                msg.actor().id());
+                msgtype, msg.actor().type(), msg.actor().id());
         }
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());

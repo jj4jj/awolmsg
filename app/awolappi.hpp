@@ -19,7 +19,9 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
     };
     typedef awolmsg::MsgPortalT<AppMsg, AppMsgType>  AppPortal;
     App * app_{ nullptr };
-    msg_buffer_t    msgbuff_;
+	msg_buffer_t    msgbuff_;
+	int	list_msg_limit{ 0 };
+	int	list_msg_offset{ 0 };
     AwolAppImpl(const MsgActor & actor, App * forwarder) :AppPortal(actor), app_(forwarder){
     }
     virtual ~AwolAppImpl(){
@@ -36,14 +38,31 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
             GLOG_ERR("app type(%d) msg:%lu not found ...", AppMsgType, id);
             return;
         }
-        app_->onop_did(id, *appmsg, op);
+		if (op > 0 && this->options().owner() != MSG_OPT_OWN_SO){
+			response_msg(CSAwolMsg::MSG_CMD_UPDATE, id, *appmsg, op);
+		}
+		app_->onmsgop(id, *appmsg, op);
     }
-    int onsynop(uint64_t id, AppMsg & m, int op){
-        return app_->onop_do(id, m, op);
+    int checkop(uint64_t id, AppMsg & m, int op){
+		return app_->checkop(id, m, op);
     }
+	int list(){
+		return AppPortal::list(false);
+	}
+	int list(int limit , int offset){
+		list_msg_limit = limit;
+		list_msg_offset = offset;
+		if (AppPortal::msg_cache.empty()){
+			return AppPortal::list(true);			
+		}
+		else {
+			onlist(true);
+		}
+		return 0;
+	}
     int request(const string & str){
-        CSAwalMsg   msg;
-        if (!msg.ParseFromString(str.data())){
+        CSAwolMsg   msg;
+        if (!msg.ParseFromString(str)){
             GLOG_ERR("request parse from arrray error !");
             return -1;
         }
@@ -54,22 +73,33 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
         auto & appmsg = app_->get_msg(req.msg());
         uint64_t mid = req.id();
         int opcode = req.opcode();
+		int ret = 0;
         switch (msg.cmd()){
-        case CSAwalMsg::MSG_CMD_LIST:
-            return AppPortal::list(true);
-        case CSAwalMsg::MSG_CMD_SENDTO:
-            return AppPortal::send(MsgActor(magt.type(), magt.id()), appmsg, true);
-        case CSAwalMsg::MSG_CMD_UPDATE:
-            return AppPortal::sync(mid, (MailOpCode)opcode);
-        case CSAwalMsg::MSG_CMD_REMOVE:
-            return AppPortal::remove(mid, true);
-        case CSAwalMsg::MSG_CMD_GET:
-            return AppPortal::get(mid, true);
-        default:
-            return ErrorCode::AWOL_EC_MSG_ERROR_CMD;
-        }
+		case CSAwolMsg::MSG_CMD_LIST:
+			ret = list(msg.cookie().limit(), msg.cookie().offset());
+			break;
+        case CSAwolMsg::MSG_CMD_SENDTO:
+			ret = AppPortal::send(MsgActor(magt.type(), magt.id()), appmsg, true);
+			break;
+		case CSAwolMsg::MSG_CMD_UPDATE:
+			ret = AppPortal::sync(mid, (MailOpCode)opcode);
+			break;
+		case CSAwolMsg::MSG_CMD_REMOVE:
+			ret = AppPortal::remove(mid, true);
+			break;
+		case CSAwolMsg::MSG_CMD_GET:
+			ret = AppPortal::get(mid, true);
+			break;
+		default:
+			ret = ErrorCode::AWOL_EC_MSG_ERROR_CMD;
+			break;
+		}
+		if (ret){//response error
+			response_msg(ret, msg.cmd(), mid);
+		}
+		return ret;
     }
-    void pushmsg(const CSAwalMsg & msg){
+    void push_msg(const CSAwolMsg & msg){
         if (!msgbuff_.buffer){
             msgbuff_.create(AWOL_MAX_MSG_BUFF_SIZE);//256K
         }
@@ -83,41 +113,86 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
     }
     void onremove(uint64_t id, const AppMsg & msg, bool fromc){
         GLOG_DBG("on app msg remove id:%ld fromc:%d", id, fromc);
-        if (this->options().owner() != MSG_OPT_OWN_SO){
-            CSAwalMsg csmsg;
-            csmsg.set_cmd(CSAwalMsg::MSG_CMD_NOTIFY);
-            csmsg.mutable_notify()->set_sync(CSAwalMsg::MSG_SYNC_REMOVE);
-            AwolMsgItem & msg = *csmsg.mutable_notify()->add_msglist();
-            msg.set_id(id);
-            pushmsg(csmsg);
+		if (this->options().owner() != MSG_OPT_OWN_SO){
+			if (!fromc){
+				notify_msg(CSAwolMsg::MSG_SYNC_REMOVE, id, &msg);
+			}
+			else {
+				response_msg(0, CSAwolMsg::MSG_CMD_REMOVE, id, &msg);
+			}
         }
     }
+	void onsend(const MsgActor & actorto, uint64_t id, const AppMsg & msg){
+		response_msg(0, CSAwolMsg::MSG_CMD_SENDTO, id, &msg);
+	}
     virtual void onnotify(uint64_t id, const AppMsg & msg){
         GLOG_DBG("notify new app msg id:%ld", id);
         if (this->options().owner() != MSG_OPT_OWN_SO){
             app_->onnotify(id, msg);
-            CSAwalMsg csmsg;
-            csmsg.set_cmd(CSAwalMsg::MSG_CMD_NOTIFY);
-            csmsg.mutable_notify()->set_sync(CSAwalMsg::MSG_SYNC_RECV);
-            AwolMsgItem & awolmsgitem = *csmsg.mutable_notify()->add_msglist();
-            awolmsgitem.set_id(id);
-            app_->set_msg(*awolmsgitem.mutable_msg(), msg);
-            pushmsg(csmsg);
+			notify_msg(CSAwolMsg::MSG_SYNC_RECV, id, &msg);
         }
     }
+	virtual void onget(uint64_t id, const AppMsg & msg, bool fromc){
+		if (this->options().owner() != MSG_OPT_OWN_SO){
+			if (!fromc){
+				notify_msg(CSAwolMsg::MSG_SYNC_RECV, id, &msg);
+			}
+			else {
+				response_msg(0, CSAwolMsg::MSG_CMD_GET, id, &msg);
+			}
+		}
+	}
+	void response_msg(int ret, CSAwolMsg::MsgCMD cmd, uint64_t id, const AppMsg * appmsg = nullptr, int op = 0){
+		CSAwolMsg csmsg;
+		csmsg.set_cmd(cmd);
+		csmsg.set_type((awolapp::MsgType)AppMsgType);
+		csmsg.mutable_response()->set_ret(ret);
+		AwolMsgItem & awolmsgitem = *csmsg.mutable_response()->add_msglist();
+		awolmsgitem.set_id(id);
+		if (appmsg){
+			app_->set_msg(*awolmsgitem.mutable_msg(), *appmsg);
+		}
+		csmsg.mutable_response()->set_op(op);
+		push_msg(csmsg);
+	}
+	void notify_msg(CSAwolMsg::AwolMsgSyncCode code, uint64_t id, const AppMsg * appmsg = nullptr){
+		CSAwolMsg csmsg;
+		csmsg.set_cmd(CSAwolMsg::MSG_CMD_NOTIFY);
+		csmsg.set_type((awolapp::MsgType)AppMsgType);
+		csmsg.mutable_notify()->set_sync(code);
+		AwolMsgItem & awolmsgitem = *csmsg.mutable_notify()->add_msglist();
+		awolmsgitem.set_id(id);
+		if (appmsg){
+			app_->set_msg(*awolmsgitem.mutable_msg(), *appmsg);
+		}
+		push_msg(csmsg);
+	}
     virtual void onlist(bool fromc){
         GLOG_DBG("on app msg list fromc:%d", fromc);
         if (fromc){
-            CSAwalMsg csmsg;
-            csmsg.set_cmd(CSAwalMsg::MSG_CMD_LIST);
+            CSAwolMsg csmsg;
+            csmsg.set_cmd(CSAwolMsg::MSG_CMD_LIST);
+			csmsg.set_type((awolapp::MsgType)AppMsgType);
+			csmsg.mutable_response()->set_ret(0);
             auto it = this->msg_cache.begin();
+			int list_msg_idx = 0;
+			int list_msg_cnt = 0;
             while (it != this->msg_cache.end()){
-                AwolMsgItem & msg = *csmsg.mutable_response()->add_msglist();
-                msg.set_id(it->first);
-                app_->set_msg(*msg.mutable_msg(), it->second.second);
+				if (list_msg_idx >= list_msg_offset){
+					if (list_msg_cnt < list_msg_limit || list_msg_limit == 0){
+						list_msg_cnt++;
+						AwolMsgItem & msg = *csmsg.mutable_response()->add_msglist();
+						msg.set_id(it->first);
+						app_->set_msg(*msg.mutable_msg(), it->second.second);
+					}
+					else {
+						break;
+					}
+				}
                 ++it;
+				++list_msg_idx;
             }
-            pushmsg(csmsg);
+            push_msg(csmsg);
         }
     }
 };

@@ -156,7 +156,32 @@ struct TestMailBox : public awolapp::MailBox {
     virtual void onfetch(uint64_t id, const Mail & mail){
 
     }
-	void onlist() {
+	virtual void response(const string & resp){
+		//test client
+		CSAwolMsg msg;
+		msg.ParseFromString(resp);
+		if (msg.cmd() == CSAwolMsg_MsgCMD_MSG_CMD_LIST){
+			//rm6284694626259435521
+			CSAwolMsg req;
+			req.set_type(MSG_TYPE_MAIL);
+			req.mutable_request()->set_id(6284599651647619073);
+
+			req.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_UPDATE);
+			req.mutable_request()->set_opcode(MailOpCode::MAIL_OP_READ);
+			request(req.SerializeAsString());
+
+			req.mutable_request()->set_opcode(MailOpCode::MAIL_OP_FETCH);
+			request(req.SerializeAsString());
+
+			req.mutable_request()->set_opcode(MailOpCode::MAIL_OP_READ);
+			request(req.SerializeAsString());
+
+			req.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_REMOVE);
+			request(req.SerializeAsString());
+
+			req.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_REMOVE);
+			request(req.SerializeAsString());
+		}
 
 	}
 
@@ -169,11 +194,9 @@ int main(int argc, char * argv[]){
         msgsvr.update();
     }
 
-
     MsgActor ma1(ActorType::ACTOR_TYPE_PLAYER, 1); //P1
     MsgActor ma2(ActorType::ACTOR_TYPE_PLAYER, 2); //P2
     MsgActor ma(ActorType::ACTOR_TYPE_SERVER, 1); //S1
-
 
     Mail mail;
     mail.set_sender("from ma1");
@@ -190,14 +213,15 @@ int main(int argc, char * argv[]){
     //mb.insert(mail);;
 
     TestMailBox mb2(ma2);
-	mb2.list();
+	//mb2.list();
     mail.set_subject("send to ma2");
     //mb2.insert(mail);;
-	TestMailBox::sendto(ma2, mail);
+	//TestMailBox::sendto(ma2, mail);
 
-    CSAwalMsg request;
-    request.set_cmd(CSAwalMsg_MsgCMD_MSG_CMD_LIST);
-    mb.request(request.SerializeAsString());
+    CSAwolMsg request;
+	request.set_type(MSG_TYPE_MAIL);
+    request.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_LIST);
+	//mb.request(request.SerializeAsString());
     mb2.request(request.SerializeAsString());
 
 

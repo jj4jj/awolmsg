@@ -44,11 +44,12 @@ class Msg_MsgData;
 class NotifyMsg;
 
 enum MaxMsgTypeConstValue {
-  MAX_MSG_TYPE_NUM = 64
+  MAX_MSG_TYPE_NUM = 64,
+  MAX_MSG_LIST_SIZE = 100
 };
 bool MaxMsgTypeConstValue_IsValid(int value);
 const MaxMsgTypeConstValue MaxMsgTypeConstValue_MIN = MAX_MSG_TYPE_NUM;
-const MaxMsgTypeConstValue MaxMsgTypeConstValue_MAX = MAX_MSG_TYPE_NUM;
+const MaxMsgTypeConstValue MaxMsgTypeConstValue_MAX = MAX_MSG_LIST_SIZE;
 const int MaxMsgTypeConstValue_ARRAYSIZE = MaxMsgTypeConstValue_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MaxMsgTypeConstValue_descriptor();
