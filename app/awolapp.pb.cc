@@ -26,6 +26,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* MailContent_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   MailContent_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MailFilter_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MailFilter_reflection_ = NULL;
 const ::google::protobuf::Descriptor* MailOption_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   MailOption_reflection_ = NULL;
@@ -69,6 +72,7 @@ const ::google::protobuf::EnumDescriptor* CSAwolMsg_MsgCMD_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CSAwolMsg_AwolMsgSyncCode_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* ActorType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* MsgType_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* MailContentType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* MailState_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* MailOpCode_descriptor_ = NULL;
 
@@ -98,9 +102,10 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MailAttachment));
   MailContent_descriptor_ = file->message_type(1);
-  static const int MailContent_offsets_[2] = {
+  static const int MailContent_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailContent, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailContent, data_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailContent, refer_),
   };
   MailContent_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -113,10 +118,31 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MailContent));
-  MailOption_descriptor_ = file->message_type(2);
-  static const int MailOption_offsets_[2] = {
+  MailFilter_descriptor_ = file->message_type(2);
+  static const int MailFilter_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, player_id_list_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, min_lv_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, max_lv_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, lt_regis_time_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, gt_regis_time_),
+  };
+  MailFilter_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      MailFilter_descriptor_,
+      MailFilter::default_instance_,
+      MailFilter_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailFilter, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(MailFilter));
+  MailOption_descriptor_ = file->message_type(3);
+  static const int MailOption_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailOption, expire_timestamp_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailOption, start_timestamp_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailOption, system_mail_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MailOption, fitler_),
   };
   MailOption_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -129,7 +155,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MailOption));
-  Mail_descriptor_ = file->message_type(3);
+  Mail_descriptor_ = file->message_type(4);
   static const int Mail_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mail, from_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mail, sender_),
@@ -150,7 +176,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Mail));
-  ChatSender_descriptor_ = file->message_type(4);
+  ChatSender_descriptor_ = file->message_type(5);
   static const int ChatSender_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChatSender, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChatSender, name_),
@@ -166,7 +192,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ChatSender));
-  ChatContent_descriptor_ = file->message_type(5);
+  ChatContent_descriptor_ = file->message_type(6);
   static const int ChatContent_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChatContent, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChatContent, data_),
@@ -182,7 +208,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ChatContent));
-  ChatMsg_descriptor_ = file->message_type(6);
+  ChatMsg_descriptor_ = file->message_type(7);
   static const int ChatMsg_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChatMsg, sender_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChatMsg, content_),
@@ -199,7 +225,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ChatMsg));
-  Notice_descriptor_ = file->message_type(7);
+  Notice_descriptor_ = file->message_type(8);
   static const int Notice_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Notice, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Notice, data_),
@@ -215,7 +241,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Notice));
-  AwolMsg_descriptor_ = file->message_type(8);
+  AwolMsg_descriptor_ = file->message_type(9);
   static const int AwolMsg_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AwolMsg, mail_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AwolMsg, chat_),
@@ -232,7 +258,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AwolMsg));
-  AwolMsgItem_descriptor_ = file->message_type(9);
+  AwolMsgItem_descriptor_ = file->message_type(10);
   static const int AwolMsgItem_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AwolMsgItem, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AwolMsgItem, msg_),
@@ -248,7 +274,7 @@ void protobuf_AssignDesc_awolapp_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AwolMsgItem));
-  CSAwolMsg_descriptor_ = file->message_type(10);
+  CSAwolMsg_descriptor_ = file->message_type(11);
   static const int CSAwolMsg_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSAwolMsg, cmd_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSAwolMsg, cookie_),
@@ -339,8 +365,9 @@ void protobuf_AssignDesc_awolapp_2eproto() {
   CSAwolMsg_AwolMsgSyncCode_descriptor_ = CSAwolMsg_descriptor_->enum_type(1);
   ActorType_descriptor_ = file->enum_type(0);
   MsgType_descriptor_ = file->enum_type(1);
-  MailState_descriptor_ = file->enum_type(2);
-  MailOpCode_descriptor_ = file->enum_type(3);
+  MailContentType_descriptor_ = file->enum_type(2);
+  MailState_descriptor_ = file->enum_type(3);
+  MailOpCode_descriptor_ = file->enum_type(4);
 }
 
 namespace {
@@ -357,6 +384,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     MailAttachment_descriptor_, &MailAttachment::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     MailContent_descriptor_, &MailContent::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    MailFilter_descriptor_, &MailFilter::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     MailOption_descriptor_, &MailOption::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -392,6 +421,8 @@ void protobuf_ShutdownFile_awolapp_2eproto() {
   delete MailAttachment_reflection_;
   delete MailContent::default_instance_;
   delete MailContent_reflection_;
+  delete MailFilter::default_instance_;
+  delete MailFilter_reflection_;
   delete MailOption::default_instance_;
   delete MailOption_reflection_;
   delete Mail::default_instance_;
@@ -430,56 +461,65 @@ void protobuf_AddDesc_awolapp_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\rawolapp.proto\022\007awolapp\032\rawolmsg.proto\""
     ",\n\016MailAttachment\022\014\n\004type\030\001 \001(\005\022\014\n\004data\030"
-    "\002 \001(\014\")\n\013MailContent\022\014\n\004type\030\001 \001(\005\022\014\n\004da"
-    "ta\030\002 \001(\014\"\?\n\nMailOption\022\030\n\020expire_timesta"
-    "mp\030\001 \001(\r\022\027\n\017start_timestamp\030\002 \001(\r\"\323\001\n\004Ma"
-    "il\022\014\n\004from\030\002 \001(\004\022\016\n\006sender\030\003 \001(\t\022\017\n\007subj"
-    "ect\030\004 \001(\t\022%\n\007content\030\005 \001(\0132\024.awolapp.Mai"
-    "lContent\022-\n\014attachements\030\006 \003(\0132\027.awolapp"
-    ".MailAttachment\022#\n\006option\030\007 \001(\0132\023.awolap"
-    "p.MailOption\022!\n\005state\030\010 \001(\0162\022.awolapp.Ma"
-    "ilState\"&\n\nChatSender\022\n\n\002id\030\001 \001(\004\022\014\n\004nam"
-    "e\030\002 \001(\t\")\n\013ChatContent\022\014\n\004type\030\001 \001(\005\022\014\n\004"
-    "data\030\002 \001(\014\"h\n\007ChatMsg\022#\n\006sender\030\001 \002(\0132\023."
-    "awolapp.ChatSender\022%\n\007content\030\002 \001(\0132\024.aw"
-    "olapp.ChatContent\022\021\n\ttimestamp\030\003 \001(\r\"$\n\006"
-    "Notice\022\014\n\004type\030\001 \002(\005\022\014\n\004data\030\002 \001(\014\"g\n\007Aw"
-    "olMsg\022\033\n\004mail\030\001 \001(\0132\r.awolapp.Mail\022\036\n\004ch"
-    "at\030\002 \001(\0132\020.awolapp.ChatMsg\022\037\n\006notice\030\003 \001"
-    "(\0132\017.awolapp.Notice\"8\n\013AwolMsgItem\022\n\n\002id"
-    "\030\001 \002(\004\022\035\n\003msg\030\002 \001(\0132\020.awolapp.AwolMsg\"\376\005"
-    "\n\tCSAwolMsg\022&\n\003cmd\030\001 \002(\0162\031.awolapp.CSAwo"
-    "lMsg.MsgCMD\022)\n\006cookie\030\002 \001(\0132\031.awolapp.CS"
-    "AwolMsg.Cookie\022+\n\007request\030\003 \001(\0132\032.awolap"
-    "p.CSAwolMsg.Request\022-\n\010response\030\004 \001(\0132\033."
-    "awolapp.CSAwolMsg.Response\022)\n\006notify\030\005 \001"
-    "(\0132\031.awolapp.CSAwolMsg.Notify\022\036\n\004type\030\006 "
-    "\002(\0162\020.awolapp.MsgType\032\'\n\006Cookie\022\r\n\005limit"
-    "\030\001 \001(\005\022\016\n\006offset\030\002 \001(\005\032g\n\007Request\022\n\n\002id\030"
-    "\002 \001(\004\022!\n\006sendto\030\003 \001(\0132\021.awolmsg.MsgAgent"
-    "\022\016\n\006opcode\030\004 \001(\005\022\035\n\003msg\030\005 \001(\0132\020.awolapp."
-    "AwolMsg\032J\n\010Response\022\013\n\003ret\030\001 \001(\005\022%\n\007msgl"
-    "ist\030\002 \003(\0132\024.awolapp.AwolMsgItem\022\n\n\002op\030\003 "
-    "\001(\005\032a\n\006Notify\0220\n\004sync\030\001 \002(\0162\".awolapp.CS"
-    "AwolMsg.AwolMsgSyncCode\022%\n\007msglist\030\002 \003(\013"
-    "2\024.awolapp.AwolMsgItem\"{\n\006MsgCMD\022\020\n\014MSG_"
-    "CMD_LIST\020\001\022\022\n\016MSG_CMD_UPDATE\020\002\022\022\n\016MSG_CM"
-    "D_SENDTO\020\003\022\017\n\013MSG_CMD_GET\020\004\022\022\n\016MSG_CMD_R"
-    "EMOVE\020\005\022\022\n\016MSG_CMD_NOTIFY\020\006\"9\n\017AwolMsgSy"
-    "ncCode\022\023\n\017MSG_SYNC_REMOVE\020\001\022\021\n\rMSG_SYNC_"
-    "RECV\020\002*N\n\tActorType\022\023\n\017ACTOR_TYPE_NONE\020\000"
-    "\022\025\n\021ACTOR_TYPE_SERVER\020\001\022\025\n\021ACTOR_TYPE_PL"
-    "AYER\020\002*W\n\007MsgType\022\021\n\rMSG_TYPE_NONE\020\000\022\021\n\r"
-    "MSG_TYPE_MAIL\020\001\022\021\n\rMSG_TYPE_CHAT\020\002\022\023\n\017MS"
-    "G_TYPE_NOTICE\020\003*K\n\tMailState\022\023\n\017MAIL_STA"
-    "TE_INIT\020\000\022\023\n\017MAIL_STATE_READ\020\001\022\024\n\020MAIL_S"
-    "TATE_FETCH\020\002*E\n\nMailOpCode\022\020\n\014MAIL_OP_RE"
-    "AD\020\001\022\021\n\rMAIL_OP_FETCH\020\002\022\022\n\016MAIL_OP_REMOV"
-    "E\020\003", 1883);
+    "\002 \001(\014\"R\n\013MailContent\022&\n\004type\030\001 \001(\0162\030.awo"
+    "lapp.MailContentType\022\014\n\004data\030\002 \001(\014\022\r\n\005re"
+    "fer\030\003 \001(\004\"r\n\nMailFilter\022\026\n\016player_id_lis"
+    "t\030\001 \003(\004\022\016\n\006min_lv\030\002 \001(\r\022\016\n\006max_lv\030\003 \001(\r\022"
+    "\025\n\rlt_regis_time\030\004 \001(\r\022\025\n\rgt_regis_time\030"
+    "\005 \001(\r\"y\n\nMailOption\022\030\n\020expire_timestamp\030"
+    "\001 \001(\r\022\027\n\017start_timestamp\030\002 \001(\r\022\023\n\013system"
+    "_mail\030\003 \001(\r\022#\n\006fitler\030\004 \001(\0132\023.awolapp.Ma"
+    "ilFilter\"\323\001\n\004Mail\022\014\n\004from\030\002 \001(\004\022\016\n\006sende"
+    "r\030\003 \001(\t\022\017\n\007subject\030\004 \001(\t\022%\n\007content\030\005 \001("
+    "\0132\024.awolapp.MailContent\022-\n\014attachements\030"
+    "\006 \003(\0132\027.awolapp.MailAttachment\022#\n\006option"
+    "\030\007 \001(\0132\023.awolapp.MailOption\022!\n\005state\030\010 \001"
+    "(\0162\022.awolapp.MailState\"&\n\nChatSender\022\n\n\002"
+    "id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\")\n\013ChatContent\022\014\n"
+    "\004type\030\001 \001(\005\022\014\n\004data\030\002 \001(\014\"h\n\007ChatMsg\022#\n\006"
+    "sender\030\001 \002(\0132\023.awolapp.ChatSender\022%\n\007con"
+    "tent\030\002 \001(\0132\024.awolapp.ChatContent\022\021\n\ttime"
+    "stamp\030\003 \001(\r\"$\n\006Notice\022\014\n\004type\030\001 \002(\005\022\014\n\004d"
+    "ata\030\002 \001(\014\"g\n\007AwolMsg\022\033\n\004mail\030\001 \001(\0132\r.awo"
+    "lapp.Mail\022\036\n\004chat\030\002 \001(\0132\020.awolapp.ChatMs"
+    "g\022\037\n\006notice\030\003 \001(\0132\017.awolapp.Notice\"8\n\013Aw"
+    "olMsgItem\022\n\n\002id\030\001 \002(\004\022\035\n\003msg\030\002 \001(\0132\020.awo"
+    "lapp.AwolMsg\"\376\005\n\tCSAwolMsg\022&\n\003cmd\030\001 \002(\0162"
+    "\031.awolapp.CSAwolMsg.MsgCMD\022)\n\006cookie\030\002 \001"
+    "(\0132\031.awolapp.CSAwolMsg.Cookie\022+\n\007request"
+    "\030\003 \001(\0132\032.awolapp.CSAwolMsg.Request\022-\n\010re"
+    "sponse\030\004 \001(\0132\033.awolapp.CSAwolMsg.Respons"
+    "e\022)\n\006notify\030\005 \001(\0132\031.awolapp.CSAwolMsg.No"
+    "tify\022\036\n\004type\030\006 \002(\0162\020.awolapp.MsgType\032\'\n\006"
+    "Cookie\022\r\n\005limit\030\001 \001(\005\022\016\n\006offset\030\002 \001(\005\032g\n"
+    "\007Request\022\n\n\002id\030\002 \001(\004\022!\n\006sendto\030\003 \001(\0132\021.a"
+    "wolmsg.MsgAgent\022\016\n\006opcode\030\004 \001(\005\022\035\n\003msg\030\005"
+    " \001(\0132\020.awolapp.AwolMsg\032J\n\010Response\022\013\n\003re"
+    "t\030\001 \001(\005\022%\n\007msglist\030\002 \003(\0132\024.awolapp.AwolM"
+    "sgItem\022\n\n\002op\030\003 \001(\005\032a\n\006Notify\0220\n\004sync\030\001 \002"
+    "(\0162\".awolapp.CSAwolMsg.AwolMsgSyncCode\022%"
+    "\n\007msglist\030\002 \003(\0132\024.awolapp.AwolMsgItem\"{\n"
+    "\006MsgCMD\022\020\n\014MSG_CMD_LIST\020\001\022\022\n\016MSG_CMD_UPD"
+    "ATE\020\002\022\022\n\016MSG_CMD_SENDTO\020\003\022\017\n\013MSG_CMD_GET"
+    "\020\004\022\022\n\016MSG_CMD_REMOVE\020\005\022\022\n\016MSG_CMD_NOTIFY"
+    "\020\006\"9\n\017AwolMsgSyncCode\022\023\n\017MSG_SYNC_REMOVE"
+    "\020\001\022\021\n\rMSG_SYNC_RECV\020\002*N\n\tActorType\022\023\n\017AC"
+    "TOR_TYPE_NONE\020\000\022\025\n\021ACTOR_TYPE_SERVER\020\001\022\025"
+    "\n\021ACTOR_TYPE_PLAYER\020\002*W\n\007MsgType\022\021\n\rMSG_"
+    "TYPE_NONE\020\000\022\021\n\rMSG_TYPE_MAIL\020\001\022\021\n\rMSG_TY"
+    "PE_CHAT\020\002\022\023\n\017MSG_TYPE_NOTICE\020\003*n\n\017MailCo"
+    "ntentType\022\025\n\021MAIL_CONTENT_BLOB\020\000\022\026\n\022MAIL"
+    "_CONTENT_REFER\020\001\022\025\n\021MAIL_CONTENT_TEXT\020\002\022"
+    "\025\n\021MAIL_CONTENT_HTML\020\003*K\n\tMailState\022\023\n\017M"
+    "AIL_STATE_INIT\020\000\022\023\n\017MAIL_STATE_READ\020\001\022\024\n"
+    "\020MAIL_STATE_FETCH\020\002*E\n\nMailOpCode\022\020\n\014MAI"
+    "L_OP_READ\020\001\022\021\n\rMAIL_OP_FETCH\020\002\022\022\n\016MAIL_O"
+    "P_REMOVE\020\003", 2210);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "awolapp.proto", &protobuf_RegisterTypes);
   MailAttachment::default_instance_ = new MailAttachment();
   MailContent::default_instance_ = new MailContent();
+  MailFilter::default_instance_ = new MailFilter();
   MailOption::default_instance_ = new MailOption();
   Mail::default_instance_ = new Mail();
   ChatSender::default_instance_ = new ChatSender();
@@ -495,6 +535,7 @@ void protobuf_AddDesc_awolapp_2eproto() {
   CSAwolMsg_Notify::default_instance_ = new CSAwolMsg_Notify();
   MailAttachment::default_instance_->InitAsDefaultInstance();
   MailContent::default_instance_->InitAsDefaultInstance();
+  MailFilter::default_instance_->InitAsDefaultInstance();
   MailOption::default_instance_->InitAsDefaultInstance();
   Mail::default_instance_->InitAsDefaultInstance();
   ChatSender::default_instance_->InitAsDefaultInstance();
@@ -537,6 +578,22 @@ const ::google::protobuf::EnumDescriptor* MsgType_descriptor() {
   return MsgType_descriptor_;
 }
 bool MsgType_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* MailContentType_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MailContentType_descriptor_;
+}
+bool MailContentType_IsValid(int value) {
   switch(value) {
     case 0:
     case 1:
@@ -856,6 +913,7 @@ void MailAttachment::Swap(MailAttachment* other) {
 #ifndef _MSC_VER
 const int MailContent::kTypeFieldNumber;
 const int MailContent::kDataFieldNumber;
+const int MailContent::kReferFieldNumber;
 #endif  // !_MSC_VER
 
 MailContent::MailContent()
@@ -879,6 +937,7 @@ void MailContent::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
   data_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  refer_ = GOOGLE_ULONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -917,14 +976,28 @@ MailContent* MailContent::New() const {
 }
 
 void MailContent::Clear() {
-  if (_has_bits_[0 / 32] & 3) {
-    type_ = 0;
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<MailContent*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 7) {
+    ZR_(refer_, type_);
     if (has_data()) {
       if (data_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         data_->clear();
       }
     }
   }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -939,13 +1012,18 @@ bool MailContent::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int32 type = 1;
+      // optional .awolapp.MailContentType type = 1;
       case 1: {
         if (tag == 8) {
+          int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &type_)));
-          set_has_type();
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::awolapp::MailContentType_IsValid(value)) {
+            set_type(static_cast< ::awolapp::MailContentType >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
         } else {
           goto handle_unusual;
         }
@@ -959,6 +1037,21 @@ bool MailContent::MergePartialFromCodedStream(
          parse_data:
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_data()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_refer;
+        break;
+      }
+
+      // optional uint64 refer = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_refer:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &refer_)));
+          set_has_refer();
         } else {
           goto handle_unusual;
         }
@@ -991,15 +1084,21 @@ failure:
 void MailContent::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:awolapp.MailContent)
-  // optional int32 type = 1;
+  // optional .awolapp.MailContentType type = 1;
   if (has_type()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->type(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
   }
 
   // optional bytes data = 2;
   if (has_data()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
       2, this->data(), output);
+  }
+
+  // optional uint64 refer = 3;
+  if (has_refer()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->refer(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -1012,9 +1111,10 @@ void MailContent::SerializeWithCachedSizes(
 ::google::protobuf::uint8* MailContent::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:awolapp.MailContent)
-  // optional int32 type = 1;
+  // optional .awolapp.MailContentType type = 1;
   if (has_type()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->type(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
   }
 
   // optional bytes data = 2;
@@ -1022,6 +1122,11 @@ void MailContent::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         2, this->data(), target);
+  }
+
+  // optional uint64 refer = 3;
+  if (has_refer()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->refer(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1036,11 +1141,10 @@ int MailContent::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional int32 type = 1;
+    // optional .awolapp.MailContentType type = 1;
     if (has_type()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->type());
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
     }
 
     // optional bytes data = 2;
@@ -1048,6 +1152,13 @@ int MailContent::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::BytesSize(
           this->data());
+    }
+
+    // optional uint64 refer = 3;
+    if (has_refer()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt64Size(
+          this->refer());
     }
 
   }
@@ -1083,6 +1194,9 @@ void MailContent::MergeFrom(const MailContent& from) {
     if (from.has_data()) {
       set_data(from.data());
     }
+    if (from.has_refer()) {
+      set_refer(from.refer());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1108,6 +1222,7 @@ void MailContent::Swap(MailContent* other) {
   if (other != this) {
     std::swap(type_, other->type_);
     std::swap(data_, other->data_);
+    std::swap(refer_, other->refer_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1126,8 +1241,406 @@ void MailContent::Swap(MailContent* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int MailFilter::kPlayerIdListFieldNumber;
+const int MailFilter::kMinLvFieldNumber;
+const int MailFilter::kMaxLvFieldNumber;
+const int MailFilter::kLtRegisTimeFieldNumber;
+const int MailFilter::kGtRegisTimeFieldNumber;
+#endif  // !_MSC_VER
+
+MailFilter::MailFilter()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:awolapp.MailFilter)
+}
+
+void MailFilter::InitAsDefaultInstance() {
+}
+
+MailFilter::MailFilter(const MailFilter& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:awolapp.MailFilter)
+}
+
+void MailFilter::SharedCtor() {
+  _cached_size_ = 0;
+  min_lv_ = 0u;
+  max_lv_ = 0u;
+  lt_regis_time_ = 0u;
+  gt_regis_time_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+MailFilter::~MailFilter() {
+  // @@protoc_insertion_point(destructor:awolapp.MailFilter)
+  SharedDtor();
+}
+
+void MailFilter::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void MailFilter::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* MailFilter::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MailFilter_descriptor_;
+}
+
+const MailFilter& MailFilter::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_awolapp_2eproto();
+  return *default_instance_;
+}
+
+MailFilter* MailFilter::default_instance_ = NULL;
+
+MailFilter* MailFilter::New() const {
+  return new MailFilter;
+}
+
+void MailFilter::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<MailFilter*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(min_lv_, gt_regis_time_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  player_id_list_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool MailFilter::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:awolapp.MailFilter)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated uint64 player_id_list = 1;
+      case 1: {
+        if (tag == 8) {
+         parse_player_id_list:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 1, 8, input, this->mutable_player_id_list())));
+        } else if (tag == 10) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, this->mutable_player_id_list())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(8)) goto parse_player_id_list;
+        if (input->ExpectTag(16)) goto parse_min_lv;
+        break;
+      }
+
+      // optional uint32 min_lv = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_min_lv:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &min_lv_)));
+          set_has_min_lv();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_max_lv;
+        break;
+      }
+
+      // optional uint32 max_lv = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_max_lv:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &max_lv_)));
+          set_has_max_lv();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_lt_regis_time;
+        break;
+      }
+
+      // optional uint32 lt_regis_time = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_lt_regis_time:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &lt_regis_time_)));
+          set_has_lt_regis_time();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_gt_regis_time;
+        break;
+      }
+
+      // optional uint32 gt_regis_time = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_gt_regis_time:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &gt_regis_time_)));
+          set_has_gt_regis_time();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:awolapp.MailFilter)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:awolapp.MailFilter)
+  return false;
+#undef DO_
+}
+
+void MailFilter::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:awolapp.MailFilter)
+  // repeated uint64 player_id_list = 1;
+  for (int i = 0; i < this->player_id_list_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(
+      1, this->player_id_list(i), output);
+  }
+
+  // optional uint32 min_lv = 2;
+  if (has_min_lv()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->min_lv(), output);
+  }
+
+  // optional uint32 max_lv = 3;
+  if (has_max_lv()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->max_lv(), output);
+  }
+
+  // optional uint32 lt_regis_time = 4;
+  if (has_lt_regis_time()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->lt_regis_time(), output);
+  }
+
+  // optional uint32 gt_regis_time = 5;
+  if (has_gt_regis_time()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->gt_regis_time(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:awolapp.MailFilter)
+}
+
+::google::protobuf::uint8* MailFilter::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:awolapp.MailFilter)
+  // repeated uint64 player_id_list = 1;
+  for (int i = 0; i < this->player_id_list_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt64ToArray(1, this->player_id_list(i), target);
+  }
+
+  // optional uint32 min_lv = 2;
+  if (has_min_lv()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->min_lv(), target);
+  }
+
+  // optional uint32 max_lv = 3;
+  if (has_max_lv()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->max_lv(), target);
+  }
+
+  // optional uint32 lt_regis_time = 4;
+  if (has_lt_regis_time()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->lt_regis_time(), target);
+  }
+
+  // optional uint32 gt_regis_time = 5;
+  if (has_gt_regis_time()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->gt_regis_time(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:awolapp.MailFilter)
+  return target;
+}
+
+int MailFilter::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    // optional uint32 min_lv = 2;
+    if (has_min_lv()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->min_lv());
+    }
+
+    // optional uint32 max_lv = 3;
+    if (has_max_lv()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->max_lv());
+    }
+
+    // optional uint32 lt_regis_time = 4;
+    if (has_lt_regis_time()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->lt_regis_time());
+    }
+
+    // optional uint32 gt_regis_time = 5;
+    if (has_gt_regis_time()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->gt_regis_time());
+    }
+
+  }
+  // repeated uint64 player_id_list = 1;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->player_id_list_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt64Size(this->player_id_list(i));
+    }
+    total_size += 1 * this->player_id_list_size() + data_size;
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MailFilter::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const MailFilter* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const MailFilter*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void MailFilter::MergeFrom(const MailFilter& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  player_id_list_.MergeFrom(from.player_id_list_);
+  if (from._has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    if (from.has_min_lv()) {
+      set_min_lv(from.min_lv());
+    }
+    if (from.has_max_lv()) {
+      set_max_lv(from.max_lv());
+    }
+    if (from.has_lt_regis_time()) {
+      set_lt_regis_time(from.lt_regis_time());
+    }
+    if (from.has_gt_regis_time()) {
+      set_gt_regis_time(from.gt_regis_time());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void MailFilter::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void MailFilter::CopyFrom(const MailFilter& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MailFilter::IsInitialized() const {
+
+  return true;
+}
+
+void MailFilter::Swap(MailFilter* other) {
+  if (other != this) {
+    player_id_list_.Swap(&other->player_id_list_);
+    std::swap(min_lv_, other->min_lv_);
+    std::swap(max_lv_, other->max_lv_);
+    std::swap(lt_regis_time_, other->lt_regis_time_);
+    std::swap(gt_regis_time_, other->gt_regis_time_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata MailFilter::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = MailFilter_descriptor_;
+  metadata.reflection = MailFilter_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int MailOption::kExpireTimestampFieldNumber;
 const int MailOption::kStartTimestampFieldNumber;
+const int MailOption::kSystemMailFieldNumber;
+const int MailOption::kFitlerFieldNumber;
 #endif  // !_MSC_VER
 
 MailOption::MailOption()
@@ -1137,6 +1650,7 @@ MailOption::MailOption()
 }
 
 void MailOption::InitAsDefaultInstance() {
+  fitler_ = const_cast< ::awolapp::MailFilter*>(&::awolapp::MailFilter::default_instance());
 }
 
 MailOption::MailOption(const MailOption& from)
@@ -1150,6 +1664,8 @@ void MailOption::SharedCtor() {
   _cached_size_ = 0;
   expire_timestamp_ = 0u;
   start_timestamp_ = 0u;
+  system_mail_ = 0u;
+  fitler_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1160,6 +1676,7 @@ MailOption::~MailOption() {
 
 void MailOption::SharedDtor() {
   if (this != default_instance_) {
+    delete fitler_;
   }
 }
 
@@ -1195,7 +1712,13 @@ void MailOption::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(expire_timestamp_, start_timestamp_);
+  if (_has_bits_[0 / 32] & 15) {
+    ZR_(expire_timestamp_, start_timestamp_);
+    system_mail_ = 0u;
+    if (has_fitler()) {
+      if (fitler_ != NULL) fitler_->::awolapp::MailFilter::Clear();
+    }
+  }
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -1239,6 +1762,34 @@ bool MailOption::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(24)) goto parse_system_mail;
+        break;
+      }
+
+      // optional uint32 system_mail = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_system_mail:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &system_mail_)));
+          set_has_system_mail();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_fitler;
+        break;
+      }
+
+      // optional .awolapp.MailFilter fitler = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_fitler:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_fitler()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1278,6 +1829,17 @@ void MailOption::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->start_timestamp(), output);
   }
 
+  // optional uint32 system_mail = 3;
+  if (has_system_mail()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->system_mail(), output);
+  }
+
+  // optional .awolapp.MailFilter fitler = 4;
+  if (has_fitler()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, this->fitler(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1296,6 +1858,18 @@ void MailOption::SerializeWithCachedSizes(
   // optional uint32 start_timestamp = 2;
   if (has_start_timestamp()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->start_timestamp(), target);
+  }
+
+  // optional uint32 system_mail = 3;
+  if (has_system_mail()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->system_mail(), target);
+  }
+
+  // optional .awolapp.MailFilter fitler = 4;
+  if (has_fitler()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        4, this->fitler(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1322,6 +1896,20 @@ int MailOption::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->start_timestamp());
+    }
+
+    // optional uint32 system_mail = 3;
+    if (has_system_mail()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->system_mail());
+    }
+
+    // optional .awolapp.MailFilter fitler = 4;
+    if (has_fitler()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->fitler());
     }
 
   }
@@ -1357,6 +1945,12 @@ void MailOption::MergeFrom(const MailOption& from) {
     if (from.has_start_timestamp()) {
       set_start_timestamp(from.start_timestamp());
     }
+    if (from.has_system_mail()) {
+      set_system_mail(from.system_mail());
+    }
+    if (from.has_fitler()) {
+      mutable_fitler()->::awolapp::MailFilter::MergeFrom(from.fitler());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1382,6 +1976,8 @@ void MailOption::Swap(MailOption* other) {
   if (other != this) {
     std::swap(expire_timestamp_, other->expire_timestamp_);
     std::swap(start_timestamp_, other->start_timestamp_);
+    std::swap(system_mail_, other->system_mail_);
+    std::swap(fitler_, other->fitler_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

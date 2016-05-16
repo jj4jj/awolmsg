@@ -37,6 +37,7 @@ void protobuf_ShutdownFile_awolapp_2eproto();
 
 class MailAttachment;
 class MailContent;
+class MailFilter;
 class MailOption;
 class Mail;
 class ChatSender;
@@ -133,6 +134,27 @@ inline bool MsgType_Parse(
     const ::std::string& name, MsgType* value) {
   return ::google::protobuf::internal::ParseNamedEnum<MsgType>(
     MsgType_descriptor(), name, value);
+}
+enum MailContentType {
+  MAIL_CONTENT_BLOB = 0,
+  MAIL_CONTENT_REFER = 1,
+  MAIL_CONTENT_TEXT = 2,
+  MAIL_CONTENT_HTML = 3
+};
+bool MailContentType_IsValid(int value);
+const MailContentType MailContentType_MIN = MAIL_CONTENT_BLOB;
+const MailContentType MailContentType_MAX = MAIL_CONTENT_HTML;
+const int MailContentType_ARRAYSIZE = MailContentType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* MailContentType_descriptor();
+inline const ::std::string& MailContentType_Name(MailContentType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    MailContentType_descriptor(), value);
+}
+inline bool MailContentType_Parse(
+    const ::std::string& name, MailContentType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MailContentType>(
+    MailContentType_descriptor(), name, value);
 }
 enum MailState {
   MAIL_STATE_INIT = 0,
@@ -323,12 +345,12 @@ class MailContent : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional int32 type = 1;
+  // optional .awolapp.MailContentType type = 1;
   inline bool has_type() const;
   inline void clear_type();
   static const int kTypeFieldNumber = 1;
-  inline ::google::protobuf::int32 type() const;
-  inline void set_type(::google::protobuf::int32 value);
+  inline ::awolapp::MailContentType type() const;
+  inline void set_type(::awolapp::MailContentType value);
 
   // optional bytes data = 2;
   inline bool has_data() const;
@@ -342,25 +364,157 @@ class MailContent : public ::google::protobuf::Message {
   inline ::std::string* release_data();
   inline void set_allocated_data(::std::string* data);
 
+  // optional uint64 refer = 3;
+  inline bool has_refer() const;
+  inline void clear_refer();
+  static const int kReferFieldNumber = 3;
+  inline ::google::protobuf::uint64 refer() const;
+  inline void set_refer(::google::protobuf::uint64 value);
+
   // @@protoc_insertion_point(class_scope:awolapp.MailContent)
  private:
   inline void set_has_type();
   inline void clear_has_type();
   inline void set_has_data();
   inline void clear_has_data();
+  inline void set_has_refer();
+  inline void clear_has_refer();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::std::string* data_;
-  ::google::protobuf::int32 type_;
+  ::google::protobuf::uint64 refer_;
+  int type_;
   friend void  protobuf_AddDesc_awolapp_2eproto();
   friend void protobuf_AssignDesc_awolapp_2eproto();
   friend void protobuf_ShutdownFile_awolapp_2eproto();
 
   void InitAsDefaultInstance();
   static MailContent* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MailFilter : public ::google::protobuf::Message {
+ public:
+  MailFilter();
+  virtual ~MailFilter();
+
+  MailFilter(const MailFilter& from);
+
+  inline MailFilter& operator=(const MailFilter& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MailFilter& default_instance();
+
+  void Swap(MailFilter* other);
+
+  // implements Message ----------------------------------------------
+
+  MailFilter* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MailFilter& from);
+  void MergeFrom(const MailFilter& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint64 player_id_list = 1;
+  inline int player_id_list_size() const;
+  inline void clear_player_id_list();
+  static const int kPlayerIdListFieldNumber = 1;
+  inline ::google::protobuf::uint64 player_id_list(int index) const;
+  inline void set_player_id_list(int index, ::google::protobuf::uint64 value);
+  inline void add_player_id_list(::google::protobuf::uint64 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+      player_id_list() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+      mutable_player_id_list();
+
+  // optional uint32 min_lv = 2;
+  inline bool has_min_lv() const;
+  inline void clear_min_lv();
+  static const int kMinLvFieldNumber = 2;
+  inline ::google::protobuf::uint32 min_lv() const;
+  inline void set_min_lv(::google::protobuf::uint32 value);
+
+  // optional uint32 max_lv = 3;
+  inline bool has_max_lv() const;
+  inline void clear_max_lv();
+  static const int kMaxLvFieldNumber = 3;
+  inline ::google::protobuf::uint32 max_lv() const;
+  inline void set_max_lv(::google::protobuf::uint32 value);
+
+  // optional uint32 lt_regis_time = 4;
+  inline bool has_lt_regis_time() const;
+  inline void clear_lt_regis_time();
+  static const int kLtRegisTimeFieldNumber = 4;
+  inline ::google::protobuf::uint32 lt_regis_time() const;
+  inline void set_lt_regis_time(::google::protobuf::uint32 value);
+
+  // optional uint32 gt_regis_time = 5;
+  inline bool has_gt_regis_time() const;
+  inline void clear_gt_regis_time();
+  static const int kGtRegisTimeFieldNumber = 5;
+  inline ::google::protobuf::uint32 gt_regis_time() const;
+  inline void set_gt_regis_time(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:awolapp.MailFilter)
+ private:
+  inline void set_has_min_lv();
+  inline void clear_has_min_lv();
+  inline void set_has_max_lv();
+  inline void clear_has_max_lv();
+  inline void set_has_lt_regis_time();
+  inline void clear_has_lt_regis_time();
+  inline void set_has_gt_regis_time();
+  inline void clear_has_gt_regis_time();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > player_id_list_;
+  ::google::protobuf::uint32 min_lv_;
+  ::google::protobuf::uint32 max_lv_;
+  ::google::protobuf::uint32 lt_regis_time_;
+  ::google::protobuf::uint32 gt_regis_time_;
+  friend void  protobuf_AddDesc_awolapp_2eproto();
+  friend void protobuf_AssignDesc_awolapp_2eproto();
+  friend void protobuf_ShutdownFile_awolapp_2eproto();
+
+  void InitAsDefaultInstance();
+  static MailFilter* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -431,12 +585,32 @@ class MailOption : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 start_timestamp() const;
   inline void set_start_timestamp(::google::protobuf::uint32 value);
 
+  // optional uint32 system_mail = 3;
+  inline bool has_system_mail() const;
+  inline void clear_system_mail();
+  static const int kSystemMailFieldNumber = 3;
+  inline ::google::protobuf::uint32 system_mail() const;
+  inline void set_system_mail(::google::protobuf::uint32 value);
+
+  // optional .awolapp.MailFilter fitler = 4;
+  inline bool has_fitler() const;
+  inline void clear_fitler();
+  static const int kFitlerFieldNumber = 4;
+  inline const ::awolapp::MailFilter& fitler() const;
+  inline ::awolapp::MailFilter* mutable_fitler();
+  inline ::awolapp::MailFilter* release_fitler();
+  inline void set_allocated_fitler(::awolapp::MailFilter* fitler);
+
   // @@protoc_insertion_point(class_scope:awolapp.MailOption)
  private:
   inline void set_has_expire_timestamp();
   inline void clear_has_expire_timestamp();
   inline void set_has_start_timestamp();
   inline void clear_has_start_timestamp();
+  inline void set_has_system_mail();
+  inline void clear_has_system_mail();
+  inline void set_has_fitler();
+  inline void clear_has_fitler();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -444,6 +618,8 @@ class MailOption : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::google::protobuf::uint32 expire_timestamp_;
   ::google::protobuf::uint32 start_timestamp_;
+  ::awolapp::MailFilter* fitler_;
+  ::google::protobuf::uint32 system_mail_;
   friend void  protobuf_AddDesc_awolapp_2eproto();
   friend void protobuf_AssignDesc_awolapp_2eproto();
   friend void protobuf_ShutdownFile_awolapp_2eproto();
@@ -1889,7 +2065,7 @@ inline void MailAttachment::set_allocated_data(::std::string* data) {
 
 // MailContent
 
-// optional int32 type = 1;
+// optional .awolapp.MailContentType type = 1;
 inline bool MailContent::has_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1903,11 +2079,12 @@ inline void MailContent::clear_type() {
   type_ = 0;
   clear_has_type();
 }
-inline ::google::protobuf::int32 MailContent::type() const {
+inline ::awolapp::MailContentType MailContent::type() const {
   // @@protoc_insertion_point(field_get:awolapp.MailContent.type)
-  return type_;
+  return static_cast< ::awolapp::MailContentType >(type_);
 }
-inline void MailContent::set_type(::google::protobuf::int32 value) {
+inline void MailContent::set_type(::awolapp::MailContentType value) {
+  assert(::awolapp::MailContentType_IsValid(value));
   set_has_type();
   type_ = value;
   // @@protoc_insertion_point(field_set:awolapp.MailContent.type)
@@ -1989,6 +2166,160 @@ inline void MailContent::set_allocated_data(::std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:awolapp.MailContent.data)
 }
 
+// optional uint64 refer = 3;
+inline bool MailContent::has_refer() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MailContent::set_has_refer() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MailContent::clear_has_refer() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void MailContent::clear_refer() {
+  refer_ = GOOGLE_ULONGLONG(0);
+  clear_has_refer();
+}
+inline ::google::protobuf::uint64 MailContent::refer() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailContent.refer)
+  return refer_;
+}
+inline void MailContent::set_refer(::google::protobuf::uint64 value) {
+  set_has_refer();
+  refer_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailContent.refer)
+}
+
+// -------------------------------------------------------------------
+
+// MailFilter
+
+// repeated uint64 player_id_list = 1;
+inline int MailFilter::player_id_list_size() const {
+  return player_id_list_.size();
+}
+inline void MailFilter::clear_player_id_list() {
+  player_id_list_.Clear();
+}
+inline ::google::protobuf::uint64 MailFilter::player_id_list(int index) const {
+  // @@protoc_insertion_point(field_get:awolapp.MailFilter.player_id_list)
+  return player_id_list_.Get(index);
+}
+inline void MailFilter::set_player_id_list(int index, ::google::protobuf::uint64 value) {
+  player_id_list_.Set(index, value);
+  // @@protoc_insertion_point(field_set:awolapp.MailFilter.player_id_list)
+}
+inline void MailFilter::add_player_id_list(::google::protobuf::uint64 value) {
+  player_id_list_.Add(value);
+  // @@protoc_insertion_point(field_add:awolapp.MailFilter.player_id_list)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+MailFilter::player_id_list() const {
+  // @@protoc_insertion_point(field_list:awolapp.MailFilter.player_id_list)
+  return player_id_list_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+MailFilter::mutable_player_id_list() {
+  // @@protoc_insertion_point(field_mutable_list:awolapp.MailFilter.player_id_list)
+  return &player_id_list_;
+}
+
+// optional uint32 min_lv = 2;
+inline bool MailFilter::has_min_lv() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void MailFilter::set_has_min_lv() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void MailFilter::clear_has_min_lv() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void MailFilter::clear_min_lv() {
+  min_lv_ = 0u;
+  clear_has_min_lv();
+}
+inline ::google::protobuf::uint32 MailFilter::min_lv() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailFilter.min_lv)
+  return min_lv_;
+}
+inline void MailFilter::set_min_lv(::google::protobuf::uint32 value) {
+  set_has_min_lv();
+  min_lv_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailFilter.min_lv)
+}
+
+// optional uint32 max_lv = 3;
+inline bool MailFilter::has_max_lv() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MailFilter::set_has_max_lv() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MailFilter::clear_has_max_lv() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void MailFilter::clear_max_lv() {
+  max_lv_ = 0u;
+  clear_has_max_lv();
+}
+inline ::google::protobuf::uint32 MailFilter::max_lv() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailFilter.max_lv)
+  return max_lv_;
+}
+inline void MailFilter::set_max_lv(::google::protobuf::uint32 value) {
+  set_has_max_lv();
+  max_lv_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailFilter.max_lv)
+}
+
+// optional uint32 lt_regis_time = 4;
+inline bool MailFilter::has_lt_regis_time() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void MailFilter::set_has_lt_regis_time() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void MailFilter::clear_has_lt_regis_time() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void MailFilter::clear_lt_regis_time() {
+  lt_regis_time_ = 0u;
+  clear_has_lt_regis_time();
+}
+inline ::google::protobuf::uint32 MailFilter::lt_regis_time() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailFilter.lt_regis_time)
+  return lt_regis_time_;
+}
+inline void MailFilter::set_lt_regis_time(::google::protobuf::uint32 value) {
+  set_has_lt_regis_time();
+  lt_regis_time_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailFilter.lt_regis_time)
+}
+
+// optional uint32 gt_regis_time = 5;
+inline bool MailFilter::has_gt_regis_time() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void MailFilter::set_has_gt_regis_time() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void MailFilter::clear_has_gt_regis_time() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void MailFilter::clear_gt_regis_time() {
+  gt_regis_time_ = 0u;
+  clear_has_gt_regis_time();
+}
+inline ::google::protobuf::uint32 MailFilter::gt_regis_time() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailFilter.gt_regis_time)
+  return gt_regis_time_;
+}
+inline void MailFilter::set_gt_regis_time(::google::protobuf::uint32 value) {
+  set_has_gt_regis_time();
+  gt_regis_time_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailFilter.gt_regis_time)
+}
+
 // -------------------------------------------------------------------
 
 // MailOption
@@ -2039,6 +2370,71 @@ inline void MailOption::set_start_timestamp(::google::protobuf::uint32 value) {
   set_has_start_timestamp();
   start_timestamp_ = value;
   // @@protoc_insertion_point(field_set:awolapp.MailOption.start_timestamp)
+}
+
+// optional uint32 system_mail = 3;
+inline bool MailOption::has_system_mail() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MailOption::set_has_system_mail() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MailOption::clear_has_system_mail() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void MailOption::clear_system_mail() {
+  system_mail_ = 0u;
+  clear_has_system_mail();
+}
+inline ::google::protobuf::uint32 MailOption::system_mail() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailOption.system_mail)
+  return system_mail_;
+}
+inline void MailOption::set_system_mail(::google::protobuf::uint32 value) {
+  set_has_system_mail();
+  system_mail_ = value;
+  // @@protoc_insertion_point(field_set:awolapp.MailOption.system_mail)
+}
+
+// optional .awolapp.MailFilter fitler = 4;
+inline bool MailOption::has_fitler() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void MailOption::set_has_fitler() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void MailOption::clear_has_fitler() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void MailOption::clear_fitler() {
+  if (fitler_ != NULL) fitler_->::awolapp::MailFilter::Clear();
+  clear_has_fitler();
+}
+inline const ::awolapp::MailFilter& MailOption::fitler() const {
+  // @@protoc_insertion_point(field_get:awolapp.MailOption.fitler)
+  return fitler_ != NULL ? *fitler_ : *default_instance_->fitler_;
+}
+inline ::awolapp::MailFilter* MailOption::mutable_fitler() {
+  set_has_fitler();
+  if (fitler_ == NULL) fitler_ = new ::awolapp::MailFilter;
+  // @@protoc_insertion_point(field_mutable:awolapp.MailOption.fitler)
+  return fitler_;
+}
+inline ::awolapp::MailFilter* MailOption::release_fitler() {
+  clear_has_fitler();
+  ::awolapp::MailFilter* temp = fitler_;
+  fitler_ = NULL;
+  return temp;
+}
+inline void MailOption::set_allocated_fitler(::awolapp::MailFilter* fitler) {
+  delete fitler_;
+  fitler_ = fitler;
+  if (fitler) {
+    set_has_fitler();
+  } else {
+    clear_has_fitler();
+  }
+  // @@protoc_insertion_point(field_set_allocated:awolapp.MailOption.fitler)
 }
 
 // -------------------------------------------------------------------
@@ -3549,6 +3945,11 @@ template <> struct is_proto_enum< ::awolapp::MsgType> : ::google::protobuf::inte
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::MsgType>() {
   return ::awolapp::MsgType_descriptor();
+}
+template <> struct is_proto_enum< ::awolapp::MailContentType> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::awolapp::MailContentType>() {
+  return ::awolapp::MailContentType_descriptor();
 }
 template <> struct is_proto_enum< ::awolapp::MailState> : ::google::protobuf::internal::true_type {};
 template <>
