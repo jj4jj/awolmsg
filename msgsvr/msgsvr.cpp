@@ -455,7 +455,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
     if (msg.op() == MSG_OP_LIST){
         actor_state_update(actor, clientid);
         ///////////////////////////////////////////////////////////
-        strnprintf(cmd.sql, 128, "SELECT msg FROM msg WHERE type=%d AND actor='%d:%lu' LIMIT %d OFFSET 0;",
+        strnprintf(cmd.sql, 128, "SELECT msg FROM msg WHERE type=%d AND actor='%d:%lu' ORDER BY msgid DESC LIMIT %d OFFSET 0;",
 			msgtype, msg.actor().type(), msg.actor().id(), MAX_MSG_LIST_SIZE);
         cmd.need_result = true;
         if (!cb.Pack(cmd.cbdata)){

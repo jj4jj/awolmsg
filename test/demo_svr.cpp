@@ -146,7 +146,46 @@ int main(){
 
 #include "../app/mailbox.h"
 #include "../app/awolapp.pb.h"
+#include "dcpots/base/dcutils.hpp"
 using namespace awolapp;
+
+struct SystemMailBox;
+static SystemMailBox * g_server_mailbox = nullptr;
+struct TestMailBox;
+struct SystemMailBox : public awolapp::MailBox {
+    SystemMailBox(const MsgActor & ma) : MailBox(ma){}
+    void response(const string & resp){}
+    void onnotify(uint64_t id, const Mail & mail){
+        GLOG_DBG("server recv mail:%lu mail:%s", mail.ShortDebugString().c_str());
+    }
+    void update(){
+        static uint32_t s_last_update_time = 0;
+        uint32_t time_now = dcsutil::time_unixtime_s();
+        if (s_last_update_time + 60 > time_now){
+            return;
+        }
+        s_last_update_time = time_now;
+        //check time expired todo
+
+        //update
+        list();
+    }
+    void on_new_actor(MailBox * ma){
+        for (int i = 0; i < msg_list_size(); ++i){
+            const Mail * mmsg = get_mail_by_idx(i);
+            auto msgid = get_mail_id_by_idx(i);
+            if (!mmsg){ continue; }
+            if (!ma->find_refer_mail(msgid)){
+                Mail refmail = *mmsg;
+                refmail.mutable_content()->Clear();
+                refmail.mutable_content()->set_type(MAIL_CONTENT_REFER);
+                refmail.mutable_content()->set_refer(msgid);
+                ma->insert(refmail);
+            }
+        }
+    }
+};
+
 
 struct TestMailBox : public awolapp::MailBox {
     TestMailBox(const MsgActor & ma) : MailBox(ma){}
@@ -156,6 +195,21 @@ struct TestMailBox : public awolapp::MailBox {
     virtual void onfetch(uint64_t id, const Mail & mail){
 
     }
+    virtual void set_msg(awolapp::AwolMsg & msg, const Mail & mail){
+        if (mail.content().type() == MAIL_CONTENT_REFER){
+            auto mailid = mail.content().refer();
+            if (g_server_mailbox){
+                const Mail * rfm = g_server_mailbox->find_msg(mailid);
+                if (rfm){
+                    msg.mutable_mail()->CopyFrom(*rfm);
+                }
+            }
+        }
+        else {
+            msg.mutable_mail()->CopyFrom(mail);
+        }
+    }
+
 	virtual void response(const string & resp){
 		//test client
 		CSAwolMsg msg;
@@ -206,6 +260,7 @@ int main(int argc, char * argv[]){
 
     //send to ma2
     TestMailBox mb1(ma1);
+
 	//mb.insert(mail);
     //mb.insert(mail);
     //send to ma2
@@ -222,15 +277,17 @@ int main(int argc, char * argv[]){
 	request.set_type(MSG_TYPE_MAIL);
     request.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_LIST);
 	//mb.request(request.SerializeAsString());
-    mb2.request(request.SerializeAsString());
+    //mb2.request(request.SerializeAsString());
 
 
-	TestMailBox mb(ma);
-	mb.insert(mail);
-
+    SystemMailBox mb(ma);
+    g_server_mailbox = &mb;
+    mb.list();
+	//mb.insert(mail);
 	//checking
-
-
+    sleep(1);
+    mb.on_new_actor(&mb1);
+    mb1.list();
 
     while (true){
         msgsvr.update();

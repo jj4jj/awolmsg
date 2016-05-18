@@ -82,7 +82,29 @@ const Mail & MailBox::get_msg(const AwolMsg & msg){
     return msg.mail();
 }
 void  MailBox::onnotify(uint64_t id, const Mail & mail){
-
+}
+const Mail * MailBox::find_refer_mail(uint64_t msgid){
+    auto it = impl->msg_cache.begin();
+    while (it != impl->msg_cache.end()){
+        if (it->second.second.content().type() == MAIL_CONTENT_REFER &&
+            it->second.second.content().refer() == msgid){
+            return &it->second.second;
+        }
+        it++;
+    }
+    return nullptr;
+}
+const Mail * MailBox::find_msg(uint64_t msgid){
+    return impl->find_msg(msgid);
+}
+int          MailBox::msg_list_size(){
+    return impl->get_msg_count();
+}
+uint64_t     MailBox::get_mail_id_by_idx(int idx){
+    return impl->get_msg_id_by_idx(idx);
+}
+const Mail * MailBox::get_mail_by_idx(int idx){
+    return impl->get_msg_by_idx(idx);
 }
 
 

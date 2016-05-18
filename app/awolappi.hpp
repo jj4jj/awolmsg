@@ -125,10 +125,17 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 	void onsend(const MsgActor & actorto, uint64_t id, const AppMsg & msg){
 		response_msg(0, CSAwolMsg::MSG_CMD_SENDTO, id, &msg);
 	}
+    virtual void onput(uint64_t id, const AppMsg & msg){
+        GLOG_DBG("onput new app msg id:%ld", id);
+        app_->onnotify(id, msg);
+        if (this->options().owner() != MSG_OPT_OWN_SO){
+            notify_msg(CSAwolMsg::MSG_SYNC_RECV, id, &msg);
+        }
+    }
     virtual void onnotify(uint64_t id, const AppMsg & msg){
         GLOG_DBG("notify new app msg id:%ld", id);
+        app_->onnotify(id, msg);
         if (this->options().owner() != MSG_OPT_OWN_SO){
-            app_->onnotify(id, msg);
 			notify_msg(CSAwolMsg::MSG_SYNC_RECV, id, &msg);
         }
     }
@@ -163,7 +170,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 		AwolMsgItem & awolmsgitem = *csmsg.mutable_notify()->add_msglist();
 		awolmsgitem.set_id(id);
 		if (appmsg){
-			app_->set_msg(*awolmsgitem.mutable_msg(), *appmsg);
+            app_->set_msg(*awolmsgitem.mutable_msg(), *appmsg);
 		}
 		push_msg(csmsg);
 	}
@@ -183,7 +190,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 						list_msg_cnt++;
 						AwolMsgItem & msg = *csmsg.mutable_response()->add_msglist();
 						msg.set_id(it->first);
-						app_->set_msg(*msg.mutable_msg(), it->second.second);
+                        app_->set_msg(*msg.mutable_msg(), it->second.second);
 					}
 					else {
 						break;

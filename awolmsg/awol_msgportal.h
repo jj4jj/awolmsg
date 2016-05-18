@@ -73,6 +73,33 @@ public:
 	void	unlock(uint64_t id){
 		msg_locking.erase(id);
 	}
+    const MsgT * find_msg(uint64_t msgid){
+        auto it0 = msg_cache.find(msgid);
+        if (it0 == msg_cache.end()){
+            return nullptr;
+        }
+        return &it0->second.second;
+    }
+    uint64_t     get_msg_id_by_idx(int idx){
+        auto it0 = msg_cache.begin();
+        std::advance(it0, idx);
+        if (it0 == msg_cache.end()){
+            return 0;
+        }
+        return it0->first;
+    }
+    const MsgT * get_msg_by_idx(int idx){
+        auto it0 = msg_cache.begin();
+        std::advance(it0, idx);
+        if (it0 == msg_cache.end()){
+            return nullptr;
+        }
+        return &it0->second.second;
+    }
+    int          get_msg_count(){
+        return msg_cache.size();
+    }
+
     virtual int remove(uint64_t id, bool fromc = true){//client or server
         auto it = msg_cache.find(id);
         if (it == msg_cache.end()){

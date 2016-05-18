@@ -3,12 +3,12 @@
 
 namespace awolmsg {
     struct MsgActor;
-    class AwolMsg;
 };
 namespace awolapp {
+    class AwolMsg;
     struct MailBoxImpl;
     class Mail;
-    struct MailBox : noncopyable {
+    struct MailBox : public noncopyable {
         int list();
         int remove(uint64_t id);
         int insert(const awolapp::Mail & mail);
@@ -26,9 +26,13 @@ namespace awolapp {
 
 	public:
 		static int sendto(const MsgActor & actor, const awolapp::Mail & mail);
-		void  set_msg(AwolMsg & msg, const Mail & mail);
-		const Mail & get_msg(const AwolMsg & msg);
-	public:
+		virtual void  set_msg(AwolMsg & msg, const Mail & mail);
+		virtual const Mail & get_msg(const AwolMsg & msg);
+        const Mail * find_msg(uint64_t msgid);
+        const Mail * find_refer_mail(uint64_t msgid);
+        int          msg_list_size();
+        const Mail * get_mail_by_idx(int idx);
+        uint64_t     get_mail_id_by_idx(int idx);
         MailBox(const awolmsg::MsgActor & actor);
         virtual ~MailBox();
     private:
