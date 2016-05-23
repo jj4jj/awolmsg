@@ -103,6 +103,9 @@ int          MailBox::msg_list_size(){
 uint64_t     MailBox::get_mail_id_by_idx(int idx){
     return impl->get_msg_id_by_idx(idx);
 }
+const awolmsg::MsgActor & actor(){
+    return impl->actor();
+}
 const Mail * MailBox::get_mail_by_idx(int idx){
     return impl->get_msg_by_idx(idx);
 }

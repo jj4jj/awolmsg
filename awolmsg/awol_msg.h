@@ -9,7 +9,7 @@ struct MsgKeyData {
     uint64_t      id;
     uint32_t      version;
     std::string   data;
-    MsgKeyData(uint64_t i, const std::string & sd, uint32_t v) :id(i), data(sd), version(v){}
+    MsgKeyData(uint64_t i, const std::string & sd, uint32_t v) :id(i), version(v), data(sd){}
 };
 typedef std::vector<MsgKeyData>	MsgList;
 struct MsgActor : public MsgAgent {
