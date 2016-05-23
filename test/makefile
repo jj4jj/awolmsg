@@ -5,7 +5,7 @@ demo_svr: ./demo_svr.cpp test.pb.cc ../lib/libawolapp.a ../lib/libawolmsg.a ../.
 	g++ -o $@ $^ ${protol} --std=c++11 -I ../../ -g -I../awolmsg ${protoi}
 
 test.pb.cc: test.proto
-	protoc test.proto --cpp_out=.
+	${protoc} test.proto --cpp_out=.
 
 clean:
 	rm -f demo_cli demo_svr *.pb.*
