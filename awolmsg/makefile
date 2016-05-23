@@ -1,5 +1,5 @@
 libawolmsg.a: *.cpp awolmsg.pb.cc
-	g++ --std=c++11 -c $^ -I../../ -g
+	g++ --std=c++11 -c $^ -I../../ -g ${protoi}
 	ar -rcs $@ *.o
 awolmsg.pb.cc: awolmsg.proto
 	${protoc} awolmsg.proto --cpp_out=.
