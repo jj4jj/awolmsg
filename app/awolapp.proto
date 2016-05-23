@@ -120,7 +120,6 @@ message CSAwolMsg {
 	optional	Request		request=3;
 	optional	Response	response=4;
 	optional	Notify		notify=5;
-	required	MsgType		type=6;
 	message Cookie {
 		optional	int32		limit=1;
 		optional	int32		offset=2;

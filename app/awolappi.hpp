@@ -152,7 +152,6 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 	void response_msg(int ret, CSAwolMsg::MsgCMD cmd, uint64_t id, const AppMsg * appmsg = nullptr, int op = 0){
 		CSAwolMsg csmsg;
 		csmsg.set_cmd(cmd);
-		csmsg.set_type((awolapp::MsgType)AppMsgType);
 		csmsg.mutable_response()->set_ret(ret);
 		AwolMsgItem & awolmsgitem = *csmsg.mutable_response()->add_msglist();
 		awolmsgitem.set_id(id);
@@ -165,7 +164,6 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 	void notify_msg(CSAwolMsg::AwolMsgSyncCode code, uint64_t id, const AppMsg * appmsg = nullptr){
 		CSAwolMsg csmsg;
 		csmsg.set_cmd(CSAwolMsg::MSG_CMD_NOTIFY);
-		csmsg.set_type((awolapp::MsgType)AppMsgType);
 		csmsg.mutable_notify()->set_sync(code);
 		AwolMsgItem & awolmsgitem = *csmsg.mutable_notify()->add_msglist();
 		awolmsgitem.set_id(id);
@@ -179,7 +177,6 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
         if (fromc){
             CSAwolMsg csmsg;
             csmsg.set_cmd(CSAwolMsg::MSG_CMD_LIST);
-			csmsg.set_type((awolapp::MsgType)AppMsgType);
 			csmsg.mutable_response()->set_ret(0);
             auto it = this->msg_cache.begin();
 			int list_msg_idx = 0;

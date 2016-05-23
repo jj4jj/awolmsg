@@ -120,6 +120,11 @@ int MsgPortal::remove(uint64_t id, uint32_t version, bool fromc){//client or ser
 		return ErrorCode::AWOL_EC_NO_PERM;
 	}
 }
+int MsgPortal::request(const std::string & str){
+    GLOG_WAR("not implementation actor:%s request !", actor().ShortDebugString().c_str());
+    return -404;
+}
+
 int MsgPortal::clean(){
     auto cb = std::bind(_safe_portal_dispatch_onclean,
         this->actor(), this->type(), std::placeholders::_1);

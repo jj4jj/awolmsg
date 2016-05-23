@@ -217,7 +217,6 @@ struct TestMailBox : public awolapp::MailBox {
 		if (msg.cmd() == CSAwolMsg_MsgCMD_MSG_CMD_LIST){
 			//rm6284694626259435521
 			CSAwolMsg req;
-			req.set_type(MSG_TYPE_MAIL);
 			req.mutable_request()->set_id(6284599651647619073);
 
 			req.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_UPDATE);
@@ -274,7 +273,6 @@ int main(int argc, char * argv[]){
 	//TestMailBox::sendto(ma2, mail);
 
     CSAwolMsg request;
-	request.set_type(MSG_TYPE_MAIL);
     request.set_cmd(CSAwolMsg_MsgCMD_MSG_CMD_LIST);
 	//mb.request(request.SerializeAsString());
     //mb2.request(request.SerializeAsString());

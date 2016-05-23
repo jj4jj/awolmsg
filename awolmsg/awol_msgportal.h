@@ -18,6 +18,7 @@ public:
     virtual int remove(uint64_t id, uint32_t verison, bool fromc = true);//client or server
     virtual int get(uint64_t id, bool fromc = true);
     virtual int clean();
+    virtual int request(const std::string & str);
 public:
 	static  int sendto(const MsgActor & actorto, int type, const std::string & m);
 public:
@@ -29,6 +30,7 @@ public:
     virtual void onsend(int ret, const MsgActor & actorto, uint64_t id, const std::string & msg, bool fromc);
     virtual void onput(int ret, uint64_t id, const std::string & msg);
     virtual void onclean(int ret);
+
 public:
 	MsgPortal(const MsgActor & actor, int type);
 	int type() const { return msgbox_.type(); };

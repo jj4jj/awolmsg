@@ -19,7 +19,7 @@ namespace awolmsg {
 		int destory();
 		int update();
         bool ready();
-		int regis(MsgPortal * portal);
+		int  regis(MsgPortal * portal);
         void unregis(MsgPortal * portal);
 		void		dispatch(const Msg & m);
         MsgPortal * find(const MsgActor & actor, int type);
