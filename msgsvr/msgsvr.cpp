@@ -197,20 +197,16 @@ public:
 	}
 };
 #define MSGSVR_VERSION	("0.0.1")
-int main(int argc, char ** argv){
+int main(int argc,const char ** argv){
 	cmdline_opt_t cmdline(argc, argv);
 
     //todo addres tobe configuration
-	cmdline.parse("version:n:v:version;"
+	cmdline.parse(""
 		"db:r:d:mysql database name:test;"
 		"db-user:r::mysql user name:test;"
 		"db-pwd:r::mysql password:123456;"
 		"listen:r:l:rpc listen address (tcp):127.0.0.1:8888;"
-		"redis:r::redis address:127.0.0.1:6379;");
-	if (cmdline.getoptstr("version")){
-		puts(MSGSVR_VERSION);
-		return 0;
-	}
+		"redis:r::redis address:127.0.0.1:6379;", MSGSVR_VERSION);
 
 	dcrpc::RpcServer	rpc;
 	if (rpc.init(cmdline.getoptstr("listen"))){
