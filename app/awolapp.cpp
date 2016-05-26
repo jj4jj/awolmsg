@@ -1,8 +1,8 @@
 #include "dcpots/base/stdinc.h"
 #include "dcpots/base/logger.h"
-#include "../awolmsg/awol_msgsvr.h"
-#include "../awolmsg/awol_msgportal.h"
-#include "awolapp.pb.h"
+#include "../core/awol_msgsvr.h"
+#include "../core/awol_msgportal.h"
+#include "../proto/awolapp.pb.h"
 #include "awolapp.h"
 
 using namespace awolmsg;

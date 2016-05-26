@@ -9,8 +9,8 @@
 #include "dcpots/base/dcutils.hpp"
 #include "dcpots/utility/mysql/dcmysqlc_pool.h"
 
-#include "../awolmsg/awolmsg.pb.h"
-#include "../awolmsg/awol_msg.h"
+#include "../proto/awolmsg.pb.h"
+#include "../core/awol_msg.h"
 
 using namespace std;
 //using namespace google::protobuf;

@@ -9,7 +9,9 @@ if [ "x$1" = "xu1" ];then
     evl="../../libev/lib/libev.a"
 fi
 
-cd ./awolmsg && make install protoc="${protoc}" protol="${protol}" protoi="${protoi}"
+cd ./proto && make install protoc="${protoc}" protol="${protol}" protoi="${protoi}"
+cd -
+cd ./core && make install protoc="${protoc}" protol="${protol}" protoi="${protoi}"
 cd -
 cd ./app/ && make install protoc="${protoc}" protol="${protol}" protoi="${protoi}"
 cd -

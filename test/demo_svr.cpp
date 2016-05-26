@@ -1,7 +1,7 @@
 #include "dcpots/base/stdinc.h"
 #include "dcpots/base/logger.h"
-#include "../awolmsg/awol_msg.h"
-#include "../awolmsg/awol_msgsvr.h"
+#include "../core/awol_msg.h"
+#include "../core/awol_msgsvr.h"
 using namespace awolmsg;
 using namespace std;
 #if 0
@@ -145,7 +145,7 @@ int main(){
 #endif
 
 #include "../app/mailbox.h"
-#include "../app/awolapp.pb.h"
+#include "../proto/awolapp.pb.h"
 #include "dcpots/base/dcutils.hpp"
 using namespace awolapp;
 

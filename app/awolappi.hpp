@@ -4,9 +4,9 @@
 #include "dcpots/base/msg_buffer.hpp"
 #include "dcpots/base/logger.h"
 ////////////////////////////////////////
-#include "../awolmsg/awol_msgportal.h"
+#include "../core/awol_msgportal.h"
 ////////////////////////////////////////
-#include "awolapp.pb.h"
+#include "../proto/awolapp.pb.h"
 using namespace awolmsg;
 NS_BEGIN(awolapp)
 //using namespace std;
