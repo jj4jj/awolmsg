@@ -1,10 +1,11 @@
-libawolapp.a: ./*.cpp
+libawolappi.a: ./*.cpp
 	g++ --std=c++11 -c $^ -I../..  -I../awolmsg/ ${protoi}
 	ar -rcs $@ *.o
 
-install: libawolapp.a
+install: libawolappi.a
 	mkdir ../lib/ -p
-	mv libawolapp.a ../lib/
+	mv libawolappi.a ../lib/
+	cd ../lib && rm *.o -f && ar x libawolappi.a && ar x libawolproto.a && ar x libawolmsg.a && rm libawolapp.a -f && ar -rcs libawolapp.a *.o && rm *.o -f
 
 clean:
 	rm -f *.o
