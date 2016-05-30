@@ -5,4 +5,4 @@ clean:
 	rm -f *.o
 install: libawolmsg.a
 	mkdir -p ../lib
-	mv libawolmsg.a ../lib/
+	cp -f libawolmsg.a ../lib/

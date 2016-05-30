@@ -1,12 +1,14 @@
 #include <hiredis/hiredis.h>
+
 #include "dcpots/base/logger.h"
-#include "dcpots/dcrpc/share/dcrpc.h"
-#include "dcpots/dcrpc/server/dcsrpc.h"
 #include "dcpots/base/cmdline_opt.h"
-#include "dcpots/utility/redis/dcredis.h"
 #include "dcpots/base/dcseqnum.hpp"
 #include "dcpots/base/msg_proto.hpp"
 #include "dcpots/base/dcutils.hpp"
+#include "dcpots/base/app.hpp"
+#include "dcpots/dcrpc/share/dcrpc.h"
+#include "dcpots/dcrpc/server/dcsrpc.h"
+#include "dcpots/utility/redis/dcredis.h"
 #include "dcpots/utility/mysql/dcmysqlc_pool.h"
 
 #include "../proto/awolmsg.pb.h"
@@ -198,47 +200,54 @@ public:
 };
 #define MSGSVR_VERSION	("0.0.1")
 int main(int argc,const char ** argv){
-	cmdline_opt_t cmdline(argc, argv);
+    struct MsgServer : public dcsutil::App {
+        dcrpc::RpcServer	rpc;
+        RedisAsyncAgent     redis;
+        mysqlclient_pool_t  mysql;
+        /////////////////////////////////////////////
+        MsgServer() : dcsutil::App(MSGSVR_VERSION){}
+        string options(){
+            return ""
+            "db:r:d:mysql database name:test;"
+                "db-user:r::mysql user name:test;"
+                "db-pwd:r::mysql password:123456;"
+                "db-host:r::mysql host:127.0.0.1;"
+                "listen:r:l:rpc listen address (tcp):127.0.0.1:8888;"
+                "redis:r::redis address:127.0.0.1:6379;";
+        }
+        int on_init(const char * configfile){
+            if (rpc.init(cmdopt().getoptstr("listen"))){
+                return -1;
+            }
 
-    //todo addres tobe configuration
-	cmdline.parse(""
-		"db:r:d:mysql database name:test;"
-		"db-user:r::mysql user name:test;"
-		"db-pwd:r::mysql password:123456;"
-		"listen:r:l:rpc listen address (tcp):127.0.0.1:8888;"
-		"redis:r::redis address:127.0.0.1:6379;", MSGSVR_VERSION);
+            if (redis.init(cmdopt().getoptstr("redis"))){
+                return -2;
+            }
 
-	dcrpc::RpcServer	rpc;
-	if (rpc.init(cmdline.getoptstr("listen"))){
-		return -1;
-	}
+            mysqlclient_t::cnnx_conf_t config;
+            config.ip = cmdopt().getoptstr("db-host");
+            config.uname = cmdopt().getoptstr("db-user");
+            config.passwd = cmdopt().getoptstr("db-pwd");
+            config.dbname = cmdopt().getoptstr("db");
+            if (mysql.init(config, 2)){
+                return -3;
+            }
+            rpc.regis(new MsgService(&redis, &rpc, &mysql));
+            return 0;
+        }
+        int on_loop(){
+            int ret = rpc.update();
+            ret += redis.update();
+            ret += mysql.poll();
+            return ret;
+        }
+    };
 
-	RedisAsyncAgent redis;
-	if (redis.init(cmdline.getoptstr("redis"))){
-		return -2;
-	}
-
-    mysqlclient_pool_t  mysql;
-    mysqlclient_t::cnnx_conf_t config;
-    config.ip = "127.0.0.1";
-    config.uname = cmdline.getoptstr("db-user");
-	config.passwd = cmdline.getoptstr("db-pwd");
-    config.dbname = cmdline.getoptstr("db");
-    if (mysql.init(config, 2)){
-        return -3;
+    MsgServer msgsvr;
+    if (msgsvr.init(argc, argv)){
+        return -1;
     }
-
-    MsgService msgsvc(&redis, &rpc, &mysql);
-
-	rpc.regis(&msgsvc);
-
-	while (true){
-        rpc.update();
-        redis.update();
-        mysql.poll();
-	}
-
-	return 0;
+    return msgsvr.run();
 }
 
 

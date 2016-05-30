@@ -11,4 +11,4 @@ clean:
 	rm -f *.o *.pb.*
 install: libawolproto.a
 	mkdir -p ../lib
-	mv libawolproto.a ../lib/
+	cp -f libawolproto.a ../lib/
