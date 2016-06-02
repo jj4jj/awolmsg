@@ -1,19 +1,19 @@
 package awolapp;
-import "awolmsg.proto";
-
-enum ActorType {
+enum CSActorType {
 	ACTOR_TYPE_NONE=0;
 	ACTOR_TYPE_SERVER=1;
 	ACTOR_TYPE_PLAYER=2;
 };
-enum MsgType {
+message CSMsgActor {
+    required    CSActorType type=1;
+    required    uint64    id=2;
+};
+enum CSMsgType {
 	MSG_TYPE_NONE=0;
 	MSG_TYPE_MAIL=1;
 	MSG_TYPE_CHAT=2;
 	MSG_TYPE_NOTICE=3;
 };
-
-
 enum MailContentType {
 	MAIL_CONTENT_BLOB=0;
 	MAIL_CONTENT_REFER=1;
@@ -126,7 +126,7 @@ message CSAwolMsg {
     }
 	message Request {
 		optional	uint64		id=2;
-		optional	awolmsg.MsgAgent	sendto=3;
+		optional	CSMsgActor	sendto=3;
 		optional	int32		opcode=4;
 		optional	AwolMsg		msg=5;
 	}

@@ -7,6 +7,9 @@ if [ "x$1" = "xu1" ];then
     protol="../../protobuf/lib/libprotobuf.a"
     protoi="-I../../protobuf/include"
     evl="../../libev/lib/libev.a"
+else
+    #cd ./proto && make install protoc="${protoc}" protol="${protol}" protoi="${protoi}"
+    echo ""
 fi
 
 cd ./proto && make install protoc="${protoc}" protol="${protol}" protoi="${protoi}"

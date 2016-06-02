@@ -247,9 +247,9 @@ int main(int argc, char * argv[]){
     //    msgsvr.update();
     //}
 
-    MsgActor ma1(ActorType::ACTOR_TYPE_PLAYER, 1); //P1
-    MsgActor ma2(ActorType::ACTOR_TYPE_PLAYER, 2); //P2
-    MsgActor ma(ActorType::ACTOR_TYPE_SERVER, 1); //S1
+    MsgActor ma1(CSActorType::ACTOR_TYPE_PLAYER, 1); //P1
+    MsgActor ma2(CSActorType::ACTOR_TYPE_PLAYER, 2); //P2
+    MsgActor ma(CSActorType::ACTOR_TYPE_SERVER, 1); //S1
 
     Mail mail;
     mail.set_sender("from ma1");
