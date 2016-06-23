@@ -14,7 +14,7 @@ namespace awolapp {
         int insert(const awolapp::Mail & mail);
         virtual void onread(uint64_t id, const awolapp::Mail & mail);
         virtual void onfetch(uint64_t id, const awolapp::Mail & mail);
-
+        virtual int  checksend(const awolmsg::MsgActor & sendto, const awolapp::Mail & mail);
     public:
         int request(const string & req);
         virtual void response(const string & resp); //send to client actor

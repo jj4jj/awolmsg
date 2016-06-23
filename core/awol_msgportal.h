@@ -114,6 +114,11 @@ public:
         return MsgPortal::remove(id, it->second.first, fromc);
     }
     virtual int send(const MsgActor & actor, const MsgT & m, bool fromc = true){
+        int ret = checksend(actor, m, fromc);
+        if (ret){
+            GLOG_ERR("send to msg check send error = %d ! size:%d", m.ByteSize());
+            return ErrorCode::AWOL_EC_NO_PERM;
+        }
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
         if (!m.SerializeToArray(msgbuff.buffer, msgbuff.max_size)){
             GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
@@ -143,11 +148,13 @@ public:
         int ret = checkop(id, m, op);
         if (ret){
             GLOG_ERR("check op:%d error ret:%d", op, ret);
+            unlock(id);
             return ret;
         }
         msg_buffer_t & msgbuff = *MsgSvr::instance().msg_buffer();
         if (!m.SerializeToArray(msgbuff.buffer, msgbuff.max_size)){
             GLOG_ERR("send to msg pack error ! size:%d", m.ByteSize());
+            unlock(id);
             return ErrorCode::AWOL_EC_ERROR_PACK;
         }
         return MsgPortal::sync(id, ver+1, std::string(msgbuff.buffer, m.ByteSize()), op);
@@ -180,6 +187,9 @@ public:
             GLOG_ERR("op = %d id:%lu not permitted !", op, id);
             return ErrorCode::AWOL_EC_MSG_UPDATE_OP_ERROR;
         }
+        return 0;
+    }
+    virtual int  checksend(const MsgActor & sendto,const MsgT & msg, bool fromc){
         return 0;
     }
 public:
@@ -238,7 +248,7 @@ public:
             GLOG_ERR("onsync parse from array error ! length:%d", msg.length());
 			return;
         }
-        onsync(id, mm, op);
+        this->onsync(id, mm, op);
     }
     virtual void onput(int ret, uint64_t id, const std::string & msg){
         if (ret){
@@ -259,7 +269,7 @@ public:
             return;
         }
         msg_cache.clear();
-        for (int i = 0; i < vms.size(); ++i){
+        for (size_t i = 0; i < vms.size(); ++i){
             const MsgKeyData & msg = vms.at(i);
             MsgT mm;
             if (!mm.ParseFromArray(msg.data.data(), msg.data.length())){
@@ -285,7 +295,7 @@ public:
             GLOG_ERR("on remove msg not found ret:%d id:%lu fromc:%d", ret, id, fromc);
             return;
         }
-        onremove(id, *pmsg, fromc);
+        this->onremove(id, *pmsg, fromc);
         msg_cache.erase(id);
     }
     virtual void onnotify(uint64_t id, uint32_t version, const string & msg){
@@ -295,7 +305,7 @@ public:
             return;
         }
         msg_cache[id] = std::make_pair(version ,mm);
-        return onnotify(id, mm);
+        return this->onnotify(id, mm);
     }
 
     MsgT * getmsg(uint64_t id){

@@ -258,7 +258,7 @@ int MsgService::dispatch_redis_store_command(uint64_t cookie, const MsgOPT & msg
     auto hsetkey = mergekey(msg.actor().type(),
         msg.actor().id(), msg.type());
     MsgActor actor(msg.actor().type(), msg.actor().id());
-    int msgtype = msg.type();
+    //int msgtype = msg.type();
     GLOG_TRA("redis command key :%s op:%d", hsetkey.c_str(), msg.op());
     if (msg.op() == MSG_OP_LIST){
         actor_state_update(actor, clientid);
@@ -272,7 +272,7 @@ int MsgService::dispatch_redis_store_command(uint64_t cookie, const MsgOPT & msg
             if (reply->type == REDIS_REPLY_ERROR){
                 this->resume(cookie, result, -2, reply->str);
             }
-            for (int i = 0; i < reply->elements; ++i){
+            for (size_t i = 0; i < reply->elements; ++i){
                 result.addb(reply->element[i]->str, reply->element[i]->len);
             }
             this->resume(cookie, result);
@@ -382,14 +382,14 @@ int MsgService::dispatch_redis_store_command(uint64_t cookie, const MsgOPT & msg
     else {
         return -3;
     }
-
+	return 0;
 }
 
 typedef dcsutil::mysqlclient_pool_t::command_t  command_t;
 typedef dcsutil::mysqlclient_pool_t::result_t   result_t;
 static void mysql_command_dispatch(void *ud, const result_t & res, const command_t & cmd){
     MsgService * service = (MsgService*)ud;
-    cmd.cbdata;
+    //cmd.cbdata;
     MysqlCallBack cb;
     if (!cb.Unpack(cmd.cbdata)){
         GLOG_ERR("callback unpack error ! cbdata size:%d", cmd.cbdata.valid_size);
@@ -399,7 +399,7 @@ static void mysql_command_dispatch(void *ud, const result_t & res, const command
 
     const MsgOPT & msg = (const MsgOPT &)cb.msg();
     MsgActor actor(msg.actor().type(), msg.actor().id());
-    int msgtype = msg.type();
+    //int msgtype = msg.type();
     string msgdata = msg.SerializeAsString();
 
     RpcValues result;
@@ -433,7 +433,7 @@ static void mysql_command_dispatch(void *ud, const result_t & res, const command
     }
     else if (msg.op() == MSG_OP_GET){
         service->actor_state_update(actor, cb.clientid());
-        auto mid = msg.data(0).id();
+        //auto mid = msg.data(0).id();
         if (res.fetched_results.size() == 1){
             result.setb(res.fetched_results[0][0].second.buffer,
                 res.fetched_results[0][0].second.valid_size);
@@ -465,6 +465,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
         cmd.need_result = true;
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
+            cmd.cbdata.destroy();
             return -2;
         }
         return mysql_pool->execute(cmd, mysql_command_dispatch, this);
@@ -472,6 +473,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
     else if (msg.op() == MSG_OP_INSERT){        
         if (!msg.data(0).SerializeToArray(this->tmp_msgbuff.buffer, this->tmp_msgbuff.max_size)){
             GLOG_ERR("msg pack error ! bytesize:%d", msg.data(0).ByteSize());
+            cmd.cbdata.destroy();
             return -3;
         }
         strnprintf(cmd.sql, 1024 + msg.ByteSize(), "INSERT INTO msg SET type=%d, actor='%d:%lu', msgid=%lu, msg='%s';",
@@ -480,6 +482,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
             msg.data(0).ByteSize()));
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
+            cmd.cbdata.destroy();
             return -2;
         }
         return mysql_pool->execute(cmd, mysql_command_dispatch, this);
@@ -487,20 +490,24 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
     else if (msg.op() == MSG_OP_SET){
         if (!msg.data(0).SerializeToArray(this->tmp_msgbuff.buffer, this->tmp_msgbuff.max_size)){
             GLOG_ERR("msg pack error ! bytesize:%d", msg.data(0).ByteSize());
+            cmd.cbdata.destroy();
             return -1;
         }
 		int version = msg.data(0).ext().version();
 		if ( version < 1){
 			GLOG_ERR("update msg version error :%d ", version);
-			return -2;
+            cmd.cbdata.destroy();
+            return -2;
 		}
         strnprintf(cmd.sql, 1024 + msg.ByteSize(),
 			"UPDATE msg SET msg='%s',version=%d WHERE type=%d  AND actor='%d:%lu' AND msgid=%lu AND version=%d;",
-            this->tmp_msgbuff.buffer,version, 
+            mysql_pool->mysql()->escape(strescape, this->tmp_msgbuff.buffer,
+            msg.data(0).ByteSize()), version, 
             msgtype, msg.actor().type(), msg.actor().id(),
             msg.data(0).id(), version-1);
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
+            cmd.cbdata.destroy();
             return -3;
         }
         return mysql_pool->execute(cmd, mysql_command_dispatch, this);
@@ -517,6 +524,7 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
         }
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
+            cmd.cbdata.destroy();
             return -2;
         }
         return mysql_pool->execute(cmd, mysql_command_dispatch, this);
@@ -528,12 +536,15 @@ int MsgService::dispatch_mysql_store_command(uint64_t cookie, const MsgOPT & msg
         cmd.need_result = true;
         if (!cb.Pack(cmd.cbdata)){
             GLOG_ERR("msg error pack callback length: %d", cb.ByteSize());
+            cmd.cbdata.destroy();
             return -2;
         }
         return mysql_pool->execute(cmd, mysql_command_dispatch, this);
     }
     else {
+        cmd.cbdata.destroy();
         return -3;
     }
+    cmd.cbdata.destroy();
     return 0;
 }

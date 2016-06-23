@@ -72,7 +72,6 @@ static inline int construct_mmsg_MsgOPT(char * msgbuff, int msgbufflen, const Ms
     return msgbufflen;
 }
 int MsgBox::list(MsgListCallBack lcb){
-	int ret = 0;
 	dcrpc::RpcValues args;
 	char buff[256];
 	int ibuff = construct_simple_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_LIST, actor_, type_);
@@ -81,7 +80,7 @@ int MsgBox::list(MsgListCallBack lcb){
 		return -1;
 	}
 	args.addb(buff, ibuff);
-	return RPC->call("msg", args, [lcb](int ret, const RpcValues & result){
+	return RPC->call("msg", args, [lcb, this](int ret, const RpcValues & result){
 		GLOG_DBG("list ret:%d result length:%d", ret, result.length());
 		if (!lcb){
 			return;
@@ -94,7 +93,8 @@ int MsgBox::list(MsgListCallBack lcb){
 					msglist.push_back(MsgKeyData(mdata.id(), mdata.data(), mdata.ext().version()));
 				}
 				else {
-					GLOG_ERR("onlist unpack msg error idx:%d !", i);
+                    GLOG_ERR("actor(%s) onlist unpack msg error idx:%d data length:%zu!", 
+                             actor_.ShortDebugString().c_str(), i, result.getb(i).length());
 				}
 			}
 		}
@@ -106,17 +106,17 @@ int	MsgBox::get(uint64_t uid, MsgGetCallBack cb){
     char buff[256];
     int ibuff = construct_simple_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_GET, actor_, type_, uid);
     if (ibuff < 0){
-        GLOG_ERR("msg pack error !");
+        GLOG_ERR("actor(%s) msg pack error !", actor_.ShortDebugString().c_str());
         return -1;
     }
     args.addb(buff, ibuff);
-    return RPC->call("msg", args, [cb, uid](int ret, const RpcValues & result){
-        GLOG_DBG("get ret:%d result length:%d", ret, result.length());
+    return RPC->call("msg", args, [cb, uid, this](int ret, const RpcValues & result) {
+        GLOG_DBG("actor(%s) get ret:%d result length:%d", actor_.ShortDebugString().c_str(), ret, result.length());
         if (!cb){
             return;
         }
         if (ret){
-            GLOG_ERR("sync from error :%d result length:%d", ret, result.length());
+            GLOG_ERR("actor(%s) sync from error :%d result length:%d", actor_.ShortDebugString().c_str(), ret, result.length());
             return cb(-1, MsgKeyData(uid, "", 0));
         }
         else {
@@ -126,7 +126,7 @@ int	MsgBox::get(uint64_t uid, MsgGetCallBack cb){
             else {
                 awolmsg::Msg::MsgData mdata;
                 if (!mdata.ParseFromArray(result.getb().data(), result.getb().length())){
-                    GLOG_ERR("unpack msg data error ! ");
+                    GLOG_ERR("actor(%s) unpack msg data error ! ", actor_.ShortDebugString().c_str());
                     return cb(-2, MsgKeyData(uid, "", 0));
                 }
                 return cb(0, MsgKeyData(mdata.id(), mdata.data(), mdata.ext().version()));
@@ -144,7 +144,7 @@ int MsgBox::sendto(const MsgActor & sendto, int type, const std::string & m_){
 		return -1;
 	}
 	args.addb(buff, ibuff);
-	return RPC->call("msg", args, [](int ret, const RpcValues & result){
+    return RPC->call("msg", args, [](int ret, const RpcValues & result) {
 		GLOG_DBG("sendto rpc call ret:%d result length:%d", ret, result.length());
 		if (ret){
 			GLOG_ERR("rpc sendto msg error ! ret:%d !", ret);
@@ -172,24 +172,24 @@ int	MsgBox::send(const MsgActor & sendto, const string & m_, MsgOPCallBack cb){
 	char buff[256*1024];
     int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_INSERT, sendto, type_, m_, 0, 0, actor_);
 	if (ibuff < 0){
-		GLOG_ERR("msg pack error !");
+        GLOG_ERR("actor(%s) msg pack error !", actor_.ShortDebugString().c_str());
 		return -1;
 	}
 	args.addb(buff, ibuff);
-    return RPC->call("msg", args, [cb](int ret, const RpcValues & result){
-        GLOG_DBG("send ret:%d result length:%d", ret, result.length());
+    return RPC->call("msg", args, [cb, this](int ret, const RpcValues & result) {
+        GLOG_DBG("actor(%s) send ret:%d result length:%d", actor_.ShortDebugString().c_str(), ret, result.length());
         if (!cb){
             return;
         }
         if (ret){
-            GLOG_ERR("rpc set msg error ! ret:%d !", ret);
+            GLOG_ERR("actor(%s) rpc set msg error ! ret:%d !", actor_.ShortDebugString().c_str(), ret);
             cb(-1, 0, "");
             return;
         }
         else {
             MsgOPT recvmsg;
             if (!recvmsg.Unpack(result.getb().data(), result.getb().length())){
-                GLOG_ERR("unpack msg error ! data :%d", result.getb().length());
+                GLOG_ERR("actor(%s) unpack msg error ! data :%d", actor_.ShortDebugString().c_str(), result.getb().length());
                 cb(-2, 0, "");
                 return;
             }
@@ -208,24 +208,24 @@ int	MsgBox::put(const string & m, MsgOPCallBack cb){
 	char buff[256 * 1024];
     int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_INSERT, actor_, type_, m, 0, 0, actor_);
 	if (ibuff < 0){
-		GLOG_ERR("msg pack error !");
+        GLOG_ERR("actor(%s) msg pack error !", actor_.ShortDebugString().c_str());
 		return -1;
 	}
 	args.addb(buff, ibuff);
-    return RPC->call("msg", args, [cb](int ret, const RpcValues & result){
-        GLOG_DBG("put ret:%d result length:%d", ret, result.length());
+    return RPC->call("msg", args, [cb, this](int ret, const RpcValues & result) {
+        GLOG_DBG("actor(%s) put ret:%d result length:%d", actor_.ShortDebugString().c_str(), ret, result.length());
         if (!cb){
             return;
         }
         if (ret){
-            GLOG_ERR("rpc set msg error ! ret:%d !", ret);
+            GLOG_ERR("actor(%s) rpc set msg error ! ret:%d !", actor_.ShortDebugString().c_str(), ret);
             cb(-1, 0, "");
             return;
         }
         else {
             MsgOPT recvmsg;
             if (!recvmsg.Unpack(result.getb().data(), result.getb().length())){
-                GLOG_ERR("unpack msg error ! data :%d", result.getb().length());
+                GLOG_ERR("actor(%s) unpack msg error ! data :%d", actor_.ShortDebugString().c_str(), result.getb().length());
                 cb(-2, 0, "");
                 return;
             }
@@ -244,17 +244,18 @@ int	MsgBox::remove(uint64_t uid, uint32_t version, MsgOPCallBack cb){ //remove o
 	char buff[256];
     int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_RM, actor_, type_, "", uid , version);
 	if (ibuff < 0){
-		GLOG_ERR("msg pack error !");
+        GLOG_ERR("actor(%s) msg pack error !", actor_.ShortDebugString().c_str());
 		return -1;
 	}
 	args.addb(buff, ibuff);
-    return RPC->call("msg", args, [cb, uid](int ret, const RpcValues & result){
-        GLOG_DBG("remove ret:%d result length:%d", ret, result.length());
+    return RPC->call("msg", args, [cb, uid, this](int ret, const RpcValues & result) {
+        GLOG_DBG("actor(%s) remove ret:%d result length:%d", actor_.ShortDebugString().c_str(), ret, result.length());
 		if (!cb){
 			return;
 		}
         if (ret || result.geti() <= 0){
-            GLOG_ERR("rpc set msg error ! ret:%d geti:%d error:%s", ret, result.geti(), result.gets().c_str());
+            GLOG_ERR("actor(%s) rpc set msg error ! ret:%d geti:%d error:%s", actor_.ShortDebugString().c_str(),
+                     ret, result.geti(), result.gets().c_str());
             cb(-1, uid, "");
         }
         else {
@@ -269,11 +270,11 @@ int	MsgBox::sync(uint64_t uid, uint32_t version, const string & m_, MsgOPCallBac
 	char buff[256 * 1024];
     int ibuff = construct_mmsg_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_SET, actor_, type_, m_, uid, version);
 	if (ibuff < 0){
-		GLOG_ERR("msg pack error !");
+        GLOG_ERR("actor(%s) msg pack error !", actor_.ShortDebugString().c_str());
 		return -1;
 	}
 	args.addb(buff, ibuff);
-    return RPC->call("msg", args, [cb, uid, m_](int ret, const RpcValues & result){
+    return RPC->call("msg", args, [cb, uid, m_, this](int ret, const RpcValues & result) {
         GLOG_DBG("sync ret:%d result length:%d", ret, result.length());
         if (!cb){
             return;
@@ -300,7 +301,7 @@ int	MsgBox::clean(MsgOPCallBack cb){
 	char buff[256];
     int ibuff = construct_simple_MsgOPT(buff, sizeof(buff), OPTIONS, MSG_OP_RM, actor_, type_);
 	if (ibuff < 0){
-		GLOG_ERR("msg pack error !");
+        GLOG_ERR("actor(%s) msg pack error !", actor_.ShortDebugString().c_str());
 		return -1;
 	}
 	args.addb(buff, ibuff);

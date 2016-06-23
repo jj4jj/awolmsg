@@ -18,7 +18,7 @@ struct MailBoxImpl : public AwolAppMailBoxImpl {
     const MsgOptions & options() const {
         static MsgOptions mo(MSG_OPT_OWN_BO, MSG_OPT_STORE_MYSQL,
             MSG_OPT_CPERM_REMOVE | MSG_OPT_CPERM_LIST |
-            MSG_OPT_CPERM_UPDATE);
+            MSG_OPT_CPERM_UPDATE | MSG_OPT_CPERM_SEND);
         return mo;
     }
 };
@@ -52,17 +52,26 @@ void MailBox::onread(uint64_t id, const Mail & mail){
 }
 void MailBox::onfetch(uint64_t id, const Mail & mail){
 }
+int  MailBox::checksend(const MsgActor & sendto, const awolapp::Mail & mail){
+    return 0;
+}
 void MailBox::onmsgop(uint64_t id, const Mail & mail, int op){
-    if (op == MAIL_OP_READ){
-        GLOG_DBG("on mail fetch id:%id", id);
+    if (op == MAIL_OP_FETCH){
+        GLOG_DBG("on mail fetch id:%lu", id);
         this->onfetch(id, mail);
     }
     else if (op == MAIL_OP_READ){
-        GLOG_DBG("on mail read id:%id", id);
+        GLOG_DBG("on mail read id:%lu", id);
         this->onread(id, mail);
     }
 }
 int MailBox::checkop(uint64_t id, Mail & m, int op){
+    //check expiration
+    const MailOption & opt = m.option();
+    time_t t_time_now = dcsutil::time_unixtime_s();
+    if (opt.expire_timestamp() > 0 && t_time_now >= opt.expire_timestamp()){
+        return ErrorCode::AWOL_EC_MSG_EXPIRED;
+    }
     if (op == MAIL_OP_READ && m.state() == MAIL_STATE_INIT){
         m.set_state(MAIL_STATE_READ);
     }
@@ -86,7 +95,7 @@ void  MailBox::onnotify(uint64_t id, const Mail & mail){
 const Mail * MailBox::find_refer_mail(uint64_t msgid){
     auto it = impl->msg_cache.begin();
     while (it != impl->msg_cache.end()){
-        if (it->second.second.content().type() == MAIL_CONTENT_REFER &&
+        if (it->second.second.content().content_type() == MAIL_CONTENT_REFER &&
             it->second.second.content().refer() == msgid){
             return &it->second.second;
         }

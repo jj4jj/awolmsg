@@ -12,7 +12,7 @@ enum ErrorCode {
     AWOL_EC_MSG_ERROR_CMD = 7,
     AWOL_EC_MSG_UPDATE_OP_ERROR = 8,
 	AWOL_EC_MSG_OP_RETRY_LATER = 9,
-
+    AWOL_EC_MSG_EXPIRED = 10,
 };
 
 

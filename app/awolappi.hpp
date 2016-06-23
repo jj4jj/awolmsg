@@ -21,38 +21,44 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
     App * app_{ nullptr };
 	msg_buffer_t    msgbuff_;
 	int	list_msg_limit{ 0 };
-	int	list_msg_offset{ 0 };
+    int	list_msg_offset{ 0 };
+    uint32_t list_msg_time{ 0 };
     AwolAppImpl(const MsgActor & actor, App * forwarder) :AppPortal(actor), app_(forwarder){
     }
     virtual ~AwolAppImpl(){
         msgbuff_.destroy();
     }
-    void onsync(int ret, uint64_t id, int op){
-        GLOG_DBG("update app msg id:%lu op:%d error :%d", id, op, ret);
-        if (ret){
-            GLOG_ERR("update app msg id:%lu op:%d error :%d", id, op, ret);
-            return;
-        }
+    void onsync(uint64_t id, const AppMsg & msg, int op){
+        GLOG_DBG("update app msg id:%lu op:%d ", id, op);
         AppMsg * appmsg = this->getmsg(id);
         if (!appmsg){
             GLOG_ERR("app type(%d) msg:%lu not found ...", AppMsgType, id);
             return;
         }
 		if (op > 0 && this->options().owner() != MSG_OPT_OWN_SO){
-			response_msg(CSAwolMsg::MSG_CMD_UPDATE, id, *appmsg, op);
+			this->response_msg(0, CSAwolMsg::MSG_CMD_UPDATE, id, appmsg, op);
 		}
 		app_->onmsgop(id, *appmsg, op);
     }
     int checkop(uint64_t id, AppMsg & m, int op){
 		return app_->checkop(id, m, op);
     }
+    int  checksend(const MsgActor & sendto,const AppMsg & msg, bool fromc){
+        UNUSED(fromc);
+        return app_->checksend(sendto, msg);
+    }
 	int list(){
-		return AppPortal::list(false);
+        time_t t_time_now = dcsutil::time_unixtime_s();
+        if (t_time_now >= list_msg_time + 15){
+            list_msg_time = t_time_now;
+            return AppPortal::list(false);            
+        }
+        return ErrorCode::AWOL_EC_MSG_OP_RETRY_LATER;
 	}
 	int list(int limit , int offset){
 		list_msg_limit = limit;
 		list_msg_offset = offset;
-		if (AppPortal::msg_cache.empty()){
+		if (AppPortal::msg_cache.empty() || AppPortal::msg_cache.size() <= 10){
 			return AppPortal::list(true);			
 		}
 		else {
@@ -69,7 +75,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 		GLOG_DBG("actor(%s) request msg:[%s]", AppPortal::actor().ShortDebugString().c_str(),
 			msg.ShortDebugString().c_str());
         auto & req = msg.request();
-        const MsgAgent & magt = req.sendto();
+        const awolapp::CSMsgActor & magt = req.sendto();
         auto & appmsg = app_->get_msg(req.msg());
         uint64_t mid = req.id();
         int opcode = req.opcode();
@@ -79,7 +85,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 			ret = list(msg.cookie().limit(), msg.cookie().offset());
 			break;
         case CSAwolMsg::MSG_CMD_SENDTO:
-			ret = AppPortal::send(MsgActor(magt.type(), magt.id()), appmsg, true);
+			ret = AppPortal::send(MsgActor(magt.actor_type(), magt.id()), appmsg, true);
 			break;
 		case CSAwolMsg::MSG_CMD_UPDATE:
 			ret = AppPortal::sync(mid, (MailOpCode)opcode);
@@ -97,7 +103,7 @@ struct AwolAppImpl : public awolmsg::MsgPortalT<AppMsg, AppMsgType> {
 		if (ret){//response error
 			response_msg(ret, msg.cmd(), mid);
 		}
-		return ret;
+		return 0;
     }
     void push_msg(const CSAwolMsg & msg){
         if (!msgbuff_.buffer){

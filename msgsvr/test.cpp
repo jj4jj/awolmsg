@@ -6,6 +6,7 @@
 #include "../proto/awolmsg.pb.h"
 #include "dcpots/base/msg_buffer.hpp"
 #include "dcpots/base/msg_proto.hpp"
+#if 0
 using namespace std;
 //using namespace google::protobuf;
 using namespace dcsutil;
@@ -71,3 +72,4 @@ int main(){
 	}
 	return 0;
 }
+#endif
